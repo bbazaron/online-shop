@@ -5,13 +5,13 @@ services:
       - 80:80
     volumes:
       - /home/user/projects/online-shop/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-      - ./:/var/www/html
+      - ./src/public:/var/www/html
 
   php-fpm:
-    build: ./docker
+    build: .docker
 
     volumes:
-      - .:/var/www/html
+      - ./src/public:/var/www/html
 
   postgres:
     image: postgres:13
