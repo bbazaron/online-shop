@@ -8,7 +8,7 @@ services:
       - ./src/public:/var/www/html
 
   php-fpm:
-    build: .docker
+    build: ./docker
 
     volumes:
       - ./src/public:/var/www/html

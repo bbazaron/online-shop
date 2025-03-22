@@ -1,5 +1,5 @@
 
-<form action="change_data" method="POST">
+<form action="edit-profile" method="POST">
     <div class="card">
         <div class="profile-container">
             <?php
@@ -12,12 +12,13 @@
 
         </div>
         <div class="profile-info">
-            <h1><?php echo $data[0]['name'];?></h1>
-            <p class="job-title"><?php echo $data[0]['email'];?></p>
-            <p class="job-title"><?php echo ('id = '.$data[0]['id']);?></p>
+            <h1><?php echo $user['name'];?></h1>
+            <p class="job-title"><?php echo $user['email'];?></p>
+            <p class="job-title"><?php echo ('id = '.$user['id']);?></p>
         </div>
         <div class="profile-social">
             <button type="submit" class="registerbtn">Edit my profile</button>
+            <a href="/catalog">Каталог</a>
         </div>
         <div class="card-bottom"></div>
     </div>

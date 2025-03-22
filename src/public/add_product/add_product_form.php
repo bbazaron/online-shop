@@ -1,5 +1,16 @@
-<form action="handle_add_product" method="POST">
+<?php
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+if (!isset($_SESSION['userId'])) {
+    header("Location:/login");
+    exit;
+}
+?>
+<form action="add-product" method="POST">
     <div class="container">
+        <a href="/profile">Мой профиль</a> <br>
         <br> <a href="/catalog">Каталог</a> <br>
         <br> <a href="/cart">Корзина</a>
         <h1>Add product</h1>
@@ -27,13 +38,10 @@
 
         <hr>
 
-        <p>By creating an account you agree to our <a href="#">Terms & Privacy</a>.</p>
         <button type="submit" class="registerbtn">Add product</button>
     </div>
 
-    <div class="container signin">
-        <p>Already have an account? <a href="#">Sign in</a>.</p>
-    </div>
+
 </form>
 
 <style>

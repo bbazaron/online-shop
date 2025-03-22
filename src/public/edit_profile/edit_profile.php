@@ -1,10 +1,26 @@
-<?php session_start();?>
-<form action="handle-change-data" method="POST">
+<?php
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+if (!isset($_SESSION['userId'])) {
+    header("Location:/login");
+    exit;
+}
+
+$pdo = new PDO('pgsql:host=postgres;port=5432;dbname=mydb', 'user', 'pass');
+$stmt = $pdo->prepare("SELECT * FROM users WHERE id = :id");
+$stmt->execute([':id' => $_SESSION['userId']]);
+$user = $stmt->fetch();
+
+?>
+<form action="handle-edit-profile " method="POST">
     <div class="container">
         <a href="/profile">Мой профиль</a> <br><br>
         <a href="/add-product">Добавить продукты</a> <br><br>
+        <a href="/catalog">Каталог</a> <br><br>
         <a href="/cart">Корзина</a>
-        <h1>Change data</h1>
+        <h1>Edit profile</h1>
         <p>Please enter the new data.</p>
         <hr>
 
@@ -12,43 +28,37 @@
         <?php if (isset($errors['name'])): ?>
             <label style="color:red" ><?php echo $errors['name'];?></label>
         <?php endif; ?>
+        <input type="text" placeholder="<?php echo $user['name'];?>" name = "name" value="<?php echo $user['name'];?>" id="name">
 
-        <?php
-
-        $pdo = new PDO('pgsql:host=postgres;port=5432;dbname=mydb', 'user', 'pass');
-        $stmt = $pdo->prepare("SELECT name FROM users WHERE id = :id");
-        $stmt->execute([':id' => $_SESSION['userId']]);
-        $name = $stmt->fetchColumn();
-        ?>
-        <input type="text" placeholder="<?php echo $name;?>" name="name" id="name" required>
-
+        <label for="psw"><b>Email</b></label>
+        <?php if (isset($errors['email'])): ?>
+            <label style="color: red"><?php echo $errors['email'];?></label>
+        <?php endif; ?>
+        <input type="text" placeholder="<?php echo $user['email'];?>" name="email" value="<?php echo $user['email'];?>" id="email">
 
         <label for="psw"><b>Password</b></label>
         <?php if (isset($errors['password'])): ?>
             <label style="color: red"><?php echo $errors['password'];?></label>
         <?php endif; ?>
-        <input type="password" placeholder="Enter New Password" name="psw" id="psw" required>
+        <input type="password" placeholder="Enter New Password" name="psw" id="psw" >
 
         <label for="psw-repeat"><b>Repeat Password</b></label>
         <?php if (isset($errors['psw-repeat'])): ?>
             <label style="color: red"><?php echo $errors['psw-repeat'];?></label>
         <?php endif; ?>
-        <input type="password" placeholder="Repeat Password" name="psw-repeat" id="psw-repeat" required>
+        <input type="password" placeholder="Repeat Password" name="psw-repeat" id="psw-repeat" >
 
         <label for="psw-repeat"><b>Add profile picture</b></label>
         <?php if (isset($errors['psw-repeat'])): ?>
             <label style="color: red"><?php echo $errors['psw-repeat'];?></label>
         <?php endif; ?>
-        <input type="text" placeholder="Add URL" name="avatar" id="avatar" required>
+        <input type="text" placeholder="Add URL" name="avatar" id="avatar" >
         <hr>
 
-        <p>By creating an account you agree to our <a href="#">Terms & Privacy</a>.</p>
         <button type="submit" class="registerbtn">Change</button>
     </div>
 
-    <div class="container signin">
-        <p>Already have an account? <a href="#">Sign in</a>.</p>
-    </div>
+
 </form>
 
 <style>

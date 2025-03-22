@@ -1,7 +1,11 @@
 <?php
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
 if (!isset($_SESSION['userId'])) {
     header("Location: /login");
+    exit;
 }
 $user_id=$_SESSION['userId'];
 
@@ -28,7 +32,7 @@ foreach ($data as $product) {  // достаем описание каждого
 } else {
     $message = 'Корзина пуста';}
 
-require_once './cart_page.php';
+require_once './cart/cart_page.php';
 
 
 

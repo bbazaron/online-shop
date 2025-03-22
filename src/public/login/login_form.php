@@ -2,7 +2,7 @@
 
 <div class="grid">
 
-    <form action="login" method="POST" class="form login">
+    <form action="/catalog" method="POST" class="form login">
 
         <div class="form__field">
             <label for="login__username"><svg class="icon">
@@ -28,7 +28,7 @@
 
     </form>
 
-    <p class="text--center">Not a member? <a href="registration">Sign up now</a> <svg class="icon">
+    <p class="text--center">Not a member? <a href="../registration">Sign up now</a> <svg class="icon">
             <use xlink:href="#icon-arrow-right"></use>
         </svg></p>
 

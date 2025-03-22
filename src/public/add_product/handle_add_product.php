@@ -1,65 +1,64 @@
 <?php
-session_start();
-if (!isset($_SESSION['userId'])) {
-    header("Location: /login");
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
 }
 
-function validation($post):array
+if (!isset($_SESSION['userId'])) {
+    header("Location: /login");
+    exit;
+}
+
+function validation($post): array
 {
     $errors = [];
 
     if (isset($post['product_id'])) {
-        $product_id = $post['product_id'];
-        if (is_numeric($product_id)===false) {
-            $errors['product_id'] = "Введены неверные данные";
-        } else {
-            $pdo = new PDO('pgsql:host=postgres;port=5432;dbname=mydb', 'user', 'pass');
-            $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE id = :id");
-            $stmt->execute([':id' => $product_id]);
-            $data = $stmt->fetchColumn();
-            if ($data === '0') {
-                $errors['product_id'] = 'Введеного product_id не существует';}
+        $product_id = (int) $post['product_id'];
 
-            }
+        $pdo = new PDO('pgsql:host=postgres;port=5432;dbname=mydb', 'user', 'pass');
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :product_id");
+        $stmt->execute([':product_id' => $product_id]);
+        $data = $stmt->fetch();
+        if ($data === false) {
+            $errors['product_id'] = 'Введеного product_id не существует';
+        }
     }
+
 
     if (isset($post['amount'])) {
         $amount = $post['amount'];
-        if (is_numeric($amount)===false) {
+        if (is_numeric($amount) === false) {
             $errors['amount'] = "Введены неверные данные";
-        } else {
-            if ($amount==='0') {
+        } elseif($amount === '0') {
                 $errors['amount'] = "amount не может быть 0";
-            }
         }
     }
-        return $errors;
+    return $errors;
 }
 
 $errors = validation($_POST);
 
 if (empty($errors)) {
-    $id = $_SESSION['userId'];
+    $userid = $_SESSION['userId'];
     $product_id = $_POST['product_id'];
     $amount = $_POST['amount'];
 
     $pdo = new PDO('pgsql:host=postgres;port=5432;dbname=mydb', 'user', 'pass');
-    $check = $pdo->prepare("SELECT COUNT(*) FROM user_products WHERE user_id = :id");
-    $check->execute(['id' => $id]);
-    $data = $check->fetchColumn();
+    $check = $pdo->prepare("SELECT * FROM user_products WHERE product_id = :product_id AND user_id = :userId");
+    $check->execute(['product_id'=> $product_id, 'userId' => $userid]);
+    $data = $check->fetch();
 
-    if ($data > 0) {
-        $stmt = $pdo-> prepare("UPDATE user_products SET amount = amount + :amount WHERE product_id = '$product_id'");
-        $stmt->execute(  ['amount' => $amount]);
-        $message = "Продукты добавлены повторно";
-    } else {
-        $stmt = $pdo-> prepare("INSERT INTO user_products (user_id, product_id, amount) VALUES (:user_id, :product_id, :amount)");
-        $stmt->execute(['user_id' => $id, 'product_id' => $product_id, 'amount' => $amount]);
+    if ($data ===false) {
+        $stmt = $pdo->prepare("INSERT INTO user_products (user_id, product_id, amount) VALUES (:user_id, :product_id, :amount)");
+        $stmt->execute(['user_id' => $userid, 'product_id' => $product_id, 'amount' => $amount]);
         $message = "Продукты добавлены ";
+    } else {
+        $amount = $data['amount'] + $amount;
+        $stmt = $pdo->prepare("UPDATE user_products SET amount = :amount WHERE user_id = :user_id AND product_id = :product_id");
+        $stmt->execute(['amount' => $amount, 'user_id' => $userid, 'product_id' => $product_id ]);
+        $message = "Продукты добавлены повторно";
     }
 
 
-
-
 }
-require_once './add_product_form.php';
+require_once './add_product/add_product_form.php';

@@ -1,6 +1,6 @@
 <div class="container">
     <a href="/profile">Мой профиль</a> <br><br>
-    <a href="/add_product">Добавить продукты</a> <br><br>
+    <a href="/add-product">Добавить продукты</a> <br><br>
     <a href="/catalog">Каталог</a>
     <?php if (isset($message)): ?>
         <h3><?php echo $message?></h3>
@@ -20,6 +20,9 @@
                             <a><h5 class="card-title">Описание <?php echo $product['description']; ?></h5></a>
                             <div class="card-title">
                                 Цена: <?php echo $product['price']; ?>
+                            </div> <br>
+                            <div class="card-title">
+                                Количество: <?php echo $product['amount']; ?>
                             </div> <br>
                         </div>
                     </a>

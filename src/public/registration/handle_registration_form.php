@@ -77,7 +77,7 @@ if (empty(validation($_POST))) {
     echo "\n Пользователь зарегистирован";
 }
 
-require_once './registration_form.php';
+require_once './registration/registration_form.php';
 ?>
 
 

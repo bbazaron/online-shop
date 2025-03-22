@@ -33,13 +33,17 @@ if (empty($errors)) {
         $passwordDb = $user['password'];
 
         if (password_verify($password, $passwordDb)) {
-            session_start();
+            if (session_status() !== PHP_SESSION_ACTIVE) {
+                session_start();
+            }
+
             $_SESSION['userId'] = $user['id'];
             header("Location: /catalog");
+            exit;
         } else {
             $errors['username'] = 'username or password not valid';
         }
     }
 }
 
-require_once './login_form.php';
+require_once './login/login_form.php';

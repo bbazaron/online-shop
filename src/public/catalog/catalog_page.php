@@ -1,7 +1,7 @@
 
 <div class="container">
     <a href="/profile">Мой профиль</a> <br><br>
-    <a href="/add_product">Добавить продукты</a> <br><br>
+    <a href="/add-product">Добавить продукты</a> <br><br>
     <a href="/cart">Корзина</a>
   <h3>Catalog</h3>
   <div class="card-deck">
