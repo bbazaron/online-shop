@@ -1,25 +1,48 @@
-
 <div class="container">
     <a href="/profile">Мой профиль</a> <br><br>
-    <a href="/add-product">Добавить продукты</a> <br><br>
     <a href="/cart">Корзина</a>
   <h3>Catalog</h3>
   <div class="card-deck">
       <?php foreach ($products as $product): ?>
           <div class="card text-center">
               <a>
-
+                  <hr>
                   <img class="card-img-top" src="<?php echo $product['image_url'];?>" alt="Card image" width="300"  height="200">
                   <div class="card-body">
                       <p class="card-footer"><?php echo $product['name']; ?></p>
                       <a><h5 class="card-title">Описание <?php echo $product['description']; ?></h5></a>
-                      <a><h5 class="card-title">id = <?php echo $product['id']; ?></h5></a>
                       <div class="card-title">
-                          Цена: <?php echo $product['price']; ?>
+                          Цена: <?php echo $product['price'];?>
                       </div>
-                  </div><br><br>
+                  </div>
               </a>
           </div>
+
+          <form action="catalog" method="POST">
+              <div class="container">
+
+
+                  <?php if (isset($message)): ?>
+                      <p><?php echo $message;?></p>
+                  <?php else: ?>
+
+                  <?php endif; ?>
+
+                  <input type="text" placeholder="Enter product_id" value="<?php echo $product['id'];?>" name="product_id" id="product_id">
+
+
+                  <br>
+                  <?php if (isset($errors['amount'])): ?>
+                      <label style="color: red"><?php echo $errors['amount'];?></label>
+                  <?php endif; ?>
+                  <input type="text" placeholder="Enter amount" name="amount" id="amount" >
+
+                  <button type="submit" class="registerbtn">Add product</button>
+
+              </div>
+
+
+          </form>
       <?php endforeach; ?>
   </div>
 </div>

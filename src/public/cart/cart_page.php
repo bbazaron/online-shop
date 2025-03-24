@@ -1,6 +1,5 @@
 <div class="container">
     <a href="/profile">Мой профиль</a> <br><br>
-    <a href="/add-product">Добавить продукты</a> <br><br>
     <a href="/catalog">Каталог</a>
     <?php if (isset($message)): ?>
         <h3><?php echo $message?></h3>

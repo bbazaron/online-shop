@@ -28,7 +28,12 @@
             <label style="color: red"><?php echo $errors['psw-repeat'];?></label>
         <?php endif; ?>
         <input type="password" placeholder="Repeat Password" name="psw-repeat" id="psw-repeat" required>
-        <hr>
+
+        <label for="psw-repeat"><b>Add profile picture</b></label>
+        <?php if (isset($errors['psw-repeat'])): ?>
+            <label style="color: red"><?php echo $errors['psw-repeat'];?></label>
+        <?php endif; ?>
+        <input type="text" placeholder="Add URL" name="avatar" id="avatar" >
 
         <button type="submit" class="registerbtn">Register</button>
     </div>

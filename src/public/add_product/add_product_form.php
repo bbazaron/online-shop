@@ -8,41 +8,7 @@ if (!isset($_SESSION['userId'])) {
     exit;
 }
 ?>
-<form action="add-product" method="POST">
-    <div class="container">
-        <a href="/profile">Мой профиль</a> <br>
-        <br> <a href="/catalog">Каталог</a> <br>
-        <br> <a href="/cart">Корзина</a>
-        <h1>Add product</h1>
 
-        <?php if (isset($message)): ?>
-            <p><?php echo $message;?></p>
-        <?php else: ?>
-        <p>Please fill in this form.</p>
-            <?php endif; ?>
-        <hr>
-
-        <label for="product_id"><b>Product_id</b></label>
-        <?php if (isset($errors['product_id'])): ?>
-            <label style="color:red" ><?php echo $errors['product_id'];?></label>
-        <?php endif; ?>
-        <input type="text" placeholder="Enter product_id" name="product_id" id="product_id" required>
-
-
-        <label for="amount"><b>Amount</b></label>
-        <?php if (isset($errors['amount'])): ?>
-            <label style="color: red"><?php echo $errors['amount'];?></label>
-        <?php endif; ?>
-        <input type="text" placeholder="Enter amount" name="amount" id="amount" required>
-
-
-        <hr>
-
-        <button type="submit" class="registerbtn">Add product</button>
-    </div>
-
-
-</form>
 
 <style>
     * {box-sizing: border-box}

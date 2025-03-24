@@ -2,7 +2,7 @@
 
 <div class="grid">
 
-    <form action="/catalog" method="POST" class="form login">
+    <form action="/login" method="POST" class="form login">
 
         <div class="form__field">
             <label for="login__username"><svg class="icon">

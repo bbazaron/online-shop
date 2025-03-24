@@ -1,5 +1,5 @@
 
-<form action="edit-profile" method="POST">
+<form action="profile" method="POST">
     <div class="card">
         <div class="profile-container">
             <?php

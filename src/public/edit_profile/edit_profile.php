@@ -14,10 +14,9 @@ $stmt->execute([':id' => $_SESSION['userId']]);
 $user = $stmt->fetch();
 
 ?>
-<form action="handle-edit-profile " method="POST">
+<form action="edit-profile" method="POST">
     <div class="container">
         <a href="/profile">Мой профиль</a> <br><br>
-        <a href="/add-product">Добавить продукты</a> <br><br>
         <a href="/catalog">Каталог</a> <br><br>
         <a href="/cart">Корзина</a>
         <h1>Edit profile</h1>
