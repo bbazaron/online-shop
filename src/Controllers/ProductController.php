@@ -68,7 +68,7 @@ class ProductController
             $amount = $_POST['amount'];
 
             require_once '../Model/Product.php';
-            $productModel = new User_products();
+            $productModel = new UserProducts();
             $data = $productModel->getByProductIdUserId($product_id,$userid);
 
             if ($data === false) {

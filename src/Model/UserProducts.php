@@ -1,6 +1,6 @@
 <?php
 
-class User_products
+class UserProducts
 {
     public function getCountByUserId($user_id): array|false
     {

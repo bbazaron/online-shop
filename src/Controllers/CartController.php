@@ -15,8 +15,8 @@ class CartController
 
         $user_id = $_SESSION['userId'];
 
-        require_once '../Model/User_products.php';
-        $user_products = new User_products();
+        require_once '../Model/UserProducts.php';
+        $user_products = new UserProducts();
         $data = $user_products->getCountByUserId($user_id);
 
         if ($data['count'] > 0) { // проверка количества заказов у пользователя

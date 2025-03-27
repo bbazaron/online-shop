@@ -24,6 +24,35 @@ class UserController
         require_once '../Views/login_form.php';
     }
 
+    public function getProfile()
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['userId'])) {
+            header("Location: /login");
+            exit;
+
+        } else {
+            require_once '../Model/User.php';
+            $userModel = new User();
+            $sessionId = $_SESSION['userId'];
+            $user=$userModel->getBySessionId($sessionId);
+
+            require_once '../Views/profile.php';
+        }
+    }
+
+    public function getEditProfile()
+    {
+        if (!isset($_SESSION['userId'])) {
+            header("Location: /login");
+            exit;
+        }
+        require_once '../Views/edit_profile.php';
+    }
+
     private function validateLogin(array $post): array
     {
         $errors = [];
@@ -96,6 +125,63 @@ class UserController
         return $errors;
     }
 
+    private function validationEditProfile(array $post): array
+    {
+        $errors = [];
+
+        if (isset($post['name'])) {
+            $name = $post['name'];
+
+            if (strlen($name) < 2) {
+                $errors['name'] = "Имя должно содержать больше 2 символов";
+            }
+        } else {
+            $errors['name'] = "Имя должно быть заполнено";
+        }
+
+        if (isset($post['email'])) {
+            $email = $post['email'];
+            if (strlen($email) < 2) {
+                $errors['email'] = "email должен содержать больше 2 символов";
+            } elseif (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+                $errors['email'] = "email некорректный";
+            } else {
+                require_once '../Model/User.php';
+                $userModel = new User;
+                $result = $userModel->getByEmail($email);
+
+
+                if ($result !== false) { // запрос вернет false если не найдет введеный email
+                    $userId = $_SESSION['userId'];
+                    if ($result['id'] !== $userId) {
+                        $errors['email'] = 'Пользователь с таким email уже зарегистрирован';
+                    }
+                }
+            }
+        }
+
+        if (isset($post['psw'])) {
+            if ($post['psw'] !== "") {
+                $password = $post['psw'];
+
+                if (strlen($password) < 2) {
+                    $errors['password'] = "Пароль должен содержать больше 2 символов";
+                } elseif (isset($post['psw-repeat'])) {
+
+                    $pswRepeat = $post['psw-repeat'];
+
+                    if ($password !== $pswRepeat) {
+                        $errors['psw-repeat'] = "Пароли не совпадают";
+                    }
+                } else {
+                    $errors['psw-repeat'] = "Повторите пароль";
+                }
+            }
+
+        }
+        return $errors;
+    }
+
     public function registrate()
     {
         $errors = $this->validateUser($_POST);
@@ -152,92 +238,6 @@ class UserController
         }
 
         $this->getLogin();
-    }
-
-    public function getProfile()
-    {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-
-        if (!isset($_SESSION['userId'])) {
-            header("Location: /login");
-            exit;
-
-        } else {
-            require_once '../Model/User.php';
-            $userModel = new User();
-            $sessionId = $_SESSION['userId'];
-            $user=$userModel->getBySessionId($sessionId);
-
-            require_once '../Views/profile.php';
-        }
-    }
-
-    public function getEditProfile()
-    {
-        if (!isset($_SESSION['userId'])) {
-            header("Location: /login");
-            exit;
-        }
-        require_once '../Views/edit_profile.php';
-    }
-
-    private function validationEditProfile(array $post): array
-    {
-        $errors = [];
-
-        if (isset($post['name'])) {
-            $name = $post['name'];
-
-            if (strlen($name) < 2) {
-                $errors['name'] = "Имя должно содержать больше 2 символов";
-            }
-        } else {
-            $errors['name'] = "Имя должно быть заполнено";
-        }
-
-        if (isset($post['email'])) {
-            $email = $post['email'];
-            if (strlen($email) < 2) {
-                $errors['email'] = "email должен содержать больше 2 символов";
-            } elseif (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-                $errors['email'] = "email некорректный";
-            } else {
-                require_once '../Model/User.php';
-                $userModel = new User;
-                $result = $userModel->getByEmail($email);
-
-
-                if ($result !== false) { // запрос вернет false если не найдет введеный email
-                    $userId = $_SESSION['userId'];
-                    if ($result['id'] !== $userId) {
-                        $errors['email'] = 'Пользователь с таким email уже зарегистрирован';
-                    }
-                }
-            }
-        }
-
-        if (isset($post['psw'])) {
-            if ($post['psw'] !== "") {
-                $password = $post['psw'];
-
-                if (strlen($password) < 2) {
-                    $errors['password'] = "Пароль должен содержать больше 2 символов";
-                } elseif (isset($post['psw-repeat'])) {
-
-                    $pswRepeat = $post['psw-repeat'];
-
-                    if ($password !== $pswRepeat) {
-                        $errors['psw-repeat'] = "Пароли не совпадают";
-                    }
-                } else {
-                    $errors['psw-repeat'] = "Повторите пароль";
-                }
-            }
-
-        }
-        return $errors;
     }
 
     public function editProfile()
