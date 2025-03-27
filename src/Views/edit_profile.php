@@ -8,11 +8,9 @@ if (!isset($_SESSION['userId'])) {
     exit;
 }
 
-$pdo = new PDO('pgsql:host=postgres;port=5432;dbname=mydb', 'user', 'pass');
-$stmt = $pdo->prepare("SELECT * FROM users WHERE id = :id");
-$stmt->execute([':id' => $_SESSION['userId']]);
-$user = $stmt->fetch();
-
+require_once '../Model/User.php';
+$userModel = new User();
+$user = $userModel->selectById($_SESSION['userId']);
 ?>
 <form action="edit-profile" method="POST">
     <div class="container">

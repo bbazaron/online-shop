@@ -1,5 +1,6 @@
 <?php
-class Cart
+
+class CartController
 {
     public function getCart()
     {
@@ -11,19 +12,20 @@ class Cart
             header("Location: /login");
             exit;
         }
-        $user_id=$_SESSION['userId'];
 
-        $pdo = new PDO('pgsql:host=postgres;port=5432;dbname=mydb', 'user', 'pass');
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM user_products WHERE user_id = :userId");
-        $stmt->execute(['userId' => $user_id]);
-        $data = $stmt->fetch();
+        $user_id = $_SESSION['userId'];
+
+        require_once '../Model/User_products.php';
+        $user_products = new User_products();
+        $data = $user_products->getCountByUserId($user_id);
+
         if ($data['count'] > 0) { // проверка количества заказов у пользователя
 
-            $stmt = $pdo->prepare("SELECT * FROM user_products WHERE user_id = :userId ");
-            $stmt->execute(['userId' => $user_id]);
-            $data = $stmt->fetchAll(); // достаем все продукты у пользователя
+            $data = $user_products->getByUserId($user_id);
 
             foreach ($data as $product) {  // достаем описание каждого продукта из бд products
+
+                $pdo = new PDO('pgsql:host=postgres;port=5432;dbname=mydb', 'user', 'pass');
 
                 $oprst = $pdo->prepare("SELECT name,description,price,image_url FROM products WHERE id = :id ");
                 $oprst->execute(['id' => $product['product_id']]);
@@ -34,8 +36,9 @@ class Cart
 
             }
         } else {
-            $message = 'Корзина пуста';}
+            $message = 'Корзина пуста';
+        }
 
-        require_once './cart/cart_page.php';
+        require_once '../Views/cart.php';
     }
 }

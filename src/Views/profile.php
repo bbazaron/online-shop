@@ -3,10 +3,15 @@
     <div class="card">
         <div class="profile-container">
             <?php
-            $pdo = new PDO('pgsql:host=postgres;port=5432;dbname=mydb', 'user', 'pass');
-            $stmt = $pdo->prepare("SELECT avatar FROM users WHERE id = :id");
-            $stmt->execute([':id' => $_SESSION['userId']]);
-            $avatar = $stmt->fetchColumn();
+            require_once '../Model/User.php';
+            $userModel = new User();
+            $userId=$_SESSION['userId'];
+            $avatar = $userModel->getAvatarById($userId);
+
+//            $pdo = new PDO('pgsql:host=postgres;port=5432;dbname=mydb', 'user', 'pass');
+//            $stmt = $pdo->prepare("SELECT avatar FROM users WHERE id = :id");
+//            $stmt->execute([':id' => $_SESSION['userId']]);
+//            $avatar = $stmt->fetchColumn();
             ?>
             <img src="<?php echo $avatar;?>">
 

@@ -28,7 +28,7 @@
 
                   <?php endif; ?>
 
-                  <input type="text" placeholder="Enter product_id" value="<?php echo $product['id'];?>" name="product_id" id="product_id">
+                  <input type="hidden" placeholder="Enter product_id" value="<?php echo $product['id'];?>" name="product_id" id="product_id">
 
 
                   <br>
