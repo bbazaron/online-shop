@@ -287,5 +287,15 @@ class UserController
         }
     }
 
+    public function logout()
+    {
+        if (session_status()!==PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        unset($_SESSION['userId']);
+        session_destroy();
+        header("Location: /login");
+        exit;
+    }
 
 }

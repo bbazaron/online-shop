@@ -10,7 +10,7 @@ if (!isset($_SESSION['userId'])) {
 
 require_once '../Model/User.php';
 $userModel = new User();
-$user = $userModel->selectById($_SESSION['userId']);
+$user = $userModel->getBySessionId($_SESSION['userId']);
 ?>
 <form action="edit-profile" method="POST">
     <div class="container">

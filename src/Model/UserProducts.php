@@ -20,7 +20,7 @@ class UserProducts
         $data = $stmt->fetchAll(); // достаем все продукты у пользователя
         return $data;
     }
-    public function getByProductIdUserId($product_id,$userid):array
+    public function getByProductIdUserId($product_id,$userid):array|false
     {
         $pdo = new PDO('pgsql:host=postgres;port=5432;dbname=mydb', 'user', 'pass');
         $check = $pdo->prepare("SELECT * FROM user_products WHERE product_id = :product_id AND user_id = :userId");

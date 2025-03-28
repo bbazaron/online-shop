@@ -11,6 +11,9 @@ class ProductController
             header("Location: /login");
             exit;
         }
+        require_once '../Model/Product.php';
+        $product = new Product();
+        $products=$product->getAllProducts();
         require_once '../Views/catalog.php';
 
     }
@@ -67,7 +70,7 @@ class ProductController
             $product_id = $_POST['product_id'];
             $amount = $_POST['amount'];
 
-            require_once '../Model/Product.php';
+            require_once '../Model/UserProducts.php';
             $productModel = new UserProducts();
             $data = $productModel->getByProductIdUserId($product_id,$userid);
 

@@ -37,7 +37,7 @@ class User
         return $user;
     }
 
-    public function getAvatarById($userId):string|false
+    public function getAvatarById($userId):string|false|null
     {
         $pdo = new PDO('pgsql:host=postgres;port=5432;dbname=mydb', 'user', 'pass');
         $stmt = $pdo->prepare("SELECT avatar FROM users WHERE id = :id");

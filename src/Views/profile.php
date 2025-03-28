@@ -21,10 +21,15 @@
             <p class="job-title"><?php echo $user['email'];?></p>
             <p class="job-title"><?php echo ('id = '.$user['id']);?></p>
         </div>
+        <a href="/catalog">Каталог</a>
         <div class="profile-social">
             <button type="submit" class="registerbtn">Edit my profile</button>
-            <a href="/catalog">Каталог</a>
         </div>
+</form>
+
+        <form action="/logout" method="POST">
+        <button type="submit" class="registerbtn">Logout</button>
+        </form>
         <div class="card-bottom"></div>
     </div>
 
