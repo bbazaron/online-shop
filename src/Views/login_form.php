@@ -28,7 +28,7 @@
 
     </form>
 
-    <p class="text--center">Not a member? <a href="../registration">Sign up now</a> <svg class="icon">
+    <p class="text--center"><a href="../registration">Sign up now</a> <svg class="icon">
             <use xlink:href="#icon-arrow-right"></use>
         </svg></p>
 

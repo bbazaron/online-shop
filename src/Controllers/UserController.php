@@ -2,6 +2,7 @@
 
 class UserController
 {
+
     public function getRegistrate()
     {
         if (isset($_SESSION['userId'])) {
@@ -44,7 +45,7 @@ class UserController
         }
     }
 
-    public function getEditProfile()
+    public function getEditProfile(array $errors)
     {
         if (!isset($_SESSION['userId'])) {
             header("Location: /login");
@@ -283,7 +284,7 @@ class UserController
             exit;
 
         } else {
-            $this->GetEditProfile();
+            $this->GetEditProfile($errors);
         }
     }
 
