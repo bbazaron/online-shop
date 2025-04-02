@@ -3,8 +3,7 @@
     <div class="card">
         <div class="profile-container">
             <?php
-            require_once '../Model/User.php';
-            $userModel = new User();
+            $userModel = new \Model\User();
             $userId=$_SESSION['userId'];
             $avatar = $userModel->getAvatarById($userId);
 

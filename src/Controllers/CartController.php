@@ -1,6 +1,6 @@
 <?php
-
-class CartController
+namespace Controllers;
+class CartController extends \Model\Model
 {
     public function getCart()
     {
@@ -15,24 +15,19 @@ class CartController
 
         $user_id = $_SESSION['userId'];
 
-        require_once '../Model/UserProducts.php';
-        $user_products = new UserProducts();
+        $user_products = new \Model\UserProducts();
         $data = $user_products->getCountByUserId($user_id);
 
         if ($data['count'] > 0) { // проверка количества заказов у пользователя
 
             $data = $user_products->getByUserId($user_id);
+            $product = new \Model\Product();
+            foreach ($data as $prod) {  // достаем описание каждого продукта из бд products
 
-            foreach ($data as $product) {  // достаем описание каждого продукта из бд products
-
-                $pdo = new PDO('pgsql:host=postgres;port=5432;dbname=mydb', 'user', 'pass');
-
-                $oprst = $pdo->prepare("SELECT name,description,price,image_url FROM products WHERE id = :id ");
-                $oprst->execute(['id' => $product['product_id']]);
-                $data1 = $oprst->fetch();
+                $data1 = $product->getById($prod['product_id']);
                 //print_r($data1);
-                $final = array_merge($product, $data1);
-                $list[] = array_merge($final, $data1);;
+                $final = array_merge($prod, $data1); // объединение массивов друг за другом
+                $list[] = array_merge($final, $data1);
 
             }
         } else {
@@ -41,4 +36,5 @@ class CartController
 
         require_once '../Views/cart.php';
     }
+
 }

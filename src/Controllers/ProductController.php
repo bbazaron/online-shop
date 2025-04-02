@@ -1,5 +1,7 @@
 <?php
 
+namespace Controllers;
+
 class ProductController
 {
     public function getCatalog()
@@ -11,8 +13,8 @@ class ProductController
             header("Location: /login");
             exit;
         }
-        require_once '../Model/Product.php';
-        $product = new Product();
+
+        $product = new \Model\Product();
         $products=$product->getAllProducts();
         require_once '../Views/catalog.php';
 
@@ -28,8 +30,7 @@ class ProductController
             exit;
         }
 
-        require_once '../Model/Product.php';
-        $productModel = new Product();
+        $productModel = new \Model\Product();
         $products = $productModel->getAllProducts();
 
         $this->getCatalog();
@@ -41,8 +42,8 @@ class ProductController
 
         if (isset($post['product_id'])) {
             $product_id = (int)$post['product_id'];
-            require_once '../Model/Product.php';
-            $productModel = new Product();
+
+            $productModel = new \Model\Product();
             $data = $productModel->getById($product_id);
 
             if ($data === false) {
@@ -70,8 +71,7 @@ class ProductController
             $product_id = $_POST['product_id'];
             $amount = $_POST['amount'];
 
-            require_once '../Model/UserProducts.php';
-            $productModel = new UserProducts();
+            $productModel = new \Model\UserProducts();
             $data = $productModel->getByProductIdUserId($product_id,$userid);
 
             if ($data === false) {

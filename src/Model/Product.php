@@ -1,22 +1,19 @@
 <?php
-class Product
+
+namespace Model;
+class Product extends \Model\Model
 {
     public function getAllProducts():array|false
     {
-        require_once '../Model/PDO.php';
-        $pdo = new MyPdo();
 
-        $stmt = $pdo->getPDO()->query('SELECT * FROM products');
+        $stmt = $this->pdo->query('SELECT * FROM products');
         $products = $stmt->fetchAll();
         return $products;
     }
 
     public function getById($product_id):array|false
     {
-        require_once '../Model/PDO.php';
-        $pdo = new MyPdo();
-
-        $stmt = $pdo->getPDO()->prepare("SELECT * FROM products  WHERE id = :product_id");
+        $stmt = $this->pdo->prepare("SELECT * FROM products  WHERE id = :product_id");
         $stmt->execute([':product_id' => $product_id]);
         $data = $stmt->fetch();
         return $data;

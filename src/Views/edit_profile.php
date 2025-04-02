@@ -8,14 +8,9 @@ if (!isset($_SESSION['userId'])) {
     exit;
 }
 
-require_once '../Model/User.php';
-$userModel = new User();
+$userModel = new \Model\User();
 $user = $userModel->getBySessionId($_SESSION['userId']);
 
-require_once '../Controllers/UserController.php';
-//$Errors = new UserController();
-//$errors = $Errors->getErrors();
-//print_r($errors);
 ?>
 <form action="edit-profile" method="POST">
     <div class="container">

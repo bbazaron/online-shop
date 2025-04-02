@@ -28,6 +28,17 @@
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>
+        <br>
+        <?php if (!isset($message)): ?>
+        <form action="/handle-order" method="GET">
+            <div class="profile-social" style="text-align: center">
+                <a href="/handle-order">Перейти к оформлению</a>
+                <button type="submit" class="registerbtn">Перейти к оформлению</button>
+        <?php endif; ?>
+
+        </div>
+        </form>
+
     </div>
 </div>
 

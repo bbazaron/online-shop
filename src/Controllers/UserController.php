@@ -1,9 +1,11 @@
 <?php
 
+namespace Controllers;
+
 class UserController
 {
 
-    public function getRegistrate()
+    public function getRegistrate(array $errors = null)
     {
         if (isset($_SESSION['userId'])) {
             header("Location: /catalog");
@@ -37,7 +39,7 @@ class UserController
 
         } else {
             require_once '../Model/User.php';
-            $userModel = new User();
+            $userModel = new \Model\User();
             $sessionId = $_SESSION['userId'];
             $user=$userModel->getBySessionId($sessionId);
 
@@ -45,7 +47,7 @@ class UserController
         }
     }
 
-    public function getEditProfile(array $errors)
+    public function getEditProfile(array $errors=null)
     {
         if (!isset($_SESSION['userId'])) {
             header("Location: /login");
@@ -92,8 +94,8 @@ class UserController
             } elseif (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
                 $errors['email'] = "email некорректный";
             } else {
-                require_once '../Model/User.php';
-                $userModel = new User;
+
+                $userModel = new \Model\User();
                 $result = $userModel->getByEmail($email);
 
                 if ($result !== false) {
@@ -147,10 +149,9 @@ class UserController
             } elseif (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
                 $errors['email'] = "email некорректный";
             } else {
-                require_once '../Model/User.php';
-                $userModel = new User;
-                $result = $userModel->getByEmail($email);
 
+                $userModel = new \Model\User();
+                $result = $userModel->getByEmail($email);
 
                 if ($result !== false) { // запрос вернет false если не найдет введеный email
                     $userId = $_SESSION['userId'];
@@ -188,23 +189,23 @@ class UserController
         $errors = $this->validateUser($_POST);
 
         if (empty($errors)) {
+
             $name = $_POST['name'];
             $email = $_POST['email'];
             $password = $_POST['psw'];
 
-            $pdo = new PDO('pgsql:host=postgres;port=5432;dbname=mydb', 'user', 'pass');
+            //$pdo = new PDO('pgsql:host=postgres;port=5432;dbname=mydb', 'user', 'pass');
 
             $password = password_hash($password, PASSWORD_DEFAULT);
 
-            require_once '../Model/User.php';
-            $userModel = new User();
-            $userModel->insert($name, $email, $password);
+            $userModel = new \Model\User();
+            $userModel->insert( $name, $email, $password);
 
             $data = $userModel->getByEmail($email);
 
             echo "\n Пользователь зарегистрирован";
         }
-        $this->getRegistrate();
+        $this->getRegistrate($errors);
     }
 
     public function login()
@@ -215,8 +216,7 @@ class UserController
             $username = $_POST['username'];
             $password = $_POST["password"];
 
-            require_once '../Model/User.php';
-            $userModel = new User;
+            $userModel = new \Model\User();
             $result = $userModel->getByEmail($username);
 
             if ($result === false) {
@@ -259,8 +259,7 @@ class UserController
                 $password = "";
             }
 
-            require_once '../Model/User.php';
-            $userModel = new User();
+            $userModel = new \Model\User();
             $user= $userModel->getById($userId);
 
 

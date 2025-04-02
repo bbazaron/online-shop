@@ -1,5 +1,6 @@
 <?php
 
+namespace Core;
 class App
 {
     private array $routes = [
@@ -65,14 +66,25 @@ class App
             'POST' => [
                 'class' => 'UserController',
                 'method' => 'logout'
+            ],
+        ],
+
+        '/handle-order' => [
+            'GET' => [
+                'class' => 'OrderController',
+                'method' => 'getOrderForm'
+                    ],
+            'POST' => [
+                'class' => 'OrderController',
+                'method' => 'handleOrder'
             ]
-        ]
+            ]
     ];
     public function run()
     {
 
-        session_start();
         if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
         }
 
         $requestUri = $_SERVER['REQUEST_URI']; //registration
@@ -88,8 +100,10 @@ class App
                  $method = $handler['method'];
 
                  require_once "../Controllers/$class.php";
-
-                 $controller = new $class();
+                 $namespace='Controllers';
+                 $className=$class;
+                 $fullClassName = $namespace . '\\' . $className;
+                 $controller = new $fullClassName();
                  $controller->$method();
 
              } else {
