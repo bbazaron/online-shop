@@ -6,7 +6,7 @@
     <a href="/cart">Корзина</a> <br><br>
 
     <div class="title"><span><h2> Форма оформления заказа </h2></span></div> <p></p>
-    <div class="form"><form action="/handle-order" method= "POST">
+    <div class="form"><form action="/order" method= "POST">
 
             <label for="name"><b> ФИО:</b> <br/>
                 <?php if (isset($errors['name'])): ?>
@@ -22,8 +22,8 @@
 
 
             <label for="address"><b> Адрес:</b> <br/>
-                <?php if (isset($errors['adress'])): ?>
-                    <label style="color:red" ><?php echo $errors['adress'];?></label>
+                <?php if (isset($errors['address'])): ?>
+                    <label style="color:red" ><?php echo $errors['address'];?></label>
                 <?php endif; ?>
                 <input type="text" placeholder="Введите адрес" class="guest" name="address" id="address" required/></label> <p></p>
 
@@ -46,9 +46,37 @@
 <!--                <input type="submit" class="bottom1" value="Отправить"/>-->
 <!--                <input type="submit" class="bottom2" value="Очистить"/>-->
 
+        </div><br><br>
+
+            <div class="title"><span><h2> Корзина </h2></span></div> <p></p>
+            <div class="card-deck">
+                <?php if (isset($list)): ?>
+                    <?php foreach ($list as $product): ?>
+                        <div class="card text-center">
+                            <a>
+                                <img class="card-img-top" src="<?php echo $product['image_url'];?>" alt="Card image" width="300" height="200">
+                                <div class="card-body">
+                                    <p class="card-footer"><?php echo $product['name']; ?></p>
+                                    <a><h5 class="card-title">Описание <?php echo $product['description']; ?></h5></a>
+                                    <div class="card-title">
+                                        Цена: <?php echo $product['price']; ?>
+                                    </div> <br>
+                                    <div class="card-title">
+                                        Количество: <?php echo $product['amount']; ?>
+                                    </div> <br>
+                                </div>
+                            </a>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+                <br>
+                <div class="title"><span><h2> Итого: <?php echo $sum?> </h2></span></div> <p></p>
+
+
+
             </div>
-        </div>
-</div>
+
+
 
 <style>.content {
         width: 500px;
@@ -84,6 +112,9 @@
         padding: 10px 10px;
         width: 100px;
         font-weight:bold;
+    }
+    .form{
+        float right;
     }
     .guest {
         width: 380px;

@@ -16,6 +16,14 @@ class OrderController extends \Model\Model
             header("Location: /login");
             exit;
         }
+
+        $cart = new \Model\Cart();
+        $list=$cart->getCart(); // достаем все продукты из корзины
+        $sum=0;
+        foreach ($list as $product) {
+            $sum+=$product['price']*$product['amount'];
+        }
+
         require_once '../Views/order_form.php';
     }
 
@@ -39,6 +47,9 @@ class OrderController extends \Model\Model
                 $errors['phoneNumber'] = "Введены неверные данные";
             } elseif ($phoneNumber === '0') {
                 $errors['phoneNumber'] = "номер не может быть 0";
+            } elseif(strlen($phoneNumber)<2)
+            {
+                $errors['phoneNumber'] = 'номер должен содержать большей 2 символов';
             }
         } else {
             $errors['phoneNumber'] = 'номер должен быть заполнен';
@@ -48,7 +59,7 @@ class OrderController extends \Model\Model
             $address = $post['address'];
 
             if (strlen($address) < 2) {
-                $errors['address'] = "Адрес должен содержать больше 2 символов";
+                $errors['address'] = "Имя должно содержать больше 2 символов";
             }
         } else {
             $errors['address'] = "Адрес должен быть заполнен";
@@ -78,19 +89,20 @@ class OrderController extends \Model\Model
 
 
             $orderProducts = new \Model\OrderProducts();
+            if (isset($products)) {
 
-            foreach ($products as $product) { // вносим данные каждого товара из корзины в order_products
-                $orderProducts->insert($orderId[0], $userId, $product["product_id"], $product["amount"]);
-            }
+                foreach ($products as $product) { // вносим данные каждого товара из корзины в order_products
+                    $orderProducts->insert($orderId[0], $userId, $product["product_id"], $product["amount"]);
+                }
 
-            $userProducts ->deleteFromCart($userId); // очистка корзины
+                $userProducts ->deleteFromCart($userId); // очистка корзины
 //            echo "<pre>";
-            require_once '../Views/cart.php';
 //            print_r($products);
 //            print_r($orderId);
 
-
-            echo "\n Заказ оформлен";
+            require_once '../Views/cart.php';
+                echo "\n Заказ оформлен";
+            }
         } else {
             $this->getOrderForm($errors);
         }

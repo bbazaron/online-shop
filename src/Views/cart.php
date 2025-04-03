@@ -12,7 +12,6 @@
             <?php foreach ($list as $product): ?>
                 <div class="card text-center">
                     <a>
-
                         <img class="card-img-top" src="<?php echo $product['image_url'];?>" alt="Card image" width="300" height="200">
                         <div class="card-body">
                             <p class="card-footer"><?php echo $product['name']; ?></p>
@@ -26,13 +25,14 @@
                         </div>
                     </a>
                 </div>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
         <?php endif; ?>
         <br>
-        <?php if (!isset($message)): ?>
-        <form action="/handle-order" method="GET">
+
+        <?php if (isset($list)): ?>
+        <form action="/order" method="GET">
             <div class="profile-social" style="text-align: center">
-                <a href="/handle-order">Перейти к оформлению</a>
+                <a href="/order">Перейти к оформлению</a>
                 <button type="submit" class="registerbtn">Перейти к оформлению</button>
         <?php endif; ?>
 

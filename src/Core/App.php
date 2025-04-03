@@ -69,7 +69,7 @@ class App
             ],
         ],
 
-        '/handle-order' => [
+        '/order' => [
             'GET' => [
                 'class' => 'OrderController',
                 'method' => 'getOrderForm'
