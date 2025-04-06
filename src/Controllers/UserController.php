@@ -4,6 +4,11 @@ namespace Controllers;
 
 class UserController
 {
+    private \Model\User $userModel;
+    public function __construct()
+    {
+        $this->userModel = new \Model\User();
+    }
 
     public function getRegistrate(array $errors = null)
     {
@@ -38,10 +43,8 @@ class UserController
             exit;
 
         } else {
-            require_once '../Model/User.php';
-            $userModel = new \Model\User();
             $sessionId = $_SESSION['userId'];
-            $user=$userModel->getBySessionId($sessionId);
+            $user=$this->userModel->getBySessionId($sessionId);
 
             require_once '../Views/profile.php';
         }
@@ -95,8 +98,7 @@ class UserController
                 $errors['email'] = "email некорректный";
             } else {
 
-                $userModel = new \Model\User();
-                $result = $userModel->getByEmail($email);
+                $result = $this->userModel->getByEmail($email);
 
                 if ($result !== false) {
                     $errors['email'] = 'Пользователь с таким email уже зарегистрирован';
@@ -150,8 +152,7 @@ class UserController
                 $errors['email'] = "email некорректный";
             } else {
 
-                $userModel = new \Model\User();
-                $result = $userModel->getByEmail($email);
+                $result = $this->userModel->getByEmail($email);
 
                 if ($result !== false) { // запрос вернет false если не найдет введеный email
                     $userId = $_SESSION['userId'];
@@ -194,14 +195,12 @@ class UserController
             $email = $_POST['email'];
             $password = $_POST['psw'];
 
-            //$pdo = new PDO('pgsql:host=postgres;port=5432;dbname=mydb', 'user', 'pass');
 
             $password = password_hash($password, PASSWORD_DEFAULT);
 
-            $userModel = new \Model\User();
-            $userModel->insert( $name, $email, $password);
+            $this->userModel->insert( $name, $email, $password);
 
-            $data = $userModel->getByEmail($email);
+            $data = $this->userModel->getByEmail($email);
 
             echo "\n Пользователь зарегистрирован";
         }
@@ -216,8 +215,7 @@ class UserController
             $username = $_POST['username'];
             $password = $_POST["password"];
 
-            $userModel = new \Model\User();
-            $result = $userModel->getByEmail($username);
+            $result = $this->userModel->getByEmail($username);
 
             if ($result === false) {
                 $errors['username'] = 'username or password not valid';
@@ -259,24 +257,23 @@ class UserController
                 $password = "";
             }
 
-            $userModel = new \Model\User();
-            $user= $userModel->getById($userId);
+            $user= $this->userModel->getById($userId);
 
 
             if ($user['name'] !== $username) {
-                $userModel->updateNameById($username, $userId);
+                $this->userModel->updateNameById($username, $userId);
             }
 
             if ($user['email'] !== $email) {
-                $userModel->updateEmailById($email, $userId);
+                $this->userModel->updateEmailById($email, $userId);
             }
 
             if ($user['password'] !== $password && $password !== "") {
-                $userModel->updatePasswordById($password, $userId);
+                $this->userModel->updatePasswordById($password, $userId);
             }
 
             if ($user['avatar'] !== $image_url && $image_url !== "") {
-                $userModel->updateAvatarById($image_url, $userId);
+                $this->userModel->updateAvatarById($image_url, $userId);
             }
             //var_dump($_POST);
             header("Location: /profile");

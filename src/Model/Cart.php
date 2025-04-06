@@ -14,7 +14,7 @@ class Cart extends \Model\Model
         $list=null;
         if ($data['count'] > 0) { // проверка количества заказов у пользователя
 
-            $data = $user_products->getByUserId($user_id);
+            $data = $user_products->getAllByUserId($user_id);
             $product = new \Model\Product();
             foreach ($data as $prod) {  // достаем описание каждого продукта из бд products
 

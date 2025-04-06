@@ -1,5 +1,6 @@
 <div class="container">
     <a href="/profile">Мой профиль</a> <br><br>
+    <a href="/orders">Мои заказы</a> <br><br>
     <a href="/cart">Корзина</a>
   <h3>Catalog</h3>
   <div class="card-deck">

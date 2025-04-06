@@ -3,7 +3,7 @@
 namespace Model;
 class UserProducts extends \Model\Model
 {
-    public function getCountByUserId($user_id): array|false
+    public function getCountByUserId(int $user_id): array|false
     {
         $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM user_products WHERE user_id = :userId");
         $stmt->execute(['userId' => $user_id]);
@@ -11,7 +11,7 @@ class UserProducts extends \Model\Model
         return $data;
     }
 
-    public function getByUserId($user_id): array|false
+    public function getAllByUserId(int $user_id): array|false
     {
         $stmt = $this->pdo->prepare("SELECT * FROM user_products WHERE user_id = :userId ");
         $stmt->execute(['userId' => $user_id]);
@@ -42,10 +42,16 @@ class UserProducts extends \Model\Model
         return $message;
     }
 
-    public function deleteFromCart($userId)
+    public function deleteByUserId($userId)
     {
         $stmt = $this->pdo->prepare("DELETE FROM user_products WHERE user_id = :user_id");
         $stmt->execute(['user_id' => $userId]);
+
+    }
+
+    public function removeFromCart($userId, $product_id, $amount)
+    {
+
 
     }
 }

@@ -3,22 +3,25 @@
 
     <a href="/profile">Мой профиль</a> <br><br>
     <a href="/catalog">Каталог</a> <br><br>
+    <a href="/orders">Мои заказы</a> <br><br>
     <a href="/cart">Корзина</a> <br><br>
 
+
     <div class="title"><span><h2> Форма оформления заказа </h2></span></div> <p></p>
-    <div class="form"><form action="/order" method= "POST">
+    <div class="form">
+        <form action="/create-order" method= "POST">
 
             <label for="name"><b> ФИО:</b> <br/>
-                <?php if (isset($errors['name'])): ?>
-                    <label style="color:red" ><?php echo $errors['name'];?></label>
+                <?php if (isset($errors['contact_name'])): ?>
+                    <label style="color:red" ><?php echo $errors['contact_name'];?></label>
                 <?php endif; ?>
-                <input type="text" placeholder="Введите ФИО" class="guest" name="name" id="name" required/></label> <p></p>
+                <input type="text" placeholder="Введите ФИО" class="guest" name="contact_name" id="contact_name" required/></label> <p></p>
 
             <label for="phone"><b> Телефон:</b> <br/>
-                <?php if (isset($errors['phoneNumber'])): ?>
-                    <label style="color:red" ><?php echo $errors['phoneNumber'];?></label>
+                <?php if (isset($errors['contact_phone'])): ?>
+                    <label style="color:red" ><?php echo $errors['contact_phone'];?></label>
                 <?php endif; ?>
-                <input type="text" placeholder="Введите номер телефона" class="guest" name="phoneNumber" id="phoneNumber" required/></label> <p></p>
+                <input type="text" placeholder="Введите номер телефона" class="guest" name="contact_phone" id="contact_phone" required/></label> <p></p>
 
 
             <label for="address"><b> Адрес:</b> <br/>
@@ -26,6 +29,12 @@
                     <label style="color:red" ><?php echo $errors['address'];?></label>
                 <?php endif; ?>
                 <input type="text" placeholder="Введите адрес" class="guest" name="address" id="address" required/></label> <p></p>
+
+            <label for="comment"><b> Комментарий:</b> <br/>
+                <?php if (isset($errors['comment'])): ?>
+                    <label style="color:red" ><?php echo $errors['comment'];?></label>
+                <?php endif; ?>
+                <input type="text" placeholder="Введите комментарий" class="guest" name="comment" id="comment" required/></label> <p></p>
 
             <!--            <span class="goods"> Наименование товара:</span><br />-->
 <!--            <select name="goods"class="guest">-->
@@ -42,9 +51,6 @@
                     <div class="profile-social" style="text-align: center">
                         <button type="submit" class="registerbtn">Оформить заказ</button>
                     </div>
-
-<!--                <input type="submit" class="bottom1" value="Отправить"/>-->
-<!--                <input type="submit" class="bottom2" value="Очистить"/>-->
 
         </div><br><br>
 
@@ -67,12 +73,12 @@
                                 </div>
                             </a>
                         </div>
+
                     <?php endforeach; ?>
                 <?php endif; ?>
                 <br>
+
                 <div class="title"><span><h2> Итого: <?php echo $sum?> </h2></span></div> <p></p>
-
-
 
             </div>
 

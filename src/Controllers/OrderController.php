@@ -6,7 +6,30 @@ use Model\UserProducts;
 
 class OrderController extends \Model\Model
 {
-    public function getOrderForm(array $errors=null)
+    private \Model\Cart $cart;
+    private \Model\Order $order;
+    private \Model\UserProducts $userProducts;
+    private \Model\OrderProducts $orderProducts;
+
+    public function __construct()
+    {
+        $this->cart = new \Model\Cart();
+        $this->order = new \Model\Order();
+        $this->userProducts = new \Model\UserProducts();
+        $this->orderProducts = new \Model\OrderProducts();
+    }
+
+    public function getOrders()
+    {
+        $order = $this->order->getAllByUserId($_SESSION['userId']);
+        echo "<pre    >";
+        print_r($order);
+
+        $orderProducts = $this->orderProducts->getAllByOrderId($order[0]['id']);
+        require_once '../Views/orders.php';
+    }
+
+    public function getCheckOutForm(array $errors=null)
     {
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
@@ -17,8 +40,7 @@ class OrderController extends \Model\Model
             exit;
         }
 
-        $cart = new \Model\Cart();
-        $list=$cart->getCart(); // достаем все продукты из корзины
+        $list=$this->cart->getCart(); // достаем все продукты из корзины
         $sum=0;
         foreach ($list as $product) {
             $sum+=$product['price']*$product['amount'];
@@ -31,28 +53,28 @@ class OrderController extends \Model\Model
     {
         $errors = [];
 
-        if (isset($post['name'])) {
-            $name = $post['name'];
+        if (isset($post['contact_name'])) {
+            $name = $post['contact_name'];
 
             if (strlen($name) < 2) {
-                $errors['name'] = "Имя должно содержать больше 2 символов";
+                $errors['contact_name'] = "Имя должно содержать больше 2 символов";
             }
         } else {
-            $errors['name'] = "Имя должно быть заполнено";
+            $errors['contact_name'] = "Имя должно быть заполнено";
         }
 
-        if (isset($post['phoneNumber'])) {
-            $phoneNumber = $post['phoneNumber'];
-            if (is_numeric($phoneNumber) === false) {
-                $errors['phoneNumber'] = "Введены неверные данные";
-            } elseif ($phoneNumber === '0') {
-                $errors['phoneNumber'] = "номер не может быть 0";
-            } elseif(strlen($phoneNumber)<2)
+        if (isset($post['contact_phone'])) {
+            $contact_phone = $post['contact_phone'];
+            if (is_numeric($contact_phone) === false) {
+                $errors['contact_phone'] = "Введены неверные данные";
+            } elseif ($contact_phone === '0') {
+                $errors['contact_phone'] = "номер не может быть 0";
+            } elseif(strlen($contact_phone)<2)
             {
-                $errors['phoneNumber'] = 'номер должен содержать большей 2 символов';
+                $errors['contact_phone'] = 'номер должен содержать большей 2 символов';
             }
         } else {
-            $errors['phoneNumber'] = 'номер должен быть заполнен';
+            $errors['contact_phone'] = 'номер должен быть заполнен';
         }
 
         if (isset($post['address'])) {
@@ -65,37 +87,38 @@ class OrderController extends \Model\Model
             $errors['address'] = "Адрес должен быть заполнен";
         }
 
-
         return $errors;
     }
-    public function handleOrder()
+    public function handleCheckOut()
     {
         $errors = $this->orderValidation($_POST);
 
         if (empty($errors)) {
 
-            $userId = $_SESSION['userId'];
-            $name = $_POST['name'];
-            $phoneNumber = $_POST['phoneNumber'];
+            $name = $_POST['contact_name'];
+            $phoneNumber = $_POST['contact_phone'];
             $address = $_POST['address'];
+            $userId = $_SESSION['userId'];
+
+            if (isset ($_POST['comment'])) { // comment не обязателен в форме
+                $comment = $_POST['comment'];
+            } else {
+                $comment = '';
+            }
+
+            $orderId = $this->order->create($name, $phoneNumber, $address, $comment, $userId); // вводим данные заказа в таблицу
+
+            $userProducts = $this->userProducts->getAllByUserId($userId); // достаем все продукты из корзины
 
 
-            $order = new \Model\Order();
-            $order->insert($userId, $name, $phoneNumber, $address); // вводим данные заказа в таблицу
-            $orderId = $order->getIdByUserId($userId); // id нужен для внесения данных в order_products
+            if (isset($userProducts)) {
 
-            $userProducts = new \Model\UserProducts();
-            $products = $userProducts->getByUserId($userId); // достаем все продукты из корзины
-
-
-            $orderProducts = new \Model\OrderProducts();
-            if (isset($products)) {
-
-                foreach ($products as $product) { // вносим данные каждого товара из корзины в order_products
-                    $orderProducts->insert($orderId[0], $userId, $product["product_id"], $product["amount"]);
+                foreach ($userProducts as $userProduct) { // вносим данные каждого товара из корзины в order_products
+                    $this->orderProducts->create($orderId, $userProduct["product_id"], $userProduct["amount"]);
                 }
 
-                $userProducts ->deleteFromCart($userId); // очистка корзины
+                $this->userProducts->deleteByUserId($userId); // очистка корзины
+
 //            echo "<pre>";
 //            print_r($products);
 //            print_r($orderId);
@@ -104,7 +127,7 @@ class OrderController extends \Model\Model
                 echo "\n Заказ оформлен";
             }
         } else {
-            $this->getOrderForm($errors);
+            $this->getCheckOutForm($errors);
         }
     }
 }

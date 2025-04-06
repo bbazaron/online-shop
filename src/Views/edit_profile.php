@@ -16,6 +16,7 @@ $user = $userModel->getBySessionId($_SESSION['userId']);
     <div class="container">
         <a href="/profile">Мой профиль</a> <br><br>
         <a href="/catalog">Каталог</a> <br><br>
+        <a href="/orders">Мои заказы</a> <br><br>
         <a href="/cart">Корзина</a>
         <h1>Edit profile</h1>
         <p>Please enter the new data.</p>

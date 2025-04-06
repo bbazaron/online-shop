@@ -4,16 +4,38 @@ namespace Model;
 
 class Order extends \Model\Model
 {
-    public function insert($userId, string $name, $phoneNumber, string $address)
+    public function create( string $contactName, string $contactNumber, string $address, string $comment,int $userId):int
     {
-        $stmt = $this->pdo->prepare("INSERT INTO orders (user_id, name, phone_number, address) VALUES (:userId, :name, :phoneNumber, :address)");
-        $stmt->execute(['userId'=>$userId, 'name' => $name, 'phoneNumber' => $phoneNumber, 'address' => $address]);
+        $stmt = $this->pdo->prepare(
+            "INSERT INTO orders ( contact_name, contact_phone, address, comment, user_id)
+                    VALUES (:contactName, :contactNumber, :address, :comment, :userId)  RETURNING id"
+        );
+
+        $stmt->execute([
+                        'contactName' => $contactName,
+                        'contactNumber' => $contactNumber,
+                        'address' => $address,
+                        'comment' => $comment,
+                        'userId'=>$userId
+                    ]);
+
+        $data = $stmt->fetch();
+        return $data['id'];
     }
 
-    public function getIdByUserId($userId):array // id заказа нужен для внесения данных в таблицу order_products
+
+    public function getOrderById(int $id):array
     {
-        $stmt = $this->pdo->prepare("SELECT id FROM orders WHERE user_id = :userId");
-        $stmt->execute(['userId'=>$userId]);
+        $stmt = $this->pdo->prepare("SELECT * FROM orders WHERE user_id = :userId");
+        $stmt->execute(['userId'=>$id]);
         return $stmt->fetch();
+    }
+
+    public function getAllByUserId($id):array
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM orders WHERE user_id = :userId");
+        $stmt->execute(['userId'=>$id]);
+        $data = $stmt->fetchAll();
+        return $data;
     }
 }

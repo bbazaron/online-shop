@@ -4,6 +4,13 @@ namespace Controllers;
 
 class ProductController
 {
+    private \Model\Product $product;
+    private \Model\UserProducts $userProducts;
+    public function __construct()
+    {
+        $this->product = new \Model\Product;
+        $this->userProducts = new \Model\UserProducts;
+    }
     public function getCatalog()
     {
         if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -14,8 +21,7 @@ class ProductController
             exit;
         }
 
-        $product = new \Model\Product();
-        $products=$product->getAllProducts();
+        $products=$this->product->getAllProducts();
         require_once '../Views/catalog.php';
 
     }
@@ -30,8 +36,6 @@ class ProductController
             exit;
         }
 
-        $productModel = new \Model\Product();
-        $products = $productModel->getAllProducts();
 
         $this->getCatalog();
     }
@@ -43,8 +47,7 @@ class ProductController
         if (isset($post['product_id'])) {
             $product_id = (int)$post['product_id'];
 
-            $productModel = new \Model\Product();
-            $data = $productModel->getById($product_id);
+            $data = $this->product->getById($product_id);
 
             if ($data === false) {
                 $errors['product_id'] = $data;
@@ -71,16 +74,15 @@ class ProductController
             $product_id = $_POST['product_id'];
             $amount = $_POST['amount'];
 
-            $productModel = new \Model\UserProducts();
-            $data = $productModel->getByProductIdUserId($product_id,$userid);
+            $data = $this->userProducts->getByProductIdUserId($product_id,$userid);
 
             if ($data === false) {
-                $message=$productModel->insertToCart($userid,$product_id,$amount);
+                $message=$this->userProducts->insertToCart($userid,$product_id,$amount);
                 echo $message;
             } else {
                 $amount = $data['amount'] + $amount;
 
-                $message=$productModel->updateToCart($userid,$product_id,$amount);
+                $message=$this->userProducts->updateToCart($userid,$product_id,$amount);
                 echo $message;
 
             }
@@ -88,5 +90,10 @@ class ProductController
 
         }
         $this->catalog();
+    }
+
+    public function removeFromCart()
+    {
+
     }
 }

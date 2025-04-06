@@ -20,7 +20,7 @@
             <p class="job-title"><?php echo $user['email'];?></p>
             <p class="job-title"><?php echo ('id = '.$user['id']);?></p>
         </div>
-        <a href="/catalog">Каталог</a>
+        <a href="/catalog">Каталог</a><a href="/orders">Мои заказы</a>
         <div class="profile-social">
             <button type="submit" class="registerbtn">Edit my profile</button>
         </div>
