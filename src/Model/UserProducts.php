@@ -3,6 +3,11 @@
 namespace Model;
 class UserProducts extends \Model\Model
 {
+    private int $id;
+    private int $userId;
+    private int $productId;
+    private int $amount;
+
     public function getCountByUserId(int $user_id): array|false
     {
         $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM user_products WHERE user_id = :userId");
@@ -49,9 +54,26 @@ class UserProducts extends \Model\Model
 
     }
 
-    public function removeFromCart($userId, $product_id, $amount)
+    public function getId(): int
     {
-
-
+        return $this->id;
     }
+
+    public function getUserId(): int
+    {
+        return $this->userId;
+    }
+
+    public function getProductId(): int
+    {
+        return $this->productId;
+    }
+
+    public function getAmount(): int
+    {
+        return $this->amount;
+    }
+
+
+
 }

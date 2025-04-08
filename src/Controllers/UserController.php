@@ -100,7 +100,7 @@ class UserController
 
                 $result = $this->userModel->getByEmail($email);
 
-                if ($result !== false) {
+                if ($result !== null) {
                     $errors['email'] = 'Пользователь с таким email уже зарегистрирован';
                 }
             }
@@ -154,9 +154,9 @@ class UserController
 
                 $result = $this->userModel->getByEmail($email);
 
-                if ($result !== false) { // запрос вернет false если не найдет введеный email
+                if ($result !== null) { // запрос вернет null если не найдет введеный email
                     $userId = $_SESSION['userId'];
-                    if ($result['id'] !== $userId) {
+                    if ($result->getId() !== $userId) {
                         $errors['email'] = 'Пользователь с таким email уже зарегистрирован';
                     }
                 }
@@ -200,7 +200,7 @@ class UserController
 
             $this->userModel->insert( $name, $email, $password);
 
-            $data = $this->userModel->getByEmail($email);
+//            $data = $this->userModel->getByEmail($email);
 
             echo "\n Пользователь зарегистрирован";
         }
@@ -247,7 +247,6 @@ class UserController
             $userId = $_SESSION['userId'];
             $username = $_POST['name'];
             $email = $_POST['email'];
-            $avatar = $_POST['avatar'];
             $image_url = $_POST['avatar'];
 
             if ($_POST["psw"] !== "") { //проверка пароля на пустоту
@@ -260,19 +259,19 @@ class UserController
             $user= $this->userModel->getById($userId);
 
 
-            if ($user['name'] !== $username) {
+            if ($user->getId() !== $username) {
                 $this->userModel->updateNameById($username, $userId);
             }
 
-            if ($user['email'] !== $email) {
+            if ($user->getEmail() !== $email) {
                 $this->userModel->updateEmailById($email, $userId);
             }
 
-            if ($user['password'] !== $password && $password !== "") {
+            if ($user->getPassword() !== $password && $password !== "") {
                 $this->userModel->updatePasswordById($password, $userId);
             }
 
-            if ($user['avatar'] !== $image_url && $image_url !== "") {
+            if ($user->getAvatar() !== $image_url && $image_url !== "") {
                 $this->userModel->updateAvatarById($image_url, $userId);
             }
             //var_dump($_POST);

@@ -44,15 +44,15 @@ class ProductController
     {
         $errors = [];
 
-        if (isset($post['product_id'])) {
-            $product_id = (int)$post['product_id'];
-
-            $data = $this->product->getById($product_id);
-
-            if ($data === false) {
-                $errors['product_id'] = $data;
-            }
-        }
+//        if (isset($post['product_id'])) {
+//            $product_id = (int)$post['product_id'];
+//
+////            $data = $this->product->getById($product_id);
+////
+//////            if ($data === false) {
+//////                $errors['product_id'] = $data;
+//////            }
+//        }
 
 
         if (isset($post['amount'])) {

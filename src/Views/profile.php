@@ -6,19 +6,14 @@
             $userModel = new \Model\User();
             $userId=$_SESSION['userId'];
             $avatar = $userModel->getAvatarById($userId);
-
-//            $pdo = new PDO('pgsql:host=postgres;port=5432;dbname=mydb', 'user', 'pass');
-//            $stmt = $pdo->prepare("SELECT avatar FROM users WHERE id = :id");
-//            $stmt->execute([':id' => $_SESSION['userId']]);
-//            $avatar = $stmt->fetchColumn();
             ?>
-            <img src="<?php echo $avatar;?>">
+            <img src="<?php echo $avatar->getAvatar();?>">
 
         </div>
         <div class="profile-info">
-            <h1><?php echo $user['name'];?></h1>
-            <p class="job-title"><?php echo $user['email'];?></p>
-            <p class="job-title"><?php echo ('id = '.$user['id']);?></p>
+            <h1><?php echo $user->getName();?></h1>
+            <p class="job-title"><?php echo $user->getEmail();?></p>
+            <p class="job-title"><?php echo ('id = '.$user->getId());?></p>
         </div>
         <a href="/catalog">Каталог</a><a href="/orders">Мои заказы</a>
         <div class="profile-social">

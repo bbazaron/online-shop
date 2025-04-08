@@ -18,13 +18,20 @@ class Cart extends \Model\Model
             $product = new \Model\Product();
             foreach ($data as $prod) {  // достаем описание каждого продукта из бд products
 
-                $data1 = $product->getById($prod['product_id']);
-                //print_r($data1);
-                $final = array_merge($prod, $data1); // объединение массивов друг за другом
-                $list[] = array_merge($final, $data1);
+                $products = $product->getById($prod['product_id']);
+
+                $data1=[];
+                $data1['name']=$products->getName();
+                $data1['price']=$products->getPrice();
+                $data1['image_url']=$products->getImageUrl();
+                if ($products->getDescription()!==null) { // описание не обязательное
+                    $data1['description']=$products->getDescription();
+                } else {
+                    $data1['description']=null;
+                }
+
+                $list[] = array_merge($prod, $data1);
             }
-//            echo "<pre>";
-//            print_r($list);
 
         }
         return $list;

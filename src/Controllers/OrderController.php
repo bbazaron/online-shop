@@ -2,31 +2,81 @@
 
 namespace Controllers;
 
+use Model\Cart;
+use Model\Order;
+use Model\Product;
 use Model\UserProducts;
+use Model\OrderProducts;
 
 class OrderController extends \Model\Model
 {
-    private \Model\Cart $cart;
-    private \Model\Order $order;
-    private \Model\UserProducts $userProducts;
-    private \Model\OrderProducts $orderProducts;
+    private Cart $cartModel;
+    private Order $orderModel;
+    private Product $productModel;
+    private UserProducts $userProductsModel;
+    private OrderProducts $orderProductsModel;
 
     public function __construct()
     {
-        $this->cart = new \Model\Cart();
-        $this->order = new \Model\Order();
-        $this->userProducts = new \Model\UserProducts();
-        $this->orderProducts = new \Model\OrderProducts();
+        $this->cartModel = new Cart();
+        $this->orderModel = new Order();
+        $this->productModel = new Product();
+        $this->userProductsModel = new UserProducts();
+        $this->orderProductsModel = new OrderProducts();
     }
 
     public function getOrders()
     {
-        $order = $this->order->getAllByUserId($_SESSION['userId']);
-        echo "<pre    >";
-        print_r($order);
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
 
-        $orderProducts = $this->orderProducts->getAllByOrderId($order[0]['id']);
-        require_once '../Views/orders.php';
+        if (!isset($_SESSION['userId'])) {
+            header("Location: /login");
+            exit;
+        }
+
+        $userOrders = $this->orderModel->getAllByUserId($_SESSION['userId']);
+        $allUserOrders = [];
+        $sum=0;
+//        echo"<pre>";print_r($userOrders);exit;
+        foreach ($userOrders as $userOrder) { // class OrderProducts
+
+            $orderProducts = $this->orderProductsModel->getAllByOrderId($userOrder->getId());
+//        echo"<pre>";print_r($orderProducts);exit;
+
+            $newOrderProducts = [];
+            $sum=0;
+
+            foreach ($orderProducts as $orderProduct) {  // class OrderProducts
+                $product = $this->productModel->getById($orderProduct->getProductId());
+//                echo"<pre>";print_r($product);exit;
+                $orderProduct->setProduct($product->getName());
+                $orderProduct->setDescription($product->getDescription());
+                $orderProduct->setPrice($product->getPrice());
+                $orderProduct->setImageUrl($product->getImageUrl());
+                $orderProduct->setTotalSum($product->getPrice() * $orderProduct->getAmount());
+
+//                $orderProduct['description'] = $product->getDescription();
+//                $orderProduct['price'] = $product->getPrice();
+//                $orderProduct['image_url'] = $product->getImageUrl();
+//                $orderProduct['totalSum'] = $orderProduct['price'] * $orderProduct['amount'];
+
+//                $sum=$sum+$orderProduct['totalSum'];
+
+                $newOrderProducts[] = $orderProduct; //class OrderProducts
+//                $userOrder->setTotalSum($orderProduct->getTotalSum());
+            }
+
+
+            $userOrder->setOrderProducts($newOrderProducts);
+            echo"<pre>";print_r($userOrder);exit;
+            $allUserOrders[] = $userOrder;
+        }
+
+//        print_r($allUserOrders);
+
+        require_once '../Views/userOrders.php';
     }
 
     public function getCheckOutForm(array $errors=null)
@@ -40,7 +90,7 @@ class OrderController extends \Model\Model
             exit;
         }
 
-        $list=$this->cart->getCart(); // достаем все продукты из корзины
+        $list=$this->cartModel->getCart(); // достаем все продукты из корзины
         $sum=0;
         foreach ($list as $product) {
             $sum+=$product['price']*$product['amount'];
@@ -106,18 +156,18 @@ class OrderController extends \Model\Model
                 $comment = '';
             }
 
-            $orderId = $this->order->create($name, $phoneNumber, $address, $comment, $userId); // вводим данные заказа в таблицу
+            $orderId = $this->orderModel->create($name, $phoneNumber, $address, $comment, $userId); // вводим данные заказа в таблицу
 
-            $userProducts = $this->userProducts->getAllByUserId($userId); // достаем все продукты из корзины
+            $userProducts = $this->userProductsModel->getAllByUserId($userId); // достаем все продукты из корзины
 
 
             if (isset($userProducts)) {
 
                 foreach ($userProducts as $userProduct) { // вносим данные каждого товара из корзины в order_products
-                    $this->orderProducts->create($orderId, $userProduct["product_id"], $userProduct["amount"]);
+                    $this->orderProductsModel->create($orderId, $userProduct["product_id"], $userProduct["amount"]);
                 }
 
-                $this->userProducts->deleteByUserId($userId); // очистка корзины
+                $this->userProductsModel->deleteByUserId($userId); // очистка корзины
 
 //            echo "<pre>";
 //            print_r($products);

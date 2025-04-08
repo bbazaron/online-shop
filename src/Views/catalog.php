@@ -8,12 +8,14 @@
           <div class="card text-center">
               <a>
                   <hr>
-                  <img class="card-img-top" src="<?php echo $product['image_url'];?>" alt="Card image" width="300"  height="200">
+                  <img class="card-img-top" src="<?php echo $product->getImageUrl();?>" alt="Card image" width="300"  height="200">
                   <div class="card-body">
-                      <p class="card-footer"><?php echo $product['name']; ?></p>
-                      <a><h5 class="card-title">Описание <?php echo $product['description']; ?></h5></a>
+                      <p class="card-footer"><?php echo $product->getName(); ?></p>
+                      <?php if ($product->getDescription() !==null): ?>
+                      <a><h5 class="card-title">Описание <?php echo $product->getDescription(); ?></h5></a>
+                      <?php endif; ?>
                       <div class="card-title">
-                          Цена: <?php echo $product['price'];?>
+                          Цена: <?php echo $product->getPrice();?>
                       </div>
                   </div>
               </a>
@@ -29,7 +31,7 @@
 
                   <?php endif; ?>
 
-                  <input type="hidden" placeholder="Enter product_id" value="<?php echo $product['id'];?>" name="product_id" id="product_id">
+                  <input type="hidden" placeholder="Enter product_id" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
 
 
                   <br>

@@ -26,13 +26,13 @@ $user = $userModel->getBySessionId($_SESSION['userId']);
         <?php if (isset($errors['name'])): ?>
             <label style="color:red" ><?php echo $errors['name'];?></label>
         <?php endif; ?>
-        <input type="text" placeholder="<?php echo $user['name'];?>" name = "name" value="<?php echo $user['name'];?>" id="name">
+        <input type="text" placeholder="<?php echo $user->getName();?>" name = "name" value="<?php echo $user->getName();?>" id="name">
 
         <label for="psw"><b>Email</b></label>
         <?php if (isset($errors['email'])): ?>
             <label style="color: red"><?php echo $errors['email'];?></label>
         <?php endif; ?>
-        <input type="text" placeholder="<?php echo $user['email'];?>" name="email" value="<?php echo $user['email'];?>" id="email">
+        <input type="text" placeholder="<?php echo $user->getEmail();?>" name="email" value="<?php echo $user->getEmail();?>" id="email">
 
         <label for="psw"><b>Password</b></label>
         <?php if (isset($errors['password'])): ?>

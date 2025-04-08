@@ -3,14 +3,30 @@
 namespace Model;
 class User extends \Model\Model
 {
-    public function getByEmail(string $email):array|false
+    private int $id;
+    private string $name;
+    private string $email;
+    private string $password;
+    private string $avatar;
+
+    public function getByEmail(string $email): self|null
     {
         $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = :email");
         $stmt->execute([':email' => $email]);
+        $user=$stmt->fetch();
 
-        $result=$stmt->fetch();
+        if (!$user){
+            return null;
+        }
 
-        return $result;
+        $obj = new self();
+        $obj->id = $user['id'];
+        $obj->name = $user['name'];
+        $obj->email = $user['email'];
+        $obj->password = $user['password'];
+        $obj->avatar = $user['avatar'];
+
+        return $obj;
     }
 
     public function insert(string $name, string $email, $password)
@@ -19,26 +35,56 @@ class User extends \Model\Model
         $stmt->execute(['name' => $name, 'email' => $email, 'password' => $password]);
     }
 
-    public function getBySessionId($sessionId):array|false
+    public function getBySessionId($sessionId): self|null
     {
-        $stmt = $this->pdo->query('SELECT * FROM users WHERE id = ' . $sessionId);
+        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE id = :sessionId");
+        $stmt->execute([':sessionId' => $sessionId]);
         $user = $stmt->fetch();
-        return $user;
+
+        if (!$user){
+            return null;
+        }
+
+        $obj = new self();
+        $obj->id = $user['id'];
+        $obj->name = $user['name'];
+        $obj->email = $user['email'];
+        $obj->password = $user['password'];
+
+        return $obj;
     }
 
-    public function getById($userId):array|false
+    public function getById($userId): self|null
     {
-        $stmt = $this->pdo->query("SELECT * FROM users WHERE id = $userId");
+        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE id = :userId");
+        $stmt->execute([':userId' => $userId]);
         $user = $stmt->fetch();
-        return $user;
+
+        if (!$user){
+            return null;
+        }
+
+        $obj = new self();
+        $obj->id = $user['id'];
+        $obj->name = $user['name'];
+        $obj->email = $user['email'];
+        $obj->password = $user['password'];
+        $obj->avatar = $user['avatar'];
+
+        return $obj;
     }
 
-    public function getAvatarById($userId):string|false|null
+    public function getAvatarById($userId): self|null
     {
         $stmt = $this->pdo->prepare("SELECT avatar FROM users WHERE id = :id");
         $stmt->execute([':id' => $_SESSION['userId']]);
-        $avatar = $stmt->fetchColumn();
-        return $avatar;
+        $user = $stmt->fetch();
+        if (!$user){
+            return null;
+        }
+        $obj = new self();
+        $obj->avatar = $user['avatar'];
+        return $obj;
     }
 
     public function updateNameById(string $name, $userId )
@@ -64,4 +110,32 @@ class User extends \Model\Model
         $stmt = $this->pdo->prepare("UPDATE users SET avatar = :image_url WHERE id= $userId");
         $stmt->execute([':image_url' => $avatar]);
     }
+
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function getAvatar(): string
+    {
+        return $this->avatar;
+    }
+
+
 }

@@ -8,90 +8,7 @@ use Controllers\OrderController;
 
 class App
 {
-    private array $routes = [
-        '/registration' => [
-            'GET' => [
-                'class' => UserController::class,
-                'method' => 'getRegistrate'
-            ],
-            'POST' => [
-                'class' => UserController::class,
-                'method' => 'registrate'
-            ],
-        ],
-
-        '/login' => [
-            'GET' => [
-                'class' => UserController::class,
-                'method' => 'getLogin'
-            ],
-            'POST' => [
-                'class' => UserController::class,
-                'method' => 'login'
-            ],
-        ],
-
-        '/catalog' => [
-            'GET' => [
-                'class' => ProductController::class,
-                'method' => 'catalog'
-            ],
-            'POST' => [
-                'class' => ProductController::class,
-                'method' => 'addToCart'
-            ],
-        ],
-
-        '/profile' => [
-            'GET' => [
-                'class' => UserController::class,
-                'method' => 'getProfile'
-            ],
-            'POST' => [
-                'class' => UserController::class,
-                'method' => 'getEditProfile'
-            ],
-        ],
-
-        '/edit-profile' => [
-            'POST' => [
-                'class' => UserController::class,
-                'method' => 'editProfile'
-            ],
-        ],
-
-        '/cart' => [
-            'GET' => [
-                'class' => CartController::class,
-                'method' => 'getCart'
-            ],
-        ],
-
-        '/logout' => [
-            'POST' => [
-                'class' => UserController::class,
-                'method' => 'logout'
-            ],
-        ],
-
-        '/create-order' => [
-            'GET' => [
-                'class' => OrderController::class,
-                'method' => 'getCheckOutForm'
-                    ],
-            'POST' => [
-                'class' => OrderController::class,
-                'method' => 'handleCheckOut'
-            ]
-            ],
-
-        '/orders' => [
-            'GET' => [
-                'class' => OrderController::class,
-                'method' => 'getOrders'
-            ]
-        ]
-    ];
+    private array $routes = [];
     public function run()
     {
 
@@ -124,5 +41,13 @@ class App
         }
 
 
+    }
+
+    public function addRoute(string $route, string $routeMethod, string $className, string $method)
+    {
+        $this->routes[$route][$routeMethod] = [
+                'class' => $className,
+                'method' => $method
+        ];
     }
 }
