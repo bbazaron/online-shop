@@ -60,15 +60,15 @@
                     <?php foreach ($list as $product): ?>
                         <div class="card text-center">
                             <a>
-                                <img class="card-img-top" src="<?php echo $product['image_url'];?>" alt="Card image" width="300" height="200">
+                                <img class="card-img-top" src="<?php echo $product->getImageUrl();?>" alt="Card image" width="300" height="200">
                                 <div class="card-body">
-                                    <p class="card-footer"><?php echo $product['name']; ?></p>
-                                    <a><h5 class="card-title">Описание <?php echo $product['description']; ?></h5></a>
+                                    <p class="card-footer"><?php echo $product->getName(); ?></p>
+                                    <a><h5 class="card-title">Описание <?php echo $product->getDescription(); ?></h5></a>
                                     <div class="card-title">
-                                        Цена: <?php echo $product['price']; ?>
+                                        Цена: <?php echo $product->getPrice(); ?>
                                     </div> <br>
                                     <div class="card-title">
-                                        Количество: <?php echo $product['amount']; ?>
+                                        Количество: <?php echo $product->getAmount(); ?>
                                     </div> <br>
                                 </div>
                             </a>

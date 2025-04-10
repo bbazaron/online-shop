@@ -6,20 +6,23 @@
     <div>
         <?php foreach ($allUserOrders as $order): ?>
 
-            <p class="card-footer"><a>Заказ №<?php echo $order['id']; ?></a></p>
-            <a>ФИО: <?php echo $order['contact_name']; ?></a><br>
-            <a>Телефон: <?php echo $order['contact_phone']; ?></a><br>
-            <a>Комментарий: <?php echo $order['comment']; ?></a><br>
-            <a>Адрес: <?php echo $order['address']; ?></a><br>
-            <a>Сумма заказа: <?php echo $order['totalOrderSum']; ?></a><br><br>
+            <p class="card-footer"><a>Заказ №<?php echo $order->getId(); ?></a></p>
+            <p class="card-footer"><a>Данные: </a></p>
+            <a>ФИО: <?php echo $order->getContactName(); ?></a><br>
+            <a>Телефон: <?php echo $order->getContactPhone(); ?></a><br>
+            <a>Комментарий: <?php if ($order->getComment()!== null):  ?>
+                            <?php echo $order->getComment(); ?></a>
+                            <?php endif; ?><br>
+            <a>Адрес: <?php echo $order->getAddress(); ?></a><br>
+            <a>Сумма заказа: <?php echo $order->getTotalSum(); ?></a><br><br>
 
-        <?php foreach ($order['orderProducts'] as $product): ?>
-                <a><img class="card-img-top" src="<?php echo $product['image_url'];?>"
+        <?php foreach ($order->getorderProducts() as $product): ?>
+                <a><img class="card-img-top" src="<?php echo $product->getImageUrl();?>"
                     alt="Card image" width="300"  height="200"></a><br>
-                <a>Наименование:<?php echo $product['product']; ?></a><br>
-                <a>Описание: <?php echo $product['description']; ?></a><br>
-                <a>Цена: <?php echo $product['price']; ?></a><br>
-                <a>Количество: <?php echo $product['amount']; ?></a><br><br>
+                <a>Наименование:<?php echo $product->getProduct(); ?></a><br>
+                <a>Описание: <?php echo $product->getDescription(); ?></a><br>
+                <a>Цена: <?php echo $product->getPrice(); ?></a><br>
+                <a>Количество: <?php echo $product->getAmount(); ?></a><br><br>
             <?php endforeach; ?>
         <br><br>
         <?php endforeach; ?>

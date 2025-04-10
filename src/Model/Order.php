@@ -10,7 +10,7 @@ class Order extends \Model\Model
     private string|null $comment; // необязательное поле для заполнения в форме
     private string $address;
 
-    private OrderProducts $orderProducts;
+    private $orderProducts=[];
     private int|float $totalSum;
 
     public function create( string $contactName, string $contactNumber, string $address, string $comment,int $userId):int
@@ -88,7 +88,7 @@ class Order extends \Model\Model
         return $this->address;
     }
 
-    public function getOrderProducts(): OrderProducts
+    public function getOrderProducts(): array
     {
         return $this->orderProducts;
     }
@@ -105,7 +105,7 @@ class Order extends \Model\Model
             $this->orderProducts = $orderProducts;
         } else {
             foreach ($orderProducts as $orderProduct){
-                $this->orderProducts = $orderProduct;
+                $this->orderProducts[] = $orderProduct;
             }
         }
 

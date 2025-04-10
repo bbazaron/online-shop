@@ -8,6 +8,7 @@ class Product extends \Model\Model
     private string|null $description; // необязательное поле у продуктов
     private int $price;
     private string $image_url;
+    private int $amount;
 
     public function getAllProducts():array|null
     {
@@ -85,6 +86,17 @@ class Product extends \Model\Model
     {
         return $this->image_url;
     }
+
+    public function getAmount(): int
+    {
+        return $this->amount;
+    }
+
+    public function setAmount(int $amount): void
+    {
+        $this->amount = $amount;
+    }
+
 
 
 }

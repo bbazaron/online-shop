@@ -3,32 +3,32 @@
     <a href="/catalog">Каталог</a><br><br>
     <a href="/orders">Мои заказы</a> <br><br>
 
-    <?php if (isset($message)): ?>
-        <h3><?php echo $message?></h3>
-    <?php else: ?>
-        <h3>Корзина</h3>
-    <?php endif; ?>
+    <?php if (count($list)!==0):?>
+    <h3>Корзина</h3>
+    <?php else:?>
+    <h3>Корзина пуста</h3>
+    <?php endif;?>
     <hr>
     <div class="card-deck">
         <?php if (isset($list)): ?>
             <?php foreach ($list as $product): ?>
                 <div class="card text-center">
                     <a>
-                        <img class="card-img-top" src="<?php echo $product['image_url'];?>" alt="Card image" width="300" height="200">
+                        <img class="card-img-top" src="<?php echo $product->getImageUrl();?>" alt="Card image" width="300" height="200">
                         <div class="card-body">
-                            <p class="card-footer"><?php echo $product['name']; ?></p>
-                            <a><h5 class="card-title">Описание <?php echo $product['description']; ?></h5></a>
+                            <p class="card-footer"><?php echo $product->getName(); ?></p>
+                            <a><h5 class="card-title">Описание <?php echo $product->getDescription(); ?></h5></a>
                             <div class="card-title">
-                                Цена: <?php echo $product['price']; ?>
+                                Цена: <?php echo $product->getPrice(); ?>
                             </div> <br>
                             <div class="card-title">
-                                Количество: <?php echo $product['amount']; ?>
+                                Количество: <?php echo $product->getAmount(); ?>
                             </div> <br>
                         </div>
                     </a>
                 </div>
                 <form action="/catalog" method="POST">
-                <input type="hidden"  value="<?php echo $product['product_id'];?>" name="product_id" id="product_id">
+                <input type="hidden"  value="<?php echo $product->getId();?>" name="product_id" id="product_id">
                     <?php if (isset($errors['amount'])): ?>
                     <label style="color: red"><?php echo $errors['amount'];?></label>
                 <?php endif; ?>
@@ -47,7 +47,7 @@
             <?php endif; ?>
         <?php endif; ?>
 
-        <?php if (isset($list)): ?>
+        <?php if (count($list)!==0): ?>
         <form action="/create-order" method="GET">
             <div class="profile-social" style="text-align: center">
                 <a href="/create-order">Перейти к оформлению</a>

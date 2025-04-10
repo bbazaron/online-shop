@@ -7,21 +7,42 @@ class UserProducts extends \Model\Model
     private int $userId;
     private int $productId;
     private int $amount;
+    private int $count;
 
-    public function getCountByUserId(int $user_id): array|false
+    public function getCountByUserId(int $user_id): self|null
     {
         $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM user_products WHERE user_id = :userId");
         $stmt->execute(['userId' => $user_id]);
-        $data = $stmt->fetch();
-        return $data;
+        $count = $stmt->fetch();
+
+        if (!$count){
+            return null;
+        }
+        $obj = new self();
+        $obj->count = $count['count'];
+        return $obj;
     }
 
-    public function getAllByUserId(int $user_id): array|false
+    public function getAllByUserId(int $user_id): array|null // достаем все продукты у пользователя
     {
         $stmt = $this->pdo->prepare("SELECT * FROM user_products WHERE user_id = :userId ");
         $stmt->execute(['userId' => $user_id]);
-        $data = $stmt->fetchAll(); // достаем все продукты у пользователя
-        return $data;
+        $products = $stmt->fetchAll();
+        $arr =[];
+
+        foreach ($products as $product) {
+            if (!$product) {
+                return null;
+            }
+
+            $obj = new self();
+            $obj->id = $product['id'];
+            $obj->userId = $product['user_id'];
+            $obj->productId = $product['product_id'];
+            $obj->amount = $product['amount'];
+            $arr[] = $obj;
+        }
+        return $arr;
     }
     public function getByProductIdUserId($product_id,$userid):array|false
     {
@@ -73,6 +94,13 @@ class UserProducts extends \Model\Model
     {
         return $this->amount;
     }
+
+    public function getCount(): int
+    {
+        return $this->count;
+    }
+
+
 
 
 

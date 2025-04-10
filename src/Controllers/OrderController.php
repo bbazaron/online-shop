@@ -12,6 +12,7 @@ class OrderController extends \Model\Model
 {
     private Cart $cartModel;
     private Order $orderModel;
+
     private Product $productModel;
     private UserProducts $userProductsModel;
     private OrderProducts $orderProductsModel;
@@ -37,44 +38,37 @@ class OrderController extends \Model\Model
         }
 
         $userOrders = $this->orderModel->getAllByUserId($_SESSION['userId']);
+
         $allUserOrders = [];
         $sum=0;
-//        echo"<pre>";print_r($userOrders);exit;
-        foreach ($userOrders as $userOrder) { // class OrderProducts
+
+        foreach ($userOrders as $userOrder) {
 
             $orderProducts = $this->orderProductsModel->getAllByOrderId($userOrder->getId());
-//        echo"<pre>";print_r($orderProducts);exit;
 
             $newOrderProducts = [];
             $sum=0;
-
-            foreach ($orderProducts as $orderProduct) {  // class OrderProducts
+            foreach ($orderProducts as $orderProduct) {
                 $product = $this->productModel->getById($orderProduct->getProductId());
-//                echo"<pre>";print_r($product);exit;
+
                 $orderProduct->setProduct($product->getName());
                 $orderProduct->setDescription($product->getDescription());
                 $orderProduct->setPrice($product->getPrice());
                 $orderProduct->setImageUrl($product->getImageUrl());
                 $orderProduct->setTotalSum($product->getPrice() * $orderProduct->getAmount());
 
-//                $orderProduct['description'] = $product->getDescription();
-//                $orderProduct['price'] = $product->getPrice();
-//                $orderProduct['image_url'] = $product->getImageUrl();
-//                $orderProduct['totalSum'] = $orderProduct['price'] * $orderProduct['amount'];
+                $sum=$sum+$orderProduct->getTotalSum(); //2400
 
-//                $sum=$sum+$orderProduct['totalSum'];
-
-                $newOrderProducts[] = $orderProduct; //class OrderProducts
-//                $userOrder->setTotalSum($orderProduct->getTotalSum());
+                $newOrderProducts[] = $orderProduct;
             }
-
-
             $userOrder->setOrderProducts($newOrderProducts);
-            echo"<pre>";print_r($userOrder);exit;
+
+            $userOrder->setTotalSum($sum);
             $allUserOrders[] = $userOrder;
+
         }
 
-//        print_r($allUserOrders);
+//        echo"<pre>";print_r($allUserOrders);exit;
 
         require_once '../Views/userOrders.php';
     }
@@ -93,7 +87,7 @@ class OrderController extends \Model\Model
         $list=$this->cartModel->getCart(); // достаем все продукты из корзины
         $sum=0;
         foreach ($list as $product) {
-            $sum+=$product['price']*$product['amount'];
+            $sum+=$product->getPrice()*$product->getAmount();
         }
 
         require_once '../Views/order_form.php';
@@ -160,21 +154,17 @@ class OrderController extends \Model\Model
 
             $userProducts = $this->userProductsModel->getAllByUserId($userId); // достаем все продукты из корзины
 
-
             if (isset($userProducts)) {
 
                 foreach ($userProducts as $userProduct) { // вносим данные каждого товара из корзины в order_products
-                    $this->orderProductsModel->create($orderId, $userProduct["product_id"], $userProduct["amount"]);
+                    $this->orderProductsModel->create($orderId, $userProduct->getProductId(), $userProduct->getAmount());
                 }
 
                 $this->userProductsModel->deleteByUserId($userId); // очистка корзины
 
-//            echo "<pre>";
-//            print_r($products);
-//            print_r($orderId);
-
-            require_once '../Views/cart.php';
+                $products=$this->productModel->getAllProducts();
                 echo "\n Заказ оформлен";
+                require_once '../Views/catalog.php';
             }
         } else {
             $this->getCheckOutForm($errors);

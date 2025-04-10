@@ -64,6 +64,27 @@ class OrderProducts extends \Model\Model
         return $this->totalSum;
     }
 
+    public function getImageUrl(): string
+    {
+        return $this->imageUrl;
+    }
+
+    public function getPrice(): float|int
+    {
+        return $this->price;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function getProduct(): string
+    {
+        return $this->product;
+    }
+
+
 
 
     public function setProduct(string $product): void

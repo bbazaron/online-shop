@@ -21,16 +21,15 @@ class CartController extends \Model\Model
         $list=$this->cart->getCart(); // достаем все продукты из корзины
         $sum=0;
 
-//        echo"<pre>";
-//        print_r($list);
-        if ($list=== null) {
-            $message = 'Корзина пуста';
-        } else {
-            foreach ($list as $product) {
-                $sum+=$product['price']*$product['amount'];
-            }
+//        if ($list===null) {
+//            $message = 'Корзина пуста';
+//        } else {
+        foreach ($list as $product) {
+            $sum+=$product->getPrice()*$product->getAmount();
         }
+//        }
 
+//        echo"<pre>";print_r($list);exit;
         require_once '../Views/cart.php';
     }
 
