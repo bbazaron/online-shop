@@ -10,9 +10,14 @@ class Product extends \Model\Model
     private string $image_url;
     private int $amount;
 
+    protected function getTableName(): string
+    {
+        return 'products';
+    }
+
     public function getAllProducts():array|null
     {
-        $stmt = $this->pdo->query('SELECT * FROM products');
+        $stmt = $this->pdo->query("SELECT * FROM {$this->getTableName()}");
         $products = $stmt->fetchAll();
         $arr=[];
         foreach ($products as $product){
@@ -37,7 +42,7 @@ class Product extends \Model\Model
 
     public function getById($product_id): self|null
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM products  WHERE id = :product_id");
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->getTableName()}  WHERE id = :product_id");
         $stmt->execute([':product_id' => $product_id]);
         $product = $stmt->fetch();
         if (!$product){

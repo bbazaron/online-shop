@@ -14,10 +14,15 @@ class OrderProducts extends \Model\Model
     private int|float $price;
     private string $imageUrl;
     private int|float $totalSum;
+
+    protected function getTableName(): string
+    {
+        return 'order_products';
+    }
     public function create(int $orderId, int $productId, int $amount)
     {
         $stmt = $this->pdo->prepare(
-            "INSERT INTO order_products (order_id, product_id, amount)
+            "INSERT INTO {$this->getTableName()} (order_id, product_id, amount)
                     VALUES (:orderId, :productId, :amount)");
 
         $stmt->execute(['orderId'=>$orderId, 'productId' => $productId, 'amount' => $amount]);
@@ -26,7 +31,7 @@ class OrderProducts extends \Model\Model
 
     public function getAllByOrderId(int $orderId): array|null
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM order_products WHERE order_id = :orderId" );
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->getTableName()} WHERE order_id = :orderId" );
         $stmt->execute(['orderId' => $orderId]);
         $orderProducts = $stmt->fetchAll();
         $arr=[];

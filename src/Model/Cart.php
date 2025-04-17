@@ -4,6 +4,10 @@ namespace Model;
 
 class Cart extends \Model\Model
 {
+    protected function getTableName(): string
+    {
+        return 'user_products';
+    }
     public function getCart():array|null
     {
         $user_id = $_SESSION['userId'];

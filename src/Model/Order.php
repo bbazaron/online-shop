@@ -13,10 +13,15 @@ class Order extends \Model\Model
     private $orderProducts=[];
     private int|float $totalSum;
 
+    protected function getTableName(): string
+    {
+        return 'orders';
+    }
+
     public function create( string $contactName, string $contactNumber, string $address, string $comment,int $userId):int
     {
         $stmt = $this->pdo->prepare(
-            "INSERT INTO orders ( contact_name, contact_phone, address, comment, user_id)
+            "INSERT INTO {$this->getTableName()} ( contact_name, contact_phone, address, comment, user_id)
                     VALUES (:contactName, :contactNumber, :address, :comment, :userId)  RETURNING id"
         );
 
@@ -35,7 +40,7 @@ class Order extends \Model\Model
 
     public function getAllByUserId($userId):array|null
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM orders WHERE user_id = :userId");
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->getTableName()} WHERE user_id = :userId");
         $stmt->execute(['userId'=>$userId]);
         $orders = $stmt->fetchAll();
         $arr=[];

@@ -9,6 +9,7 @@
               <a>
                   <hr>
                   <img class="card-img-top" src="<?php echo $product->getImageUrl();?>" alt="Card image" width="300"  height="200">
+
                   <div class="card-body">
                       <p class="card-footer"><?php echo $product->getName(); ?></p>
                       <?php if ($product->getDescription() !==null): ?>
@@ -17,27 +18,34 @@
                       <div class="card-title">
                           Цена: <?php echo $product->getPrice();?>
                       </div>
+                       <br><form action="decrease-product" method="POST">
+                          <div class="container">
+                              <input type="hidden" placeholder="Enter product_id" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
+                              <button type="submit" class="registerbtn">Открыть</button>
+                          </div>
+                      </form>
                   </div>
               </a>
           </div>
-          <br><div class="card-title">Добавить в корзину
 
-              <form action="add-product" method="POST">
-                  <div class="container">
-                      <input type="hidden" placeholder="Enter product_id" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
-                      <button type="submit" class="registerbtn"> + </button>
-                  </div>
-              </form>
+          <div class="card-title">Добавить в корзину
+              <div style="display: flex; gap: 20px;">
+                  <form action="add-product" method="POST">
+                      <div class="container">
+                          <input type="hidden" placeholder="Enter product_id" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
+                          <button type="submit" class="registerbtn"> + </button>
+                      </div>
+                  </form>
 
+                  <form action="decrease-product" method="POST">
+                      <div class="container">
+                          <input type="hidden" placeholder="Enter product_id" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
+                          <button type="submit" class="registerbtn"> - </button>
+                      </div>
+                  </form>
+              </div>
           </div>
 
-
-          <form action="decrease-product" method="POST">
-              <div class="container">
-                  <input type="hidden" placeholder="Enter product_id" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
-                  <button type="submit" class="registerbtn"> - </button>
-              </div>
-          </form>
 
       <?php endforeach; ?>
   </div>

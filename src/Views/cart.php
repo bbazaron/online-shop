@@ -27,23 +27,23 @@
                         </div>
                     </a>
                 </div>
-                <br><div class="card-title">Добавить в корзину
-                    <form action="add-product" method="POST">
-                        <div class="container">
-                            <input type="hidden" placeholder="Enter product_id" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
-                            <br>        <button type="submit" class="registerbtn"> + </button>
-                        </div>
-                    </form>
+                <div class="card-title">Добавить в корзину
+                    <div style="display: flex; gap: 20px;">
+                        <form action="add-product" method="POST">
+                            <div class="container">
+                                <input type="hidden" placeholder="Enter product_id" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
+                                <button type="submit" class="registerbtn"> + </button>
+                            </div>
+                        </form>
 
-                </div>
-
-
-                <form action="decrease-product" method="POST">
-                    <div class="container">
-                        <input type="hidden" placeholder="Enter product_id" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
-                        <button type="submit" class="registerbtn"> - </button>
+                        <form action="decrease-product" method="POST">
+                            <div class="container">
+                                <input type="hidden" placeholder="Enter product_id" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
+                                <button type="submit" class="registerbtn"> - </button>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
         </form>
             <?php endforeach; ?>
         <?php endif; ?>

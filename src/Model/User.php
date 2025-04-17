@@ -9,9 +9,14 @@ class User extends \Model\Model
     private string $password;
     private string $avatar;
 
+    protected function getTableName(): string
+    {
+        return 'users';
+    }
+
     public function getByEmail(string $email): self|null
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = :email");
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->getTableName()} WHERE email = :email");
         $stmt->execute([':email' => $email]);
         $user=$stmt->fetch();
 
@@ -33,13 +38,13 @@ class User extends \Model\Model
 
     public function insert(string $name, string $email, $password)
     {
-        $stmt = $this->pdo->prepare("INSERT INTO users (name, email, password) VALUES (:name, :email, :password)");
+        $stmt = $this->pdo->prepare("INSERT INTO {$this->getTableName()} (name, email, password) VALUES (:name, :email, :password)");
         $stmt->execute(['name' => $name, 'email' => $email, 'password' => $password]);
     }
 
     public function getBySessionId($sessionId): self|null
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE id = :sessionId");
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->getTableName()} WHERE id = :sessionId");
         $stmt->execute(['sessionId' => $sessionId]);
         $user = $stmt->fetch();
 
@@ -58,7 +63,7 @@ class User extends \Model\Model
 
     public function getById($userId): self|null
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE id = :userId");
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->getTableName()} WHERE id = :userId");
         $stmt->execute([':userId' => $userId]);
         $user = $stmt->fetch();
 
@@ -80,7 +85,7 @@ class User extends \Model\Model
 
     public function getAvatarById($userId): self|null
     {
-        $stmt = $this->pdo->prepare("SELECT avatar FROM users WHERE id = :id");
+        $stmt = $this->pdo->prepare("SELECT avatar FROM {$this->getTableName()} WHERE id = :id");
         $stmt->execute([':id' => $_SESSION['userId']]);
         $user = $stmt->fetch();
         if (!$user){
@@ -95,25 +100,25 @@ class User extends \Model\Model
 
     public function updateNameById(string $name, $userId )
     {
-        $stmt = $this->pdo->prepare("UPDATE users SET name = :name WHERE id= $userId");
+        $stmt = $this->pdo->prepare("UPDATE {$this->getTableName()} SET name = :name WHERE id= $userId");
         $stmt->execute([':name' => $name]);
     }
 
     public function updateEmailById(string $email, $userId)
     {
-        $stmt = $this->pdo->prepare("UPDATE users SET email = :email WHERE id= $userId");
+        $stmt = $this->pdo->prepare("UPDATE {$this->getTableName()} SET email = :email WHERE id= $userId");
         $stmt->execute([':email' => $email]);
     }
 
     public function updatePasswordById($password, $userId)
     {
-        $stmt = $this->pdo->prepare("UPDATE users SET password = :password WHERE id= $userId");
+        $stmt = $this->pdo->prepare("UPDATE {$this->getTableName()} SET password = :password WHERE id= $userId");
         $stmt->execute([':password' => $password]);
     }
 
     public function updateAvatarById($avatar, $userId)
     {
-        $stmt = $this->pdo->prepare("UPDATE users SET avatar = :image_url WHERE id= $userId");
+        $stmt = $this->pdo->prepare("UPDATE {$this->getTableName()} SET avatar = :image_url WHERE id= $userId");
         $stmt->execute([':image_url' => $avatar]);
     }
 
