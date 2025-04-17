@@ -12,7 +12,7 @@ $userModel = new \Model\User();
 $user = $userModel->getBySessionId($_SESSION['userId']);
 
 ?>
-<form action="edit-profile" method="POST">
+<form action="editProfile" method="POST">
     <div class="container">
         <a href="/profile">Мой профиль</a> <br><br>
         <a href="/catalog">Каталог</a> <br><br>

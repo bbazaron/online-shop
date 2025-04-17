@@ -1,10 +1,11 @@
 <?php
 
 namespace Core;
-use Controllers\ProductController;
+use Controllers\BaseController;
 use Controllers\UserController;
 use Controllers\CartController;
 use Controllers\OrderController;
+use Controllers\ProductController;
 
 class App
 {
@@ -43,11 +44,36 @@ class App
 
     }
 
-    public function addRoute(string $route, string $routeMethod, string $className, string $method)
+
+    public function get(string $route, string $className, string $method)
     {
-        $this->routes[$route][$routeMethod] = [
-                'class' => $className,
-                'method' => $method
+        $this->routes[$route]['GET'] = [
+            'class' => $className,
+            'method' => $method
+        ];
+    }
+
+    public function post(string $route, string $className, string $method)
+    {
+        $this->routes[$route]['POST'] = [
+            'class' => $className,
+            'method' => $method
+        ];
+    }
+
+    public function put(string $route, string $className, string $method)
+    {
+        $this->routes[$route]['PUT'] = [
+            'class' => $className,
+            'method' => $method
+        ];
+    }
+
+    public function delete(string $route, string $className, string $method)
+    {
+        $this->routes[$route]['DELETE'] = [
+            'class' => $className,
+            'method' => $method
         ];
     }
 }

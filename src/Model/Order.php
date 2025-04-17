@@ -48,14 +48,15 @@ class Order extends \Model\Model
             $obj->contactName = $order['contact_name'];
             $obj->contactPhone = $order['contact_phone'];
             $obj->address = $order['address'];
-            if (isset ($orders['comment'])){ //комментарий может быть пустым
-                $obj->comment = $orders['comment'];
+            if (isset ($order['comment'])){ //комментарий может быть пустым
+                $obj->comment = $order['comment'];
             } else {
                 $obj->comment = null;
             }
 
             array_push($arr, $obj); // объединение массивов $obj в конец $arr
         }
+
         return $arr;
     }
 

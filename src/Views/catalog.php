@@ -20,32 +20,25 @@
                   </div>
               </a>
           </div>
+          <br><div class="card-title">Добавить в корзину
 
-          <form action="catalog" method="POST">
+              <form action="add-product" method="POST">
+                  <div class="container">
+                      <input type="hidden" placeholder="Enter product_id" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
+                      <button type="submit" class="registerbtn"> + </button>
+                  </div>
+              </form>
+
+          </div>
+
+
+          <form action="decrease-product" method="POST">
               <div class="container">
-
-
-                  <?php if (isset($message)): ?>
-                      <p><?php echo $message;?></p>
-                  <?php else: ?>
-
-                  <?php endif; ?>
-
                   <input type="hidden" placeholder="Enter product_id" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
-
-
-                  <br>
-                  <?php if (isset($errors['amount'])): ?>
-                      <label style="color: red"><?php echo $errors['amount'];?></label>
-                  <?php endif; ?>
-                  <input type="text" placeholder="Enter amount" name="amount" id="amount" >
-
-                  <button type="submit" class="registerbtn">Add product</button>
-
+                  <button type="submit" class="registerbtn"> - </button>
               </div>
-
-
           </form>
+
       <?php endforeach; ?>
   </div>
 </div>

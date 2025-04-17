@@ -24,7 +24,9 @@ class User extends \Model\Model
         $obj->name = $user['name'];
         $obj->email = $user['email'];
         $obj->password = $user['password'];
-        $obj->avatar = $user['avatar'];
+        if (isset($user['avatar'])){
+            $obj->avatar = $user['avatar'];
+        }
 
         return $obj;
     }
@@ -38,7 +40,7 @@ class User extends \Model\Model
     public function getBySessionId($sessionId): self|null
     {
         $stmt = $this->pdo->prepare("SELECT * FROM users WHERE id = :sessionId");
-        $stmt->execute([':sessionId' => $sessionId]);
+        $stmt->execute(['sessionId' => $sessionId]);
         $user = $stmt->fetch();
 
         if (!$user){
@@ -69,7 +71,9 @@ class User extends \Model\Model
         $obj->name = $user['name'];
         $obj->email = $user['email'];
         $obj->password = $user['password'];
-        $obj->avatar = $user['avatar'];
+        if (isset($user['avatar'])){
+            $obj->avatar = $user['avatar'];
+        }
 
         return $obj;
     }
@@ -83,7 +87,9 @@ class User extends \Model\Model
             return null;
         }
         $obj = new self();
-        $obj->avatar = $user['avatar'];
+        if (isset($user['avatar'])){
+            $obj->avatar = $user['avatar'];
+        }
         return $obj;
     }
 
@@ -132,9 +138,13 @@ class User extends \Model\Model
         return $this->password;
     }
 
-    public function getAvatar(): string
+    public function getAvatar(): ?string
     {
-        return $this->avatar;
+        if (isset($this->avatar)){
+            return $this->avatar;
+        } else {
+            return null;
+        }
     }
 
 

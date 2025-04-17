@@ -2,49 +2,43 @@
 
 namespace Controllers;
 
-class UserController
+class UserController extends BaseController
 {
     private \Model\User $userModel;
     public function __construct()
     {
+        parent::__construct();
         $this->userModel = new \Model\User();
     }
 
     public function getRegistrate(array $errors = null)
     {
-        if (isset($_SESSION['userId'])) {
-            header("Location: /catalog");
-            exit;
-        }
+//        if ($this->authService->check()===false) {
+//            header("Location: /login");
+//            exit;
+//        }
         require_once '../Views/registration_form.php';
     }
 
-    public function getLogin()
+    public function getLogin(array $errors = null)
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-
-        if (isset($_SESSION['userId'])) {
-            header("Location: /profile");
-            exit;
-        }
+//        if ($this->authService->check()===false) {
+//            header("Location: /login");
+//            exit;
+//        }
         require_once '../Views/login_form.php';
     }
 
     public function getProfile()
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-
-        if (!isset($_SESSION['userId'])) {
+        if ($this->authService->check()===false) {
             header("Location: /login");
             exit;
-
         } else {
-            $sessionId = $_SESSION['userId'];
-            $user=$this->userModel->getBySessionId($sessionId);
+            $sessionId = $this->authService->getCurrentUser();
+            $user=$this->userModel->getBySessionId($sessionId->getId());
+
+
 
             require_once '../Views/profile.php';
         }
@@ -52,7 +46,7 @@ class UserController
 
     public function getEditProfile(array $errors=null)
     {
-        if (!isset($_SESSION['userId'])) {
+        if ($this->authService->check()===false) {
             header("Location: /login");
             exit;
         }
@@ -63,7 +57,7 @@ class UserController
     {
         $errors = [];
 
-        if (!isset($post['username'])) {
+        if (!isset($post['email'])) {
             $errors['username'] = "Username is required!";
         }
 
@@ -211,32 +205,21 @@ class UserController
     {
         $errors = $this->validateLogin($_POST);
 
+
         if (empty($errors)) {
-            $username = $_POST['username'];
-            $password = $_POST["password"];
 
-            $result = $this->userModel->getByEmail($username);
+           $result = $this->authService->auth($_POST['email'], $_POST['password']);
 
-            if ($result === false) {
-                $errors['username'] = 'username or password not valid';
+            if ($result===true) {
+                header("Location: /catalog");
+                exit;
+
             } else {
-                $passwordDb = $result['password'];
-
-                if (password_verify($password, $passwordDb)) {
-                    if (session_status() !== PHP_SESSION_ACTIVE) {
-                        session_start();
-                    }
-
-                    $_SESSION['userId'] = $result['id'];
-                    header("Location: /catalog");
-                    exit;
-                } else {
-                    $errors['username'] = 'username or password not valid';
-                }
+                $errors['username'] = 'username or password not valid';
             }
         }
 
-        $this->getLogin();
+        $this->getLogin($errors);
     }
 
     public function editProfile()
@@ -244,7 +227,8 @@ class UserController
         $errors = $this->validationEditProfile($_POST);
 
         if (empty($errors)) {
-            $userId = $_SESSION['userId'];
+            $userId = $this->authService->getCurrentUser();
+
             $username = $_POST['name'];
             $email = $_POST['email'];
             $image_url = $_POST['avatar'];
@@ -256,11 +240,12 @@ class UserController
                 $password = "";
             }
 
-            $user= $this->userModel->getById($userId);
+            $user= $this->userModel->getById($userId->getId());
+
 
 
             if ($user->getId() !== $username) {
-                $this->userModel->updateNameById($username, $userId);
+                $this->userModel->updateNameById($username, $userId->getId());
             }
 
             if ($user->getEmail() !== $email) {
@@ -285,11 +270,7 @@ class UserController
 
     public function logout()
     {
-        if (session_status()!==PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-        unset($_SESSION['userId']);
-        session_destroy();
+        $this->authService->logout();
         header("Location: /login");
         exit;
     }

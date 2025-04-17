@@ -44,18 +44,18 @@ class UserProducts extends \Model\Model
         }
         return $arr;
     }
-    public function getByProductIdUserId($product_id,$userid):array|false
+    public function getByProductIdUserId($product_id,$userId):array|false
     {
         $check = $this->pdo->prepare("SELECT * FROM user_products WHERE product_id = :product_id AND user_id = :userId");
-        $check->execute(['product_id' => $product_id, 'userId' => $userid]);
+        $check->execute(['product_id' => $product_id, 'userId' => $userId]);
         $data = $check->fetch();
         return $data;
     }
 
-    public function insertToCart($userid, $product_id, $amount):string
+    public function insertToCart($userid, $product_id,$amount):string
     {
         $stmt = $this->pdo->prepare("INSERT INTO user_products (user_id, product_id, amount) VALUES (:user_id, :product_id, :amount)");
-        $stmt->execute(['user_id' => $userid, 'product_id' => $product_id, 'amount' => $amount]);
+        $stmt->execute(['user_id' => $userid, 'product_id' => $product_id,'amount' => $amount]);
         $message = "Продукты добавлены ";
         return $message;
     }
@@ -72,9 +72,12 @@ class UserProducts extends \Model\Model
     {
         $stmt = $this->pdo->prepare("DELETE FROM user_products WHERE user_id = :user_id");
         $stmt->execute(['user_id' => $userId]);
-
     }
-
+    public function deleteByUserIdProductId($user_id, $product_id)
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM user_products WHERE user_id = :user_id AND product_id = :product_id");
+        $stmt->execute(['user_id'=>$user_id, 'product_id' => $product_id]);
+    }
     public function getId(): int
     {
         return $this->id;

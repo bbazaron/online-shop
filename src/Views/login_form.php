@@ -7,8 +7,8 @@
         <div class="form__field">
             <label for="login__username"><svg class="icon">
                     <use xlink:href="#icon-user"></use>
-                </svg><span class="hidden">Username</span></label>
-            <input autocomplete="username" id="login__username" type="text" name="username" class="form__input" placeholder="Mail" required>
+                </svg><span class="hidden"Email</span></label>
+            <input autocomplete="username" id="email" type="text" name="email" class="form__input" placeholder="Mail" required>
             <?php if (isset($errors['username']) || isset($errors['password'])): ?>
                 <label style="color:red" ><?php echo $errors['username'];?></label>
             <?php endif; ?>

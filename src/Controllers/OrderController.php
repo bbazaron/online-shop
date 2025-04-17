@@ -8,7 +8,7 @@ use Model\Product;
 use Model\UserProducts;
 use Model\OrderProducts;
 
-class OrderController extends \Model\Model
+class OrderController extends BaseController
 {
     private Cart $cartModel;
     private Order $orderModel;
@@ -17,8 +17,10 @@ class OrderController extends \Model\Model
     private UserProducts $userProductsModel;
     private OrderProducts $orderProductsModel;
 
+
     public function __construct()
     {
+        parent::__construct();
         $this->cartModel = new Cart();
         $this->orderModel = new Order();
         $this->productModel = new Product();
@@ -28,16 +30,11 @@ class OrderController extends \Model\Model
 
     public function getOrders()
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-
-        if (!isset($_SESSION['userId'])) {
+        if ($this->authService->check()===false) {
             header("Location: /login");
             exit;
         }
-
-        $userOrders = $this->orderModel->getAllByUserId($_SESSION['userId']);
+        $userOrders = $this->orderModel->getAllByUserId($this->authService->getCurrentUser()->getId());
 
         $allUserOrders = [];
         $sum=0;
@@ -57,7 +54,7 @@ class OrderController extends \Model\Model
                 $orderProduct->setImageUrl($product->getImageUrl());
                 $orderProduct->setTotalSum($product->getPrice() * $orderProduct->getAmount());
 
-                $sum=$sum+$orderProduct->getTotalSum(); //2400
+                $sum=$sum+$orderProduct->getTotalSum();
 
                 $newOrderProducts[] = $orderProduct;
             }
@@ -68,18 +65,12 @@ class OrderController extends \Model\Model
 
         }
 
-//        echo"<pre>";print_r($allUserOrders);exit;
-
         require_once '../Views/userOrders.php';
     }
 
     public function getCheckOutForm(array $errors=null)
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-
-        if (!isset($_SESSION['userId'])) {
+        if ($this->authService->check()===false) {
             header("Location: /login");
             exit;
         }
@@ -95,6 +86,10 @@ class OrderController extends \Model\Model
 
     private function orderValidation($post):array
     {
+        if ($this->authService->check()===false) {
+            header("Location: /login");
+            exit;
+        }
         $errors = [];
 
         if (isset($post['contact_name'])) {

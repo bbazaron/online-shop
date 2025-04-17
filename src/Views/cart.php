@@ -27,15 +27,23 @@
                         </div>
                     </a>
                 </div>
-                <form action="/catalog" method="POST">
-                <input type="hidden"  value="<?php echo $product->getId();?>" name="product_id" id="product_id">
-                    <?php if (isset($errors['amount'])): ?>
-                    <label style="color: red"><?php echo $errors['amount'];?></label>
-                <?php endif; ?>
+                <br><div class="card-title">Добавить в корзину
+                    <form action="add-product" method="POST">
+                        <div class="container">
+                            <input type="hidden" placeholder="Enter product_id" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
+                            <br>        <button type="submit" class="registerbtn"> + </button>
+                        </div>
+                    </form>
 
-                <input type="text" placeholder="Enter amount" name="amount" id="amount" >
+                </div>
 
-                <button type="submit" class="registerbtn"> + </button>
+
+                <form action="decrease-product" method="POST">
+                    <div class="container">
+                        <input type="hidden" placeholder="Enter product_id" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
+                        <button type="submit" class="registerbtn"> - </button>
+                    </div>
+                </form>
         </form>
             <?php endforeach; ?>
         <?php endif; ?>
@@ -51,7 +59,7 @@
         <form action="/create-order" method="GET">
             <div class="profile-social" style="text-align: center">
                 <a href="/create-order">Перейти к оформлению</a>
-                <button type="submit" class="registerbtn">Перейти к оформлению</button>
+<!--                <button type="submit" class="registerbtn">Перейти к оформлению</button>-->
         <?php endif; ?>
 
         </div>

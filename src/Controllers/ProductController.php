@@ -2,58 +2,33 @@
 
 namespace Controllers;
 
-class ProductController
+class ProductController extends BaseController
 {
     private \Model\Product $product;
     private \Model\UserProducts $userProducts;
     public function __construct()
     {
+        parent::__construct();
         $this->product = new \Model\Product;
         $this->userProducts = new \Model\UserProducts;
+        $this->authService = new \Services\AuthService();
     }
+
+
     public function getCatalog()
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-        if (!isset($_SESSION['userId'])) {
+        if ($this->authService->check()===false) {
             header("Location: /login");
             exit;
         }
-
         $products=$this->product->getAllProducts();
         require_once '../Views/catalog.php';
 
     }
 
-    public function catalog()
-    {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-        if (!isset($_SESSION['userId'])) {
-            header("Location: /login");
-            exit;
-        }
-
-
-        $this->getCatalog();
-    }
-
     public function validateProduct($post): array
     {
         $errors = [];
-
-//        if (isset($post['product_id'])) {
-//            $product_id = (int)$post['product_id'];
-//
-////            $data = $this->product->getById($product_id);
-////
-//////            if ($data === false) {
-//////                $errors['product_id'] = $data;
-//////            }
-//        }
-
 
         if (isset($post['amount'])) {
             $amount = $post['amount'];
@@ -68,32 +43,45 @@ class ProductController
 
     public function addToCart()
     {
-        $errors = $this->validateProduct($_POST);
-        if (empty($errors)) {
-            $userid = $_SESSION['userId'];
+            $user_id = $this->authService->getCurrentUser();
+//            echo"<pre>";print_r($user_id);exit;
             $product_id = $_POST['product_id'];
-            $amount = $_POST['amount'];
-
-            $data = $this->userProducts->getByProductIdUserId($product_id,$userid);
+            $amount=1;
+            $data = $this->userProducts->getByProductIdUserId($product_id,$user_id->getId());
 
             if ($data === false) {
-                $message=$this->userProducts->insertToCart($userid,$product_id,$amount);
+                $message=$this->userProducts->insertToCart($user_id->getId(),$product_id,$amount);
                 echo $message;
             } else {
-                $amount = $data['amount'] + $amount;
+                $amount = $data['amount'] + 1;
 
-                $message=$this->userProducts->updateToCart($userid,$product_id,$amount);
+                $message=$this->userProducts->updateToCart($user_id->getId(),$product_id,$amount);
                 echo $message;
 
             }
-
-
-        }
-        $this->catalog();
+        $this->getCatalog();
     }
 
-    public function removeFromCart()
+    public function decreaseFromCart()
     {
+            $user_id = $this->authService->getCurrentUser();
+            $product_id = $_POST['product_id'];
 
+            $data = $this->userProducts->getByProductIdUserId($product_id,$user_id->getId());
+
+            if ($data === false) {
+                echo "Продукта нет в корзине";
+                
+            } elseif($data['amount'] === 1) {
+                $this->userProducts->deleteByUserIdProductId($user_id->getId(),$product_id);
+                echo "Продукт удален из корзины";
+            }
+                else {
+                    $amount = $data['amount'] - 1;
+                    $this->userProducts->updateToCart($user_id->getId(),$product_id,$amount);
+                    echo "Количество продукта уменьшено";
+
+                }
+        $this->getCatalog();
     }
 }

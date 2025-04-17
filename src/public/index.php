@@ -4,45 +4,38 @@ use Controllers\CartController;
 use Controllers\OrderController;
 use Controllers\ProductController;
 use Controllers\UserController;
+use Core\Autoloader;
 
-$autoload = function (string $classname) {
+require_once "./../Core/Autoloader.php";
 
-    $path = str_replace("\\", "/", $classname);
-    $path = './../'. $path. '.php';
-    if (file_exists($path)) {
-        require_once $path;
-        return true;
-    }
-
-    return false;
-};
-
-spl_autoload_register($autoload);
+$path = dirname(__DIR__);
+\Core\Autoloader::register($path);
 
 $app = new \Core\App();
 
-$app->addRoute('/registration', 'GET', UserController::class, 'getRegistrate');
-$app->addRoute('/registration', 'POST', UserController::class, 'registrate');
+$app->get('/registration', UserController::class, 'getRegistrate');
+$app->post('/registration', UserController::class, 'registrate');
 
-$app->addRoute('/login', 'GET', UserController::class, 'getlogin');
-$app->addRoute('/login', 'POST', UserController::class, 'login');
+$app->get('/login', UserController::class, 'getlogin');
+$app->post('/login', UserController::class, 'login');
 
-$app->addRoute('/catalog', 'GET', ProductController::class, 'catalog');
-$app->addRoute('/catalog', 'POST', ProductController::class, 'addToCart');
+$app->get('/catalog', ProductController::class, 'getCatalog');
+$app->post('/add-product', ProductController::class, 'addToCart');
+$app->post('/decrease-product', ProductController::class, 'decreaseFromCart');
 
 
-$app->addRoute('/profile', 'GET', UserController::class, 'getProfile');
-$app->addRoute('/profile', 'POST', UserController::class, 'getEditProfile');
+$app->get('/profile', UserController::class, 'getProfile');
+$app->post('/profile', UserController::class, 'getEditProfile');
 
-$app->addRoute('/editProfile', 'POST', UserController::class, 'editProfile');
+$app->post('/editProfile', UserController::class, 'editProfile');
 
-$app->addRoute('/cart', 'GET', CartController::class, 'getCart');
+$app->get('/cart', CartController::class, 'getCart');
 
-$app->addRoute('/logout', 'POST', UserController::class, 'logout');
+$app->post('/logout',  UserController::class, 'logout');
 
-$app->addRoute('/create-order', 'GET', OrderController::class, 'getCheckoutForm');
-$app->addRoute('/create-order', 'POST', OrderController::class, 'handleCheckout');
+$app->get('/create-order',  OrderController::class, 'getCheckoutForm');
+$app->post('/create-order', OrderController::class, 'handleCheckout');
 
-$app->addRoute('/orders', 'GET', OrderController::class, 'getOrders');
+$app->get('/orders',  OrderController::class, 'getOrders');
 
 $app->run();
