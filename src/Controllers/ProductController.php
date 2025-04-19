@@ -65,7 +65,6 @@ class ProductController extends BaseController
                     $amount = $data['amount'] - 1;
                     $this->userProducts->updateToCart($user_id->getId(),$product_id,$amount);
                     echo "Количество продукта уменьшено";
-
                 }
         $this->getCatalog();
     }
