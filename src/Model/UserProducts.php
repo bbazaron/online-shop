@@ -57,20 +57,16 @@ class UserProducts extends \Model\Model
         return $data;
     }
 
-    public function insertToCart($userid, $product_id,$amount):string
+    public function insertToCart($userid, $product_id,$amount)
     {
         $stmt = $this->pdo->prepare("INSERT INTO {$this->getTableName()} (user_id, product_id, amount) VALUES (:user_id, :product_id, :amount)");
         $stmt->execute(['user_id' => $userid, 'product_id' => $product_id,'amount' => $amount]);
-        $message = "Продукты добавлены ";
-        return $message;
     }
 
-    public function updateToCart($userid, $product_id, $amount):string
+    public function updateToCart($userid, $product_id, $amount)
     {
         $stmt = $this->pdo->prepare("UPDATE {$this->getTableName()} SET amount = :amount WHERE user_id = :user_id AND product_id = :product_id");
         $stmt->execute(['amount' => $amount, 'user_id' => $userid, 'product_id' => $product_id]);
-        $message = "Продукты добавлены повторно";
-        return $message;
     }
 
     public function deleteByUserId($userId)

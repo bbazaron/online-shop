@@ -2,7 +2,7 @@
     <a href="/profile">Мой профиль</a> <br><br>
     <a href="/orders">Мои заказы</a> <br><br>
     <a href="/cart">Корзина</a>
-  <h3>Catalog</h3>
+  <h3>Каталог</h3>
   <div class="card-deck">
       <?php foreach ($products as $product): ?>
           <div class="card text-center">
@@ -18,9 +18,9 @@
                       <div class="card-title">
                           Цена: <?php echo $product->getPrice();?>
                       </div>
-                       <br><form action="decrease-product" method="POST">
+                       <br><form action="/product" method="POST">
                           <div class="container">
-                              <input type="hidden" placeholder="Enter product_id" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
+                              <input type="hidden"  value="<?php echo $product->getId();?>" name="product_id" id="product_id">
                               <button type="submit" class="registerbtn">Открыть</button>
                           </div>
                       </form>
@@ -28,7 +28,7 @@
               </a>
           </div>
 
-          <div class="card-title">Добавить в корзину
+          <div class="card-title" style="display: flex; gap: 10px;">Добавить в корзину
               <div style="display: flex; gap: 20px;">
                   <form action="add-product" method="POST">
                       <div class="container">

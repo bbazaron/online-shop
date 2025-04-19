@@ -20,8 +20,10 @@ $app->get('/login', UserController::class, 'getlogin');
 $app->post('/login', UserController::class, 'login');
 
 $app->get('/catalog', ProductController::class, 'getCatalog');
-$app->post('/add-product', ProductController::class, 'addToCart');
-$app->post('/decrease-product', ProductController::class, 'decreaseFromCart');
+$app->post('/add-product', CartController::class, 'addProductToCart');
+$app->post('/decrease-product', CartController::class, 'decreaseProductFromCart');
+$app->post('/product', ProductController::class, 'getProductPage');
+$app->post('/review', ProductController::class, 'createReview');
 
 
 $app->get('/profile', UserController::class, 'getProfile');

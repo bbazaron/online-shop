@@ -5,8 +5,8 @@ namespace Controllers;
 use Model\Cart;
 use Model\Order;
 use Model\Product;
-use Model\UserProducts;
 use Model\OrderProducts;
+use Services\OrderService;
 
 class OrderController extends BaseController
 {
@@ -14,8 +14,9 @@ class OrderController extends BaseController
     private Order $orderModel;
 
     private Product $productModel;
-    private UserProducts $userProductsModel;
     private OrderProducts $orderProductsModel;
+    private OrderService $orderService;
+
 
 
     public function __construct()
@@ -24,8 +25,8 @@ class OrderController extends BaseController
         $this->cartModel = new Cart();
         $this->orderModel = new Order();
         $this->productModel = new Product();
-        $this->userProductsModel = new UserProducts();
         $this->orderProductsModel = new OrderProducts();
+        $this->orderService = new OrderService();
     }
 
     public function getOrders()
@@ -120,7 +121,7 @@ class OrderController extends BaseController
             $address = $post['address'];
 
             if (strlen($address) < 2) {
-                $errors['address'] = "Имя должно содержать больше 2 символов";
+                $errors['address'] = "Адрес должен содержать больше 2 символов";
             }
         } else {
             $errors['address'] = "Адрес должен быть заполнен";
@@ -142,25 +143,14 @@ class OrderController extends BaseController
             if (isset ($_POST['comment'])) { // comment не обязателен в форме
                 $comment = $_POST['comment'];
             } else {
-                $comment = '';
+                $comment = null;
             }
+            $message = $this->orderService->createOrder($name,$phoneNumber,$address,$comment,$userId);
+            echo $message;
 
-            $orderId = $this->orderModel->create($name, $phoneNumber, $address, $comment, $userId); // вводим данные заказа в таблицу
+            $products=$this->productModel->getAllProducts();
+            require_once '../Views/catalog.php';
 
-            $userProducts = $this->userProductsModel->getAllByUserId($userId); // достаем все продукты из корзины
-
-            if (isset($userProducts)) {
-
-                foreach ($userProducts as $userProduct) { // вносим данные каждого товара из корзины в order_products
-                    $this->orderProductsModel->create($orderId, $userProduct->getProductId(), $userProduct->getAmount());
-                }
-
-                $this->userProductsModel->deleteByUserId($userId); // очистка корзины
-
-                $products=$this->productModel->getAllProducts();
-                echo "\n Заказ оформлен";
-                require_once '../Views/catalog.php';
-            }
         } else {
             $this->getCheckOutForm($errors);
         }

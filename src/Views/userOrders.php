@@ -2,11 +2,16 @@
     <a href="/profile">Мой профиль</a> <br><br>
     <a href="/catalog">Каталог</a><br><br>
     <a href="/cart">Корзина</a>
+    <?php if (count($allUserOrders)!==0): ?>
     <h3>Мои заказы</h3>
+    <?php else: ?>
+    <h3> Список заказов пуст</h3>
+    <?php endif; ?>
+
     <div>
         <?php foreach ($allUserOrders as $order): ?>
 
-            <p class="card-footer"><a>Заказ №<?php echo $order->getId(); ?></a></p>
+            <hr><p class="card-footer"><a>Заказ №<?php echo $order->getId(); ?></a></p>
             <p class="card-footer"><a>Данные: </a></p>
             <a>ФИО: <?php echo $order->getContactName(); ?></a><br>
             <a>Телефон: <?php echo $order->getContactPhone(); ?></a><br>

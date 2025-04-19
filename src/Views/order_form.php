@@ -34,7 +34,7 @@
                 <?php if (isset($errors['comment'])): ?>
                     <label style="color:red" ><?php echo $errors['comment'];?></label>
                 <?php endif; ?>
-                <input type="text" placeholder="Введите комментарий" class="guest" name="comment" id="comment" required/></label> <p></p>
+                <input type="text" placeholder="Введите комментарий" class="guest" name="comment" id="comment" /></label> <p></p>
 
             <!--            <span class="goods"> Наименование товара:</span><br />-->
 <!--            <select name="goods"class="guest">-->
