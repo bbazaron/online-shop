@@ -1,5 +1,8 @@
 <?php
 namespace Controllers;
+use Model\Product;
+use Request\AddProductRequest;
+
 class CartController extends BaseController
 {
     private \Model\Cart $cart;
@@ -30,17 +33,22 @@ class CartController extends BaseController
         require_once '../Views/cart.php';
     }
 
-    public function addProductToCart()
+    public function addProductToCart(AddProductRequest $request)
     {
         $user_id = $this->authService->getCurrentUser();
-        $product_id = $_POST['product_id'];
         $amount=1;
 
-        $message = $this->cartService->addProduct($product_id, $user_id->getId(), $amount);
-        echo $message;
+        $dto = new \DTO\AddProductDTO($request->getProductId(),$user_id,$amount);
 
-        $products=$this->product->getAllProducts();
-        require_once '../Views/catalog.php';
+        $message = $this->cartService->addProduct($dto);
+//        if ($message) {
+//            echo "Продукт добавлен";
+//        } else {
+//            echo "Продукт добавлен повторно";
+//        }
+
+        header("Location:/catalog");
+        exit;
     }
 
 
@@ -49,11 +57,13 @@ class CartController extends BaseController
         $user_id = $this->authService->getCurrentUser();
         $product_id = $_POST['product_id'];
 
-        $message = $this->cartService->decreaseProduct($product_id, $user_id->getId());
-        echo $message;
+        $dto = new \DTO\DecreaseProductDTO($product_id,$user_id,);
 
-        $products=$this->product->getAllProducts();
-        require_once '../Views/catalog.php';
+        $message = $this->cartService->decreaseProduct($dto);
+//        echo $message;
+
+        header("Location: /catalog");
+        exit;
     }
 
 }

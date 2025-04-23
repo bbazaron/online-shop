@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use Model\Review;
+use Request\ReviewRequest;
 
 class ProductController extends BaseController
 {
@@ -30,44 +31,28 @@ class ProductController extends BaseController
 
     }
 
-    public function validateProduct($post): array
-    {
-        $errors = [];
 
-        if (isset($post['amount'])) {
-            $amount = $post['amount'];
-            if (is_numeric($amount) === false) {
-                $errors['amount'] = "Введены неверные данные";
-            } elseif ($amount === '0') {
-                $errors['amount'] = "amount не может быть 0";
-            }
-        }
-        return $errors;
-    }
-
-
-
-    public function decreaseFromCart()
-    {
-            $user_id = $this->authService->getCurrentUser();
-            $product_id = $_POST['product_id'];
-
-            $data = $this->userProducts->getByProductIdUserId($product_id,$user_id->getId());
-
-            if ($data === false) {
-                echo "Продукта нет в корзине";
-                
-            } elseif($data['amount'] === 1) {
-                $this->userProducts->deleteByUserIdProductId($user_id->getId(),$product_id);
-                echo "Продукт удален из корзины";
-            }
-                else {
-                    $amount = $data['amount'] - 1;
-                    $this->userProducts->updateToCart($user_id->getId(),$product_id,$amount);
-                    echo "Количество продукта уменьшено";
-                }
-        $this->getCatalog();
-    }
+//    public function decreaseFromCart()
+//    {
+//            $user_id = $this->authService->getCurrentUser();
+//            $product_id = $_POST['product_id'];
+//
+//            $data = $this->userProducts->getByProductIdUserId($product_id,$user_id->getId());
+//
+//            if ($data === false) {
+//                echo "Продукта нет в корзине";
+//
+//            } elseif($data['amount'] === 1) {
+//                $this->userProducts->deleteByUserIdProductId($user_id->getId(),$product_id);
+//                echo "Продукт удален из корзины";
+//            }
+//                else {
+//                    $amount = $data['amount'] - 1;
+//                    $this->userProducts->updateToCart($user_id->getId(),$product_id,$amount);
+//                    echo "Количество продукта уменьшено";
+//                }
+//        $this->getCatalog();
+//    }
 
     public function getProductPage(array $errors=null)
     {
@@ -85,51 +70,21 @@ class ProductController extends BaseController
 
     }
 
-    public function validateReview($post): array
+    public function createReview(ReviewRequest $request)
     {
-        $errors = [];
-
-        if (isset($post['name'])){
-            $name = $post['name'];
-            if (strlen($name) < 2) {
-                $errors['name'] = 'Слишком короткое имя';
-            }
-        } else {
-            $errors['name']='Имя должно быть заполнено';
-        }
-
-        if (isset($post['rating'])){
-            $rating = $post['rating'];
-            if (is_numeric($rating) === false) {
-                $errors['rating']='Введите число';
-            } elseif ($rating === '0') {
-                $errors['rating']='Не может быть число 0';
-            }
-
-        } else {
-            $errors['rating']='Поле должно быть заполнено';
-        }
-
-        if (isset($post['comment'])){
-            $comment = $post['comment'];
-            if (strlen($comment) < 2) {
-                $errors['comment']='Недопустимая длина отзыва';
-            }
-        }
-
-        return $errors;
-    }
-    public function createReview()
-    {
-        $errors = $this->validateReview($_POST);
+        $errors = $request->validateReview();
         if (empty($errors)) {
+
+            $product_id = $request->getProductId();
             $userId = $_SESSION['userId'];
-            $name = $_POST['name'];
-            $rating = $_POST['rating'];
-            $comment = $_POST['comment'];
-            $product_id = $_POST['product_id'];
-            $data = $this->reviewModel->create($product_id, $userId, $name, $rating, $comment);
-            print_r($data);
+            $name = $request->getName();
+            $rating = $request->getRating();
+            $comment = $request->getComment();
+
+            $message = $this->reviewModel->create($product_id, $userId, $name, $rating, $comment);
+            if ($message){
+                echo "Отзыв отправлен";
+            }
             $this->getProductPage();
 
         } else {

@@ -4,6 +4,10 @@
     <a href="/cart">Корзина</a>
   <h3>Каталог</h3>
   <div class="card-deck">
+      <?php if (isset($message)): ?>
+      <?php echo $message; ?>
+      <?php endif; ?>
+
       <?php foreach ($products as $product): ?>
           <div class="card text-center">
               <a>

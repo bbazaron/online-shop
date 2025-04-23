@@ -2,10 +2,13 @@
 
 namespace Controllers;
 
+use DTO\OrderCreateDTO;
+use http\Header;
 use Model\Cart;
 use Model\Order;
 use Model\Product;
 use Model\OrderProducts;
+use Request\OrderRequest;
 use Services\OrderService;
 
 class OrderController extends BaseController
@@ -16,6 +19,7 @@ class OrderController extends BaseController
     private Product $productModel;
     private OrderProducts $orderProductsModel;
     private OrderService $orderService;
+
 
 
 
@@ -85,71 +89,37 @@ class OrderController extends BaseController
         require_once '../Views/order_form.php';
     }
 
-    private function orderValidation($post):array
+
+    public function handleCheckOut(OrderRequest $request)
     {
-        if ($this->authService->check()===false) {
-            header("Location: /login");
-            exit;
-        }
-        $errors = [];
-
-        if (isset($post['contact_name'])) {
-            $name = $post['contact_name'];
-
-            if (strlen($name) < 2) {
-                $errors['contact_name'] = "Имя должно содержать больше 2 символов";
-            }
-        } else {
-            $errors['contact_name'] = "Имя должно быть заполнено";
-        }
-
-        if (isset($post['contact_phone'])) {
-            $contact_phone = $post['contact_phone'];
-            if (is_numeric($contact_phone) === false) {
-                $errors['contact_phone'] = "Введены неверные данные";
-            } elseif ($contact_phone === '0') {
-                $errors['contact_phone'] = "номер не может быть 0";
-            } elseif(strlen($contact_phone)<2)
-            {
-                $errors['contact_phone'] = 'номер должен содержать большей 2 символов';
-            }
-        } else {
-            $errors['contact_phone'] = 'номер должен быть заполнен';
-        }
-
-        if (isset($post['address'])) {
-            $address = $post['address'];
-
-            if (strlen($address) < 2) {
-                $errors['address'] = "Адрес должен содержать больше 2 символов";
-            }
-        } else {
-            $errors['address'] = "Адрес должен быть заполнен";
-        }
-
-        return $errors;
-    }
-    public function handleCheckOut()
-    {
-        $errors = $this->orderValidation($_POST);
+        $errors = $request->orderValidation();
 
         if (empty($errors)) {
 
-            $name = $_POST['contact_name'];
-            $phoneNumber = $_POST['contact_phone'];
-            $address = $_POST['address'];
-            $userId = $_SESSION['userId'];
+//            if (isset ($_POST['comment'])) { // comment не обязателен в форме
+//                $comment = $_POST['comment'];
+//            } else {
+//                $comment = null;
+//            }
+            $userId = $this->authService->getCurrentUser();
+            $dto= new OrderCreateDTO(
+                $request->getName(),
+                $request->getPhone(),
+                $request->getAddress(),
+                $request->getComment(),
+                $userId);
 
-            if (isset ($_POST['comment'])) { // comment не обязателен в форме
-                $comment = $_POST['comment'];
-            } else {
-                $comment = null;
-            }
-            $message = $this->orderService->createOrder($name,$phoneNumber,$address,$comment,$userId);
-            echo $message;
 
-            $products=$this->productModel->getAllProducts();
-            require_once '../Views/catalog.php';
+            $this->orderService->createOrder($dto);
+//            $message =
+//            if ($message) {
+//                echo 'Заказ оформлен';
+//            } else {
+//                echo 'Корзина пуста';
+//            }
+
+            header('Location: /catalog');
+            exit;
 
         } else {
             $this->getCheckOutForm($errors);

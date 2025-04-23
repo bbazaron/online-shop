@@ -118,8 +118,8 @@ class User extends \Model\Model
 
     public function updateAvatarById($avatar, $userId)
     {
-        $stmt = $this->pdo->prepare("UPDATE {$this->getTableName()} SET avatar = :image_url WHERE id= $userId");
-        $stmt->execute([':image_url' => $avatar]);
+        $stmt = $this->pdo->prepare("UPDATE {$this->getTableName()} SET avatar = :image_url WHERE id= :userId");
+        $stmt->execute([':image_url' => $avatar, ':userId' => $userId]);
     }
 
 

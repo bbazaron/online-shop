@@ -6,6 +6,7 @@ use Controllers\UserController;
 use Controllers\CartController;
 use Controllers\OrderController;
 use Controllers\ProductController;
+use Request\RegistrateRequest;
 
 class App
 {
@@ -28,9 +29,18 @@ class App
                  $handler = $routeMethode[$requestMethod];
                  $class = $handler['class'];
                  $method = $handler['method'];
-
                  $controller = new $class();
-                 $controller->$method();
+
+                 $requestClass = $handler['requestClass'];
+
+                 if ($requestClass !== null) {
+                     $request = new $requestClass($_POST);
+                     $controller->$method($request);
+
+                 } else {
+                     $controller->$method();
+                 }
+
 
              } else {
                  echo "$requestMethod не поддерживается для $requestUri";
@@ -44,20 +54,29 @@ class App
 
     }
 
+    private function getRequest($controller, $method)
+    {
+        if ($controller instanceof BaseController) {
 
-    public function get(string $route, string $className, string $method)
+        }
+    }
+
+
+    public function get(string $route, string $className, string $method, string $requestClass = null)
     {
         $this->routes[$route]['GET'] = [
             'class' => $className,
-            'method' => $method
+            'method' => $method,
+            'requestClass' => $requestClass
         ];
     }
 
-    public function post(string $route, string $className, string $method)
+    public function post(string $route, string $className, string $method, string $requestClass = null)
     {
         $this->routes[$route]['POST'] = [
             'class' => $className,
-            'method' => $method
+            'method' => $method,
+            'requestClass' => $requestClass
         ];
     }
 

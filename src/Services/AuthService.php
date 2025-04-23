@@ -28,15 +28,15 @@ class AuthService
             return null;
         }
     }
-    public function auth(string $email, string $password):bool
+    public function auth(\DTO\AuthDTO $dto):bool
     {
-        $user = $this->userModel->getByEmail($email);
+        $user = $this->userModel->getByEmail($dto->getEmail());
 
         if (!$user) {
             return false;
         } else {
             $passwordDb = $user->getPassword();
-            if (password_verify($password, $passwordDb)) {
+            if (password_verify($dto->getPassword(), $passwordDb)) {
                 $this->startSession();
                 $_SESSION['userId'] = $user->getId();
                 return true;

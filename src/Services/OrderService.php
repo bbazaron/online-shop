@@ -1,6 +1,7 @@
 <?php
 
 namespace Services;
+use DTO\OrderCreateDTO;
 use \Model\Order;
 use \Model\UserProducts;
 use \Model\OrderProducts;
@@ -19,11 +20,18 @@ class OrderService
         $this->orderProductsModel = new OrderProducts();
         $this->productModel = new Product();
     }
-    public function createOrder(string $name, string $phoneNumber, string $address, string|null $comment, int $userId):string
+    public function createOrder(OrderCreateDTO $dto):bool
     {
-        $orderId = $this->orderModel->create($name, $phoneNumber, $address, $comment, $userId); // вводим данные заказа в таблицу
+        $orderId = $this->orderModel->create(
+                                            $dto->getName(),
+                                            $dto->getPhone(),
+                                            $dto->getAddress(),
+                                            $dto->getComment(),
+                                            $dto->getUser()->getId()
+                                            );                          // вводим данные заказа в таблицу
 
-        $userProducts = $this->userProductsModel->getAllByUserId($userId); // достаем все продукты из корзины
+
+        $userProducts = $this->userProductsModel->getAllByUserId($dto->getUser()->getId()); // достаем все продукты из корзины
 
         if (isset($userProducts)) {
 
@@ -31,14 +39,11 @@ class OrderService
                 $this->orderProductsModel->create($orderId, $userProduct->getProductId(), $userProduct->getAmount());
             }
 
-            $this->userProductsModel->deleteByUserId($userId); // очистка корзины
+            $this->userProductsModel->deleteByUserId($dto->getUser()->getId()); // очистка корзины
 
-            $message = "Заказ оформлен";
-            return $message;
-
+            return true;
         } else {
-            $message = "Корзина пуста";
-            return $message;
+            return false;
         }
     }
 

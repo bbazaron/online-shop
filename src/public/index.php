@@ -14,29 +14,29 @@ $path = dirname(__DIR__);
 $app = new \Core\App();
 
 $app->get('/registration', UserController::class, 'getRegistrate');
-$app->post('/registration', UserController::class, 'registrate');
+$app->post('/registration', UserController::class, 'registrate', \Request\RegistrateRequest::class);
 
 $app->get('/login', UserController::class, 'getlogin');
-$app->post('/login', UserController::class, 'login');
+$app->post('/login', UserController::class, 'login', \Request\LoginRequest::class);
 
 $app->get('/catalog', ProductController::class, 'getCatalog');
-$app->post('/add-product', CartController::class, 'addProductToCart');
+$app->post('/add-product', CartController::class, 'addProductToCart', \Request\AddProductRequest::class);
 $app->post('/decrease-product', CartController::class, 'decreaseProductFromCart');
 $app->post('/product', ProductController::class, 'getProductPage');
-$app->post('/review', ProductController::class, 'createReview');
+$app->post('/review', ProductController::class, 'createReview', \Request\ReviewRequest::class);
 
 
 $app->get('/profile', UserController::class, 'getProfile');
 $app->post('/profile', UserController::class, 'getEditProfile');
 
-$app->post('/editProfile', UserController::class, 'editProfile');
+$app->post('/editProfile', UserController::class, 'editProfile', \Request\EditProfileRequest::class);
 
 $app->get('/cart', CartController::class, 'getCart');
 
 $app->post('/logout',  UserController::class, 'logout');
 
 $app->get('/create-order',  OrderController::class, 'getCheckoutForm');
-$app->post('/create-order', OrderController::class, 'handleCheckout');
+$app->post('/create-order', OrderController::class, 'handleCheckout', \Request\OrderRequest::class);
 
 $app->get('/orders',  OrderController::class, 'getOrders');
 

@@ -2,6 +2,8 @@
 
 namespace Services;
 
+use DTO\AddProductDTO;
+
 class CartService
 {
     private \Model\UserProducts $userProducts;
@@ -11,40 +13,38 @@ class CartService
         $this->userProducts = new \Model\UserProducts();
     }
 
-    public function addProduct(int $product_id, int $user_id, int $amount):string
+    public function addProduct(\DTO\AddProductDTO $dto):string
     {
 
-        $data = $this->userProducts->getByProductIdUserId($product_id,$user_id);
+        $data = $this->userProducts->getByProductIdUserId($dto->getProductId(), $dto->getUser()->getId());
 
         if ($data === false) {
-            $this->userProducts->insertToCart($user_id,$product_id,$amount);
-            $message='Продукт добавлен';
-            return $message;
+            $this->userProducts->insertToCart($dto->getUser()->getId(), $dto->getProductId(), $dto->getAmount());
+            return true;
         } else {
-            $amount = $data['amount'] + 1;
-            $this->userProducts->updateToCart($user_id,$product_id,$amount);
-            $message='Продукт добавлен повторно';
-            return $message;
+            $amount = $dto->getAmount() + 1;
+            $this->userProducts->updateToCart($dto->getUser()->getId(), $dto->getProductId(), $amount);
+            return false;
         }
     }
 
-    public function decreaseProduct(int $product_id, int $user_id):string
+    public function decreaseProduct(\DTO\DecreaseProductDTO $dto):string
     {
-        $data = $this->userProducts->getByProductIdUserId($product_id,$user_id);
+        $data = $this->userProducts->getByProductIdUserId($dto->getProductId(), $dto->getUser()->getId());
 
         if ($data === false) {
             $message = "Продукта нет в корзине";
             return $message;
 
         } elseif($data['amount'] === 1) {
-            $this->userProducts->deleteByUserIdProductId($user_id,$product_id);
+            $this->userProducts->deleteByUserIdProductId($dto->getUser()->getId(), $dto->getProductId());
             $message = "Продукт удален из корзины";
             return $message;
         }
 
         else {
             $amount = $data['amount'] - 1;
-            $this->userProducts->updateToCart($user_id,$product_id,$amount);
+            $this->userProducts->updateToCart($dto->getUser()->getId(), $dto->getProductId(),$amount);
             $message = "Количество продукта уменьшено";
             return $message;
         }

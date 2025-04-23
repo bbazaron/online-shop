@@ -12,14 +12,14 @@ class Review extends \Model\Model
         return 'reviews';
     }
 
-    public function create(int $product_id,int $user_id, string $name, int $rating, string $comment):string
+    public function create(int $product_id,int $user_id, string $name, int $rating, string $comment):bool
     {
         $stmt = $this->pdo->prepare(
             "INSERT INTO {$this->getTableName()} (product_id, user_id, name, rating, comment)
                     VALUES (:product_id,:user_id, :name, :rating, :comment)");
 
         $stmt->execute(['product_id'=>$product_id,'user_id'=>$user_id, 'name' => $name, 'rating' => $rating, 'comment' => $comment]);
-        return "Отзыв отправлен";
+        return true;
     }
 
     public function getByProductId(int $product_id):?array
