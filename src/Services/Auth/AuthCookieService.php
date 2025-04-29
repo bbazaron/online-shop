@@ -1,9 +1,10 @@
 <?php
 
-namespace Services;
-use \Model\User;
+namespace Services\Auth;
 
-class AuthService
+use Model\User;
+
+class AuthCookieService implements AuthInterface
 {
     private User $userModel;
     public function __construct()
@@ -12,16 +13,14 @@ class AuthService
     }
     public function check():bool
     {
-        $this->startSession();
-        return isset($_SESSION['userId']);
+        return isset($_COOKIE['userId']);
     }
 
     public function getCurrentUser():?User
     {
-        $this->startSession();
 
         if ($this->check()){
-            $userId = $_SESSION['userId'];
+            $userId = $_COOKIE['userId'];
             return $this->userModel->getById($userId);
 
         } else {
@@ -37,8 +36,7 @@ class AuthService
         } else {
             $passwordDb = $user->getPassword();
             if (password_verify($dto->getPassword(), $passwordDb)) {
-                $this->startSession();
-                $_SESSION['userId'] = $user->getId();
+                setcookie('userId', $user->getId());
                 return true;
             } else {
                 return false;
@@ -48,18 +46,8 @@ class AuthService
 
     public function logout()
     {
-        if ($this->check()===false) {
-            header("Location: /login");
-            exit;
-        }
-        unset($_SESSION['userId']);
-        session_destroy();
+        setcookie('userId', '', time() - 3600,'/');
+        unset($_COOKIE['userId']);
     }
 
-    protected function startSession()
-    {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-    }
 }

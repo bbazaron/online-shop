@@ -6,7 +6,6 @@ class AddProductDTO
 {
     public function __construct(
         private int $productId,
-        private \Model\User $user,
         private int $amount
     ){
     }
@@ -16,10 +15,6 @@ class AddProductDTO
         return $this->productId;
     }
 
-    public function getUser(): \Model\User
-    {
-        return $this->user;
-    }
 
     public function getAmount(): int
     {

@@ -15,7 +15,7 @@ class ProductController extends BaseController
         parent::__construct();
         $this->product = new \Model\Product;
         $this->userProducts = new \Model\UserProducts;
-        $this->authService = new \Services\AuthService();
+        $this->authService = new \Services\Auth\AuthSessionService();
         $this->reviewModel = new Review();
     }
 

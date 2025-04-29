@@ -34,6 +34,7 @@ class App
                  $requestClass = $handler['requestClass'];
 
                  if ($requestClass !== null) {
+
                      $request = new $requestClass($_POST);
                      $controller->$method($request);
 

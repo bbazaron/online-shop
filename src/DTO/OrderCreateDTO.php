@@ -9,7 +9,6 @@ class OrderCreateDTO
         private string $phone,
         private string $comment,
         private string $address,
-        private \Model\User $user
     ){
     }
 
@@ -33,10 +32,6 @@ class OrderCreateDTO
         return $this->address;
     }
 
-    public function getUser(): \Model\User
-    {
-        return $this->user;
-    }
 
 
 

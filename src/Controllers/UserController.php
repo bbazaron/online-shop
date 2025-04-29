@@ -17,19 +17,15 @@ class UserController extends BaseController
 
     public function getRegistrate(array $errors = null)
     {
-//        if ($this->authService->check()===false) {
-//            header("Location: /login");
-//            exit;
-//        }
         require_once '../Views/registration_form.php';
     }
 
     public function getLogin(array $errors = null)
     {
-//        if ($this->authService->check()===false) {
-//            header("Location: /login");
-//            exit;
-//        }
+        if ($this->authService->check()!==false) { // если user залогинен - перейдет на профиль
+            header("Location: /profile");
+            exit;
+        }
         require_once '../Views/login_form.php';
     }
 

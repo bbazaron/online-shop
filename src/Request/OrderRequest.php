@@ -2,15 +2,15 @@
 
 namespace Request;
 
-use Services\AuthService;
+use Services\Auth\AuthSessionService;
 
 class OrderRequest
 {
-    protected AuthService $authService;
+    protected AuthSessionService $authService;
 
     public function __construct(private array $post)
     {
-        $this->authService = new AuthService();
+        $this->authService = new AuthSessionService();
 
     }
 
