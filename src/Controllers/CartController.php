@@ -21,11 +21,8 @@ class CartController extends BaseController
         }
 
         $list=$this->cartService->getUserProducts(); // достаем все продукты из корзины
-        $sum=0;
 
-        foreach ($list as $product) {
-            $sum+=$product->getPrice()*$product->getAmount();
-        }
+        $sum = $this->cartService->getSum();
 
         require_once '../Views/cart.php';
     }

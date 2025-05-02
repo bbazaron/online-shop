@@ -1,0 +1,12 @@
+Record #1
+Message: Минимальная сумма для оформления заказа - 1000 руб
+File: /var/www/html/src/Services/OrderService.php
+Line: 35
+Date: 2025-05-02 16:29:59
+
+Record #2
+Message: Минимальная сумма для оформления заказа - 1000 руб
+File: /var/www/html/src/Services/OrderService.php
+Line: 35
+Date: 2025-05-02 16:30:23
+

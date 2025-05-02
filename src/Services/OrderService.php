@@ -17,6 +17,7 @@ class OrderService
     private Product $productModel;
 
     private AuthInterface $authService;
+    private CartService $cartService;
 
     public function __construct()
     {
@@ -25,9 +26,16 @@ class OrderService
         $this->orderProductsModel = new OrderProducts();
         $this->productModel = new Product();
         $this->authService = new AuthSessionService();
+        $this->cartService = new CartService();
     }
     public function createOrder(OrderCreateDTO $dto):bool
     {
+        $sum = $this->cartService->getSum(); // Проверка заказа на минимальную сумму
+        if ($sum < 1000) {
+            throw new \Exception('Минимальная сумма для оформления заказа - 1000 руб');
+        }
+
+
         $user = $this->authService->getCurrentUser();
 
         $orderId = $this->orderModel->create(
@@ -40,6 +48,7 @@ class OrderService
 
 
         $userProducts = $this->userProductsModel->getAllByUserId($user->getId()); // достаем все продукты из корзины
+
 
         if (isset($userProducts)) {
 

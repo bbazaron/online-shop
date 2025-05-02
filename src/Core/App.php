@@ -7,6 +7,7 @@ use Controllers\CartController;
 use Controllers\OrderController;
 use Controllers\ProductController;
 use Request\RegistrateRequest;
+use Services\LoggerService;
 
 class App
 {
@@ -33,13 +34,19 @@ class App
 
                  $requestClass = $handler['requestClass'];
 
-                 if ($requestClass !== null) {
+                 try {
+                     if ($requestClass !== null) {
 
-                     $request = new $requestClass($_POST);
-                     $controller->$method($request);
+                         $request = new $requestClass($_POST);
+                         $controller->$method($request);
 
-                 } else {
-                     $controller->$method();
+                     } else {
+                         $controller->$method();
+                     }
+                 } catch (\Throwable $exception) {
+                   $error = new LoggerService();
+                     $error->errorsToDb($exception); // запись в бд
+                     $error->errorToFile($exception); // запись в файл
                  }
 
 
