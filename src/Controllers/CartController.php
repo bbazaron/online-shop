@@ -29,9 +29,7 @@ class CartController extends BaseController
 
     public function addProductToCart(AddProductRequest $request)
     {
-        $amount=1; // увеличиваем кол-во на 1
-
-        $dto = new \DTO\AddProductDTO($request->getProductId(),$amount);
+        $dto = new \DTO\AddProductDTO($request->getProductId(),$request->getAmount());
 
         $message = $this->cartService->addProduct($dto);
 //        if ($message) {
@@ -40,21 +38,20 @@ class CartController extends BaseController
 //            echo "Продукт добавлен повторно";
 //        }
 
-        header("Location:/catalog");
+        header("Location:/cart");
         exit;
     }
 
 
-    public function decreaseProductFromCart()
+    public function decreaseProductFromCart(AddProductRequest $request)
     {
-        $product_id = $_POST['product_id'];
 
-        $dto = new \DTO\DecreaseProductDTO($product_id);
+        $dto = new \DTO\DecreaseProductDTO($request->getProductId(),$request->getAmount());
 
         $message = $this->cartService->decreaseProduct($dto);
 //        echo $message;
 
-        header("Location: /catalog");
+        header("Location: /cart");
         exit;
     }
 

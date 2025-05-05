@@ -28,8 +28,8 @@ class CartService
             $this->userProducts->insertToCart($user->getId(), $dto->getProductId(), $dto->getAmount());
             return true;
         } else {
-            $amount = $dto->getAmount() + 1;
-            $this->userProducts->updateToCart($user->getId(), $dto->getProductId(), $amount);
+            $newAmount = $data['amount'] + $dto->getAmount();
+            $this->userProducts->updateToCart($user->getId(), $dto->getProductId(), $newAmount);
             return false;
         }
     }
@@ -51,8 +51,8 @@ class CartService
         }
 
         else {
-            $amount = $data['amount'] - 1;
-            $this->userProducts->updateToCart($user->getId(), $dto->getProductId(),$amount);
+            $newAmount = $data['amount'] - 1;
+            $this->userProducts->updateToCart($user->getId(), $dto->getProductId(),$newAmount);
             $message = "Количество продукта уменьшено";
             return $message;
         }

@@ -1,17 +1,14 @@
 <?php
 
 namespace Core;
-use Controllers\BaseController;
-use Controllers\UserController;
-use Controllers\CartController;
-use Controllers\OrderController;
-use Controllers\ProductController;
-use Request\RegistrateRequest;
-use Services\LoggerService;
+use Services\Logger\LoggerDbService;
+use Services\Logger\LoggerInterface;
+use Services\Logger\LoggerService;
 
 class App
 {
     private array $routes = [];
+    private LoggerInterface $logger;
     public function run()
     {
 
@@ -44,9 +41,8 @@ class App
                          $controller->$method();
                      }
                  } catch (\Throwable $exception) {
-                   $error = new LoggerService();
-                     $error->errorsToDb($exception); // запись в бд
-                     $error->errorToFile($exception); // запись в файл
+                     $this->logger = new LoggerDbService();
+                     $this->logger->error($exception); // запись в бд
                  }
 
 
@@ -62,12 +58,12 @@ class App
 
     }
 
-    private function getRequest($controller, $method)
-    {
-        if ($controller instanceof BaseController) {
-
-        }
-    }
+//    private function getRequest($controller, $method)
+//    {
+//        if ($controller instanceof BaseController) {
+//
+//        }
+//    }
 
 
     public function get(string $route, string $className, string $method, string $requestClass = null)

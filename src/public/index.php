@@ -21,7 +21,7 @@ $app->post('/login', UserController::class, 'login', \Request\LoginRequest::clas
 
 $app->get('/catalog', ProductController::class, 'getCatalog');
 $app->post('/add-product', CartController::class, 'addProductToCart', \Request\AddProductRequest::class);
-$app->post('/decrease-product', CartController::class, 'decreaseProductFromCart');
+$app->post('/decrease-product', CartController::class, 'decreaseProductFromCart',\Request\AddProductRequest::class);
 $app->post('/product', ProductController::class, 'getProductPage');
 $app->post('/review', ProductController::class, 'createReview', \Request\ReviewRequest::class);
 

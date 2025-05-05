@@ -36,14 +36,16 @@
                     <div style="display: flex; gap: 20px;">
                         <form action="add-product" method="POST">
                             <div class="container">
-                                <input type="hidden" placeholder="Enter product_id" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
+                                <input type="hidden"  value="<?php echo $product->getId();?>" name="product_id" id="product_id">
+                                <input type="hidden"  value="<?php echo 1;?>" name="amount" id="amount">
                                 <button type="submit" class="registerbtn"> + </button>
                             </div>
                         </form>
 
                         <form action="decrease-product" method="POST">
                             <div class="container">
-                                <input type="hidden" placeholder="Enter product_id" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
+                                <input type="hidden" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
+                                <input type="hidden" value="<?php echo 1;?>" name="amount" id="amount">
                                 <button type="submit" class="registerbtn"> - </button>
                             </div>
                         </form>
