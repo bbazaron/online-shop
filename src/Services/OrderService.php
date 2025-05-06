@@ -11,20 +11,11 @@ use Services\Auth\AuthSessionService;
 
 class OrderService
 {
-    private Order $orderModel;
-    private UserProducts $userProductsModel;
-    private OrderProducts $orderProductsModel;
-    private Product $productModel;
-
     private AuthInterface $authService;
     private CartService $cartService;
 
     public function __construct()
     {
-        $this->orderModel = new Order();
-        $this->userProductsModel = new UserProducts();
-        $this->orderProductsModel = new OrderProducts();
-        $this->productModel = new Product();
         $this->authService = new AuthSessionService();
         $this->cartService = new CartService();
     }
@@ -38,7 +29,7 @@ class OrderService
 
         $user = $this->authService->getCurrentUser();
 
-        $orderId = $this->orderModel->create(
+        $orderId = Order::create(
                                             $dto->getName(),
                                             $dto->getPhone(),
                                             $dto->getAddress(),
@@ -47,16 +38,16 @@ class OrderService
                                             );                          // вводим данные заказа в таблицу
 
 
-        $userProducts = $this->userProductsModel->getAllByUserId($user->getId()); // достаем все продукты из корзины
+        $userProducts = UserProducts::getAllByUserId($user->getId()); // достаем все продукты из корзины
 
 
         if (isset($userProducts)) {
 
             foreach ($userProducts as $userProduct) { // вносим данные каждого товара из корзины в order_products
-                $this->orderProductsModel->create($orderId, $userProduct->getProductId(), $userProduct->getAmount());
+                OrderProducts::create($orderId, $userProduct->getProductId(), $userProduct->getAmount());
             }
 
-            $this->userProductsModel->deleteByUserId($user->getId()); // очистка корзины
+            UserProducts::deleteByUserId($user->getId()); // очистка корзины
 
             return true;
         } else {
@@ -67,19 +58,19 @@ class OrderService
     public function getAll(): array
     {
         $user = $this->authService->getCurrentUser();
-        $userOrders = $this->orderModel->getAllByUserId($user->getId());
+        $userOrders = Order::getAllByUserId($user->getId());
 
         $allUserOrders = [];
         $sum=0;
 
         foreach ($userOrders as $userOrder) {
 
-            $orderProducts = $this->orderProductsModel->getAllByOrderId($userOrder->getId());
+            $orderProducts = OrderProducts::getAllByOrderId($userOrder->getId());
 
             $newOrderProducts = [];
             $sum=0;
             foreach ($orderProducts as $orderProduct) {
-                $product = $this->productModel->getById($orderProduct->getProductId());
+                $product = Product::getById($orderProduct->getProductId());
 
                 $orderProduct->setProduct($product->getName());
                 $orderProduct->setDescription($product->getDescription());

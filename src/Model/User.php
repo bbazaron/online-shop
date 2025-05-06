@@ -9,14 +9,15 @@ class User extends \Model\Model
     private string $password;
     private string $avatar;
 
-    protected function getTableName(): string
+    protected static function getTableName(): string
     {
         return 'users';
     }
 
-    public function getByEmail(string $email): self|null
+    public static function getByEmail(string $email): self|null
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM {$this->getTableName()} WHERE email = :email");
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("SELECT * FROM $tableName WHERE email = :email");
         $stmt->execute([':email' => $email]);
         $user=$stmt->fetch();
 
@@ -36,15 +37,17 @@ class User extends \Model\Model
         return $obj;
     }
 
-    public function insert(string $name, string $email, $password)
+    public static function insert(string $name, string $email, $password)
     {
-        $stmt = $this->pdo->prepare("INSERT INTO {$this->getTableName()} (name, email, password) VALUES (:name, :email, :password)");
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("INSERT INTO $tableName (name, email, password) VALUES (:name, :email, :password)");
         $stmt->execute(['name' => $name, 'email' => $email, 'password' => $password]);
     }
 
-    public function getBySessionId($sessionId): self|null
+    public static function getBySessionId($sessionId): self|null
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM {$this->getTableName()} WHERE id = :sessionId");
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("SELECT * FROM $tableName WHERE id = :sessionId");
         $stmt->execute(['sessionId' => $sessionId]);
         $user = $stmt->fetch();
 
@@ -61,9 +64,10 @@ class User extends \Model\Model
         return $obj;
     }
 
-    public function getById($userId): self|null
+    public static function getById($userId): self|null
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM {$this->getTableName()} WHERE id = :userId");
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("SELECT * FROM $tableName WHERE id = :userId");
         $stmt->execute([':userId' => $userId]);
         $user = $stmt->fetch();
 
@@ -83,9 +87,10 @@ class User extends \Model\Model
         return $obj;
     }
 
-    public function getAvatarById($userId): self|null
+    public static function getAvatarById(): self|null
     {
-        $stmt = $this->pdo->prepare("SELECT avatar FROM {$this->getTableName()} WHERE id = :id");
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("SELECT avatar FROM $tableName WHERE id = :id");
         $stmt->execute([':id' => $_SESSION['userId']]);
         $user = $stmt->fetch();
         if (!$user){
@@ -98,27 +103,31 @@ class User extends \Model\Model
         return $obj;
     }
 
-    public function updateNameById(string $name, $userId )
+    public static function updateNameById(string $name, $userId )
     {
-        $stmt = $this->pdo->prepare("UPDATE {$this->getTableName()} SET name = :name WHERE id= $userId");
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("UPDATE $tableName SET name = :name WHERE id= $userId");
         $stmt->execute([':name' => $name]);
     }
 
-    public function updateEmailById(string $email, $userId)
+    public static function updateEmailById(string $email, $userId)
     {
-        $stmt = $this->pdo->prepare("UPDATE {$this->getTableName()} SET email = :email WHERE id= $userId");
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("UPDATE $tableName SET email = :email WHERE id= $userId");
         $stmt->execute([':email' => $email]);
     }
 
-    public function updatePasswordById($password, $userId)
+    public static function updatePasswordById($password, $userId)
     {
-        $stmt = $this->pdo->prepare("UPDATE {$this->getTableName()} SET password = :password WHERE id= $userId");
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("UPDATE $tableName SET password = :password WHERE id= $userId");
         $stmt->execute([':password' => $password]);
     }
 
-    public function updateAvatarById($avatar, $userId)
+    public static function updateAvatarById($avatar, $userId)
     {
-        $stmt = $this->pdo->prepare("UPDATE {$this->getTableName()} SET avatar = :image_url WHERE id= :userId");
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("UPDATE $tableName SET avatar = :image_url WHERE id= :userId");
         $stmt->execute([':image_url' => $avatar, ':userId' => $userId]);
     }
 

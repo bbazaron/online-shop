@@ -4,7 +4,7 @@ namespace Services\Logger;
 
 class LoggerFileService implements LoggerInterface
 {
-    public function error($exception){
+    public function error(\Throwable $exception){
         $dataFile = '../Storage/Log/errors.txt';
         $counterFile = '../Storage/Log/counter.txt'; // счетчик с цифрой
 
@@ -19,6 +19,7 @@ class LoggerFileService implements LoggerInterface
 
             file_put_contents($counterFile, $counter + 1);
             require_once'../Views/500.php';
+            exit;
         } else {
             echo 'Файл недоступен для записи';
         }

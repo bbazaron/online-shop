@@ -15,23 +15,25 @@ class OrderProducts extends \Model\Model
     private string $imageUrl;
     private int|float $totalSum;
 
-    protected function getTableName(): string
+    protected static function getTableName(): string
     {
         return 'order_products';
     }
-    public function create(int $orderId, int $productId, int $amount)
+    public static function create(int $orderId, int $productId, int $amount)
     {
-        $stmt = $this->pdo->prepare(
-            "INSERT INTO {$this->getTableName()} (order_id, product_id, amount)
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare(
+            "INSERT INTO $tableName (order_id, product_id, amount)
                     VALUES (:orderId, :productId, :amount)");
 
         $stmt->execute(['orderId'=>$orderId, 'productId' => $productId, 'amount' => $amount]);
 
     }
 
-    public function getAllByOrderId(int $orderId): array|null
+    public static function getAllByOrderId(int $orderId): array|null
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM {$this->getTableName()} WHERE order_id = :orderId" );
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("SELECT * FROM $tableName WHERE order_id = :orderId" );
         $stmt->execute(['orderId' => $orderId]);
         $orderProducts = $stmt->fetchAll();
         $arr=[];

@@ -8,15 +8,18 @@ class UserProducts extends \Model\Model
     private int $productId;
     private int $amount;
     private int $count;
+    private int $price;
+    private Product $product;
 
-    protected function getTableName(): string
+    protected static function getTableName(): string
     {
         return 'user_products';
     }
 
-    public function getCountByUserId(int $user_id): self|null
+    public static function getCountByUserId(int $user_id): self|null
     {
-        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM {$this->getTableName()} WHERE user_id = :userId");
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("SELECT COUNT(*) FROM $tableName WHERE user_id = :userId");
         $stmt->execute(['userId' => $user_id]);
         $count = $stmt->fetch();
 
@@ -28,9 +31,10 @@ class UserProducts extends \Model\Model
         return $obj;
     }
 
-    public function getAllByUserId(int $user_id): array|null // достаем все продукты у пользователя
+    public static function getAllByUserId(int $user_id): array|null // достаем все продукты у пользователя
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM {$this->getTableName()} WHERE user_id = :userId ");
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("SELECT * FROM $tableName WHERE user_id = :userId ");
         $stmt->execute(['userId' => $user_id]);
         $products = $stmt->fetchAll();
         $arr =[];
@@ -49,34 +53,79 @@ class UserProducts extends \Model\Model
         }
         return $arr;
     }
-    public function getByProductIdUserId($product_id,$userId):array|false
+
+    public static function getAllByUserIdWithProducts(int $user_id): array|null // достаем все продукты у пользователя
     {
-        $check = $this->pdo->prepare("SELECT * FROM {$this->getTableName()} WHERE product_id = :product_id AND user_id = :userId");
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("SELECT * FROM $tableName up INNER JOIN products p ON up.product_id = p.id WHERE user_id = :userId ");
+        $stmt->execute(['userId' => $user_id]);
+        $userProducts = $stmt->fetchAll();
+
+        if (!$userProducts) {
+            return null;
+        }
+
+        foreach ($userProducts as $userProduct) {
+            if (!$userProduct) {
+                return null;
+            }
+
+            $obj = new self();
+            $obj->id = $userProduct['id'];
+            $obj->userId = $userProduct['user_id'];
+            $obj->productId = $userProduct['product_id'];
+            $obj->amount = $userProduct['amount'];
+            $obj->price = $userProduct['price'];
+
+            $productData=[
+                'id' => $userProduct['product_id'],
+                'name' => $userProduct['name'],
+                'description' => $userProduct['description'],
+                'image_url' => $userProduct['image_url'],
+                'amount' => $userProduct['amount'],
+                'price' => $userProduct['price']
+
+            ];
+
+            $product = Product::createObj($productData);
+            $obj->setProduct($product);
+            $arr[] = $obj;
+        }
+        return $arr;
+    }
+    public static function getByProductIdUserId($product_id,$userId):array|false
+    {
+        $tableName = static::getTableName();
+        $check = static::getPDO()->prepare("SELECT * FROM $tableName WHERE product_id = :product_id AND user_id = :userId");
         $check->execute(['product_id' => $product_id, 'userId' => $userId]);
         $data = $check->fetch();
         return $data;
     }
 
-    public function insertToCart($userid, $product_id,$amount)
+    public static function insertToCart($userid, $product_id,$amount)
     {
-        $stmt = $this->pdo->prepare("INSERT INTO {$this->getTableName()} (user_id, product_id, amount) VALUES (:user_id, :product_id, :amount)");
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("INSERT INTO $tableName (user_id, product_id, amount) VALUES (:user_id, :product_id, :amount)");
         $stmt->execute(['user_id' => $userid, 'product_id' => $product_id,'amount' => $amount]);
     }
 
-    public function updateToCart($userid, $product_id, $amount)
+    public static function updateToCart($userid, $product_id, $amount)
     {
-        $stmt = $this->pdo->prepare("UPDATE {$this->getTableName()} SET amount = :amount WHERE user_id = :user_id AND product_id = :product_id");
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("UPDATE $tableName SET amount = :amount WHERE user_id = :user_id AND product_id = :product_id");
         $stmt->execute(['amount' => $amount, 'user_id' => $userid, 'product_id' => $product_id]);
     }
 
-    public function deleteByUserId($userId)
+    public static function deleteByUserId($userId)
     {
-        $stmt = $this->pdo->prepare("DELETE FROM {$this->getTableName()} WHERE user_id = :user_id");
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("DELETE FROM $tableName WHERE user_id = :user_id");
         $stmt->execute(['user_id' => $userId]);
     }
-    public function deleteByUserIdProductId($user_id, $product_id)
+    public static function deleteByUserIdProductId($user_id, $product_id)
     {
-        $stmt = $this->pdo->prepare("DELETE FROM {$this->getTableName()} WHERE user_id = :user_id AND product_id = :product_id");
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("DELETE FROM $tableName WHERE user_id = :user_id AND product_id = :product_id");
         $stmt->execute(['user_id'=>$user_id, 'product_id' => $product_id]);
     }
     public function getId(): int
@@ -103,6 +152,25 @@ class UserProducts extends \Model\Model
     {
         return $this->count;
     }
+
+    public function setProduct(Product $product): void
+    {
+        $this->product = $product;
+    }
+
+    public function getPrice(): int
+    {
+        return $this->price;
+    }
+
+    public function setPrice(int $price): void
+    {
+        $this->price = $price;
+    }
+
+
+
+
 
 
 

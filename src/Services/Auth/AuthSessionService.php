@@ -22,7 +22,7 @@ class AuthSessionService implements AuthInterface
 
         if ($this->check()){
             $userId = $_SESSION['userId'];
-            return $this->userModel->getById($userId);
+            return User::getById($userId);
 
         } else {
             return null;
@@ -30,7 +30,7 @@ class AuthSessionService implements AuthInterface
     }
     public function auth(\DTO\AuthDTO $dto):bool
     {
-        $user = $this->userModel->getByEmail($dto->getEmail());
+        $user = User::getByEmail($dto->getEmail());
 
         if (!$user) {
             return false;

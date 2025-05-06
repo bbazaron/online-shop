@@ -3,9 +3,7 @@
     <div class="card">
         <div class="profile-container">
             <?php
-            $userModel = new \Model\User();
-            $userId=$_SESSION['userId'];
-            $avatar = $userModel->getAvatarById($userId);
+            $avatar = \Model\User::getAvatarById();
             ?>
             <img src="<?php echo $avatar->getAvatar();?>">
 

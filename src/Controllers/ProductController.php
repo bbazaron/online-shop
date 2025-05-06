@@ -2,21 +2,16 @@
 
 namespace Controllers;
 
+use Model\Product;
 use Model\Review;
 use Request\ReviewRequest;
 
 class ProductController extends BaseController
 {
-    private \Model\Product $product;
-    private \Model\UserProducts $userProducts;
-    private \Model\Review $reviewModel;
     public function __construct()
     {
         parent::__construct();
-        $this->product = new \Model\Product;
-        $this->userProducts = new \Model\UserProducts;
         $this->authService = new \Services\Auth\AuthSessionService();
-        $this->reviewModel = new Review();
     }
 
 
@@ -26,7 +21,7 @@ class ProductController extends BaseController
             header("Location: /login");
             exit;
         }
-        $products=$this->product->getAllProducts();
+        $products=Product::getAll();
         require_once '../Views/catalog.php';
 
     }
@@ -56,8 +51,8 @@ class ProductController extends BaseController
 
     public function getProductPage(array $errors=null)
     {
-        $product=$this->product->getById($_POST['product_id']);
-        $reviews=$this->reviewModel->getByProductId($product->getId());
+        $product=Product::getById($_POST['product_id']);
+        $reviews=Review::getByProductId($product->getId());
         $arr=[];
         if ($reviews !== false) {
             foreach ($reviews as $review) {
@@ -81,7 +76,7 @@ class ProductController extends BaseController
             $rating = $request->getRating();
             $comment = $request->getComment();
 
-            $message = $this->reviewModel->create($product_id, $userId, $name, $rating, $comment);
+            $message = Review::create($product_id, $userId, $name, $rating, $comment);
             if ($message){
                 echo "Отзыв отправлен";
             }

@@ -2,6 +2,8 @@
 
 namespace Request;
 
+use Model\User;
+
 class EditProfileRequest
 {
     private \Model\User $userModel;
@@ -59,7 +61,7 @@ class EditProfileRequest
                 $errors['email'] = "email некорректный";
             } else {
 
-                $result = $this->userModel->getByEmail($email);
+                $result = User::getByEmail($email);
 
                 if ($result !== null) { // запрос вернет null если не найдет введеный email
                     $userId = $_SESSION['userId'];

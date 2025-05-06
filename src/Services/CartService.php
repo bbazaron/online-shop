@@ -2,18 +2,16 @@
 
 namespace Services;
 
+use Model\Product;
+use Model\User;
+use Model\UserProducts;
+
 class CartService
 {
-    private \Model\UserProducts $userProducts;
-    private \Model\Product $productModel;
-    private \Model\UserProducts $userProductsModel;
     private Auth\AuthInterface $authService;
 
     public function __construct()
     {
-        $this->userProducts = new \Model\UserProducts();
-        $this->productModel = new \Model\Product();
-        $this->userProductsModel = new \Model\UserProducts();
         $this->authService = new Auth\AuthSessionService();
     }
 
@@ -22,14 +20,14 @@ class CartService
 
         $user = $this->authService->getCurrentUser();
 
-        $data = $this->userProducts->getByProductIdUserId($dto->getProductId(), $user->getId());
+        $data = UserProducts::getByProductIdUserId($dto->getProductId(), $user->getId());
 
         if ($data === false) {
-            $this->userProducts->insertToCart($user->getId(), $dto->getProductId(), $dto->getAmount());
+            UserProducts::insertToCart($user->getId(), $dto->getProductId(), $dto->getAmount());
             return true;
         } else {
             $newAmount = $data['amount'] + $dto->getAmount();
-            $this->userProducts->updateToCart($user->getId(), $dto->getProductId(), $newAmount);
+            UserProducts::updateToCart($user->getId(), $dto->getProductId(), $newAmount);
             return false;
         }
     }
@@ -38,21 +36,21 @@ class CartService
     {
         $user=$this->authService->getCurrentUser();
 
-        $data = $this->userProducts->getByProductIdUserId($dto->getProductId(), $user->getId());
+        $data = UserProducts::getByProductIdUserId($dto->getProductId(), $user->getId());
 
         if ($data === false) {
             $message = "Продукта нет в корзине";
             return $message;
 
         } elseif($data['amount'] === 1) {
-            $this->userProducts->deleteByUserIdProductId($user->getId(), $dto->getProductId());
+            UserProducts::deleteByUserIdProductId($user->getId(), $dto->getProductId());
             $message = "Продукт удален из корзины";
             return $message;
         }
 
         else {
             $newAmount = $data['amount'] - 1;
-            $this->userProducts->updateToCart($user->getId(), $dto->getProductId(),$newAmount);
+            UserProducts::updateToCart($user->getId(), $dto->getProductId(),$newAmount);
             $message = "Количество продукта уменьшено";
             return $message;
         }
@@ -66,16 +64,15 @@ class CartService
             return [];
         }
 
-        $count = $this->userProductsModel->getCountByUserId($user->getId());
-
+        $count = UserProducts::getCountByUserId($user->getId());
+        $userProducts = UserProducts::getAllByUserIdWithProducts($user->getId());
         $allProducts=[];
-        if ($count->getCount() > 0) { // проверка количества заказов у пользователя
+        if ($count->getCount() > 0) { // проверка количества продуктов в корзине
 
-            $userProducts = $this->userProductsModel->getAllByUserId($user->getId());
 
             foreach ($userProducts as $userProduct) {  // достаем описание каждого продукта из бд product
 
-                $product = $this->productModel->getById($userProduct->getProductId());
+                $product = Product::getById($userProduct->getProductId());
                 $product->setAmount($userProduct->getAmount());
                 $allProducts[] = $product;
             }

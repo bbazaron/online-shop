@@ -10,14 +10,15 @@ class Product extends \Model\Model
     private string $image_url;
     private int $amount;
 
-    protected function getTableName(): string
+    protected static function getTableName(): string
     {
         return 'products';
     }
 
-    public function getAllProducts():array|null
+    public static function getAll():array|null
     {
-        $stmt = $this->pdo->query("SELECT * FROM {$this->getTableName()}");
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->query("SELECT * FROM $tableName");
         $products = $stmt->fetchAll();
         $arr=[];
         foreach ($products as $product){
@@ -40,9 +41,10 @@ class Product extends \Model\Model
         return $arr;
     }
 
-    public function getById($product_id): self|null
+    public static function getById($product_id): self|null
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM {$this->getTableName()}  WHERE id = :product_id");
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("SELECT * FROM $tableName  WHERE id = :product_id");
         $stmt->execute([':product_id' => $product_id]);
         $product = $stmt->fetch();
         if (!$product){
@@ -59,6 +61,21 @@ class Product extends \Model\Model
         } else {
             $obj->description = null;
         }
+
+        return $obj;
+    }
+
+    public static function createObj(array $product): self|null
+    {
+        if (!$product){
+            return null;
+        }
+        $obj = new self();
+        $obj->setId($product['id']);
+        $obj->setName($product['name']);
+        $obj->setDescription($product['description']);
+        $obj->setPrice($product['price']);
+        $obj->setAmount($product['amount']);
 
         return $obj;
     }
@@ -101,6 +118,32 @@ class Product extends \Model\Model
     {
         $this->amount = $amount;
     }
+
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
+    public function setPrice(int $price): void
+    {
+        $this->price = $price;
+    }
+
+    public function setImageUrl(string $image_url): void
+    {
+        $this->image_url = $image_url;
+    }
+
 
 
 

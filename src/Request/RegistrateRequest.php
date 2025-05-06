@@ -1,14 +1,13 @@
 <?php
 
 namespace Request;
+use \Model\User;
 
 class RegistrateRequest
 {
-    private \Model\User $userModel;
 
     public function __construct(private array $post)
     {
-        $this->userModel = new \Model\User();
     }
     public function getName(): string
     {
@@ -55,7 +54,7 @@ class RegistrateRequest
                 $errors['email'] = "email некорректный";
             } else {
 
-                $result = $this->userModel->getByEmail($email);
+                $result = User::getByEmail($email);
 
                 if ($result !== null) {
                     $errors['email'] = 'Пользователь с таким email уже зарегистрирован';

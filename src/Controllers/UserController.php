@@ -5,14 +5,13 @@ namespace Controllers;
 use Request\EditProfileRequest;
 use Request\RegistrateRequest;
 use Request\LoginRequest;
+use Model\User;
 
 class UserController extends BaseController
 {
-    private \Model\User $userModel;
     public function __construct()
     {
         parent::__construct();
-        $this->userModel = new \Model\User();
     }
 
     public function getRegistrate(array $errors = null)
@@ -36,7 +35,7 @@ class UserController extends BaseController
             exit;
         } else {
             $sessionId = $this->authService->getCurrentUser();
-            $user=$this->userModel->getBySessionId($sessionId->getId());
+            $user=User::getBySessionId($sessionId->getId());
 
             require_once '../Views/profile.php';
         }
@@ -60,7 +59,7 @@ class UserController extends BaseController
 
             $hashedPassword = password_hash($request->getPassword(), PASSWORD_DEFAULT);
 
-            $this->userModel->insert( $request->getName(), $request->getEmail(), $hashedPassword);
+            User::insert( $request->getName(), $request->getEmail(), $hashedPassword);
 
             echo "\n Пользователь зарегистрирован";
         }
@@ -107,22 +106,22 @@ class UserController extends BaseController
                 $password = "";
             }
 
-            $user= $this->userModel->getById($userId->getId());
+            $user= User::getById($userId->getId());
 
             if ($user->getId() !== $username) {
-                $this->userModel->updateNameById($username, $userId->getId());
+                User::updateNameById($username, $userId->getId());
             }
 
             if ($user->getEmail() !== $email) {
-                $this->userModel->updateEmailById($email, $userId->getId());
+                User::updateEmailById($email, $userId->getId());
             }
 
             if ($user->getPassword() !== $password && $password !== "") {
-                $this->userModel->updatePasswordById($password, $userId->getId());
+                User::updatePasswordById($password, $userId->getId());
             }
 
             if ($user->getAvatar() !== $image_url && $image_url !== "") {
-                $this->userModel->updateAvatarById($image_url, $userId->getId());
+                User::updateAvatarById($image_url, $userId->getId());
             }
 
             header("Location: /profile");

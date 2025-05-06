@@ -8,8 +8,7 @@ if (!isset($_SESSION['userId'])) {
     exit;
 }
 
-$userModel = new \Model\User();
-$user = $userModel->getBySessionId($_SESSION['userId']);
+$user = \Model\User::getBySessionId($_SESSION['userId']);
 
 ?>
 <form action="editProfile" method="POST">
