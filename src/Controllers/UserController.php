@@ -9,9 +9,12 @@ use Model\User;
 
 class UserController extends BaseController
 {
+    private \Services\CartService $cartService;
+
     public function __construct()
     {
         parent::__construct();
+        $this->cartService = new \Services\CartService();
     }
 
     public function getRegistrate(array $errors = null)
@@ -36,9 +39,13 @@ class UserController extends BaseController
         } else {
             $sessionId = $this->authService->getCurrentUser();
             $user=User::getBySessionId($sessionId->getId());
+            $sum = $this->cartService->getSum();
+            $cartQuantity=$this->cartService->getQuantity();
+
 
             require_once '../Views/profile.php';
         }
+
     }
 
     public function getEditProfile(array $errors=null)
@@ -47,6 +54,9 @@ class UserController extends BaseController
             header("Location: /login");
             exit;
         }
+        $sum = $this->cartService->getSum();
+        $cartQuantity=$this->cartService->getQuantity();
+
         require_once '../Views/edit_profile.php';
     }
 

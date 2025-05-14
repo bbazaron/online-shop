@@ -29,6 +29,8 @@ class OrderController extends BaseController
         }
 
         $allUserOrders = $this->orderService->getAll();
+        $sum = $this->cartService->getSum();
+        $cartQuantity=$this->cartService->getQuantity();
 
         require_once '../Views/userOrders.php';
     }
@@ -45,6 +47,8 @@ class OrderController extends BaseController
         foreach ($list as $product) {
             $sum+=$product->getPrice()*$product->getAmount();
         }
+        $sum = $this->cartService->getSum();
+        $cartQuantity=$this->cartService->getQuantity();
 
         require_once '../Views/order_form.php';
     }

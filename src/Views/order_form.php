@@ -1,10 +1,23 @@
 
 <div class="content">
 
-    <a href="/profile">Мой профиль</a> <br><br>
-    <a href="/catalog">Каталог</a> <br><br>
-    <a href="/orders">Мои заказы</a> <br><br>
-    <a href="/cart">Корзина</a> <br><br>
+    <a href="/catalog" class="btn btn-catalog">
+        <i class="fas fa-list"></i> Каталог
+    </a>
+
+    <a href="/profile" class="btn btn-profile">
+        <i class="fas fa-user"></i> Профиль
+    </a>
+
+    <a href="/orders" class="btn btn-orders">
+        <i class="fas fa-clipboard-list"></i> Мои заказы
+    </a>
+
+    <a href="/cart" class="btn btn-cart">
+        <i class="fas fa-shopping-cart"></i> Корзина
+        <span class="cart-badge"><?php echo $cartQuantity;?></span>
+        <span class="cart-total"><?php echo $sum;?> ₽</span>
+    </a>
 
 
     <div class="title"><span><h2> Форма оформления заказа </h2></span></div> <p></p>
@@ -48,6 +61,7 @@
               <input type="date"/></label>-->
 
         <div class="bottom">
+
                     <div class="profile-social" style="text-align: center">
                         <button type="submit" class="registerbtn">Оформить заказ</button>
                     </div>
@@ -84,7 +98,26 @@
 
 
 
-<style>.content {
+<style>
+    :root {
+        --primary-color: #4a6bff;
+        --secondary-color: #ff6b6b;
+        --dark-color: #2c3e50;
+        --light-color: #f8f9fa;
+    }
+
+    body {
+        font-style: sans-serif;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f7fa;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    .content {
         width: 500px;
         border: 1px solid white;
         font-family: "Times", serif;
@@ -126,4 +159,80 @@
         width: 380px;
         height: 30px;
         border: 1px solid LightGrey;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border: none;
+        outline: none;
+    }
+
+    .btn-catalog {
+        background-color: var(--primary-color);
+        color: white;
+    }
+
+    .btn-catalog:hover {
+        background-color: #3a5bef;
+    }
+
+    .btn-profile {
+        background-color: var(--dark-color);
+        color: white;
+    }
+
+    .btn-profile:hover {
+        background-color: #1a2b3c;
+    }
+
+    .btn-orders {
+        background-color: #6c5ce7;
+        color: white;
+    }
+
+    .btn-orders:hover {
+        background-color: #5d4aec;
+    }
+
+    .btn-cart {
+        position: relative;
+        background-color: var(--secondary-color);
+        color: white;
+        padding-right: 45px;
+    }
+
+    .btn-cart:hover {
+        background-color: #ff5252;
+    }
+
+    .cart-badge {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: white;
+        color: var(--secondary-color);
+        border-radius: 10px;
+        padding: 2px 8px;
+        font-size: 12px;
+        font-weight: bold;
+        min-width: 20px;
+        text-align: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .cart-total {
+        margin-left: 5px;
+        font-size: 12px;
+        opacity: 0.9;
     }</style>

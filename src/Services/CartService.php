@@ -94,4 +94,15 @@ class CartService
         return $sum;
     }
 
+    public function getQuantity():int|float
+    {
+        $list=$this->getUserProducts(); // достаем все продукты из корзины
+        $quantity=0;
+
+        foreach ($list as $product) {
+            $quantity+=$product->getAmount();
+        }
+        return $quantity;
+    }
+
 }

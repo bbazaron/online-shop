@@ -8,10 +8,13 @@ use Request\ReviewRequest;
 
 class ProductController extends BaseController
 {
+    private \Services\CartService $cartService;
+
     public function __construct()
     {
         parent::__construct();
         $this->authService = new \Services\Auth\AuthSessionService();
+        $this->cartService = new \Services\CartService();
     }
 
 
@@ -22,6 +25,8 @@ class ProductController extends BaseController
             exit;
         }
         $products=Product::getAll();
+        $sum=$this->cartService->getSum();
+        $cartQuantity=$this->cartService->getQuantity();
         require_once '../Views/catalog.php';
 
     }
@@ -61,6 +66,9 @@ class ProductController extends BaseController
                 $averageRating = array_sum($arr)/count($arr);
             }
         }
+        $sum=$this->cartService->getSum();
+        $cartQuantity=$this->cartService->getQuantity();
+
         require_once "../Views/product_page.php";
 
     }

@@ -9,6 +9,7 @@ class UserProducts extends \Model\Model
     private int $amount;
     private int $count;
     private int $price;
+    private int $quantity;
     private Product $product;
 
     protected static function getTableName(): string
@@ -57,7 +58,8 @@ class UserProducts extends \Model\Model
     public static function getAllByUserIdWithProducts(int $user_id): array|null // достаем все продукты у пользователя
     {
         $tableName = static::getTableName();
-        $stmt = static::getPDO()->prepare("SELECT * FROM $tableName up INNER JOIN products p ON up.product_id = p.id WHERE user_id = :userId ");
+        $stmt = static::getPDO()->prepare("SELECT * FROM $tableName up
+                                                INNER JOIN products p ON up.product_id = p.id WHERE user_id = :userId ");
         $stmt->execute(['userId' => $user_id]);
         $userProducts = $stmt->fetchAll();
 
@@ -167,6 +169,18 @@ class UserProducts extends \Model\Model
     {
         $this->price = $price;
     }
+
+    public function setQuantity(int $quantity): void
+    {
+        $this->quantity = $quantity;
+    }
+
+    public function getQuantity(): int
+    {
+        return $this->quantity;
+    }
+
+
 
 
 
