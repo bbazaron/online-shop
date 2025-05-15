@@ -65,13 +65,19 @@ class Product extends \Model\Model
         return $obj;
     }
 
-    public static function createObj(array $product): self|null
+    public static function createObj(array $product, int $id=null): self|null
     {
         if (!$product){
             return null;
         }
         $obj = new self();
-        $obj->setId($product['id']);
+
+        if ($id !== null){
+            $obj->setId($id);
+        } else {
+            $obj->setId($product['id']);
+        }
+
         $obj->setName($product['name']);
         $obj->setDescription($product['description']);
         $obj->setPrice($product['price']);

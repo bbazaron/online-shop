@@ -38,9 +38,14 @@ class CartController extends BaseController
 //        } else {
 //            echo "Продукт добавлен повторно";
 //        }
+        $sum=$this->cartService->getSum();
+        $cartQuantity=$this->cartService->getQuantity();
+        $data = [
+            'sum' => $sum,
+            'cartQuantity' => $cartQuantity,
+        ];
+        echo json_encode($data, JSON_PRETTY_PRINT);
 
-        header("Location:/cart");
-        exit;
     }
 
 
@@ -51,9 +56,14 @@ class CartController extends BaseController
 
         $message = $this->cartService->decreaseProduct($dto);
 //        echo $message;
+        $sum=$this->cartService->getSum();
+        $cartQuantity=$this->cartService->getQuantity();
 
-        header("Location: /cart");
-        exit;
+        $data = [
+            'sum' => $sum,
+            'cartQuantity' => $cartQuantity,
+        ];
+        echo json_encode($data, JSON_PRETTY_PRINT);
     }
 
 }

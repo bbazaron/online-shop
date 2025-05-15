@@ -374,7 +374,7 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 12px 20px;
+        padding: 15px 20px;
         border-radius: 8px;
         font-weight: 600;
         font-size: 14px;
@@ -417,7 +417,7 @@
         position: relative;
         background-color: var(--secondary-color);
         color: white;
-        padding-right: 45px;
+        padding-right: 50px;
     }
 
     .btn-cart:hover {
@@ -433,7 +433,7 @@
         color: var(--secondary-color);
         border-radius: 10px;
         padding: 2px 8px;
-        font-size: 12px;
+        font-size: 15px;
         font-weight: bold;
         min-width: 20px;
         text-align: center;

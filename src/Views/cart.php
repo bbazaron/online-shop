@@ -13,7 +13,7 @@
 
     <a href="/cart" class="btn btn-cart">
         <i class="fas fa-shopping-cart"></i> Корзина
-        <span class="cart-badge"><?php echo $cartQuantity;?></span>
+        <span class="cart-quantity"><?php echo $cartQuantity;?></span>
         <span class="cart-total"><?php echo $sum;?> ₽</span>
     </a>
 
@@ -72,7 +72,8 @@
 
         <?php if (isset($sum)):?>
         <?php if ($sum!==0):?>
-            <hr><div class="title"><span><h2> Итого:  <?php echo $sum;?></h2></span></div> <p></p>
+                <i class="fas fa-shopping-cart"></i> Итого:
+                <span class="cart-total-2"><?php echo $sum;?> ₽</span>
             <?php endif; ?>
         <?php endif; ?>
 
@@ -108,8 +109,10 @@
                 data: $(this).serialize(),
                 dataType: 'json',
                 success: function (response) {
-                    // Обновляем количество товаров в бейдже корзины
-                    $('.badge').text(response.count);
+                    $('.cart-quantity').text(response.cartQuantity);
+                    $('.cart-total').text(response.sum + ' ₽');
+                    $('.cart-total-2').text(response.sum + ' ₽');
+                    console.log(response);
                 },
                 error: function(xhr, status, error) {
                     console.error('Ошибка при добавлении товара:', error);
@@ -131,8 +134,10 @@
                 data: $(this).serialize(),
                 dataType: 'json',
                 success: function (response) {
-                    // Обновляем количество товаров в бейдже корзины
-                    $('.badge').text(response.count);
+                    $('.cart-quantity').text(response.cartQuantity);
+                    $('.cart-total').text(response.sum + ' ₽');
+                    $('.cart-total-2').text(response.sum + ' ₽');
+                    console.log(response);
                 },
                 error: function(xhr, status, error) {
                     console.error('Ошибка при добавлении товара:', error);
@@ -160,6 +165,8 @@
         gap: 15px;
         align-items: flex-start;
     }
+
+
 
     a {
         text-decoration: none;
@@ -202,7 +209,7 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 12px 20px;
+        padding: 15px 20px;
         border-radius: 8px;
         font-weight: 600;
         font-size: 14px;
@@ -245,14 +252,14 @@
         position: relative;
         background-color: var(--secondary-color);
         color: white;
-        padding-right: 45px;
+        padding-right: 50px;
     }
 
     .btn-cart:hover {
         background-color: #ff5252;
     }
 
-    .cart-badge {
+    .cart-quantity {
         position: absolute;
         right: 10px;
         top: 50%;
@@ -261,7 +268,7 @@
         color: var(--secondary-color);
         border-radius: 10px;
         padding: 2px 8px;
-        font-size: 12px;
+        font-size: 15px;
         font-weight: bold;
         min-width: 20px;
         text-align: center;

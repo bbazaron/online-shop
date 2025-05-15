@@ -71,6 +71,17 @@ class Order extends \Model\Model
         return $arr;
     }
 
+    public static function getAllByUserIdWithProducts($userId):array|null
+    {
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("SELECT * FROM $tableName t1 
+                                                    INNER JOIN order_products t2 ON t1.id = t2.order_id
+                                                    WHERE user_id = :userId");
+        $stmt->execute(['userId'=>$userId]);
+        $userOrders = $stmt->fetchAll();
+
+    }
+
     public function getId(): int
     {
         return $this->id;
