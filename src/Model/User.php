@@ -3,6 +3,7 @@
 namespace Model;
 class User extends \Model\Model
 {
+    private string $role;
     private int $id;
     private string $name;
     private string $email;
@@ -37,11 +38,16 @@ class User extends \Model\Model
         return $obj;
     }
 
-    public static function insert(string $name, string $email, $password)
+    public static function insert(string $role,string $name, string $email, $password)
     {
         $tableName = static::getTableName();
-        $stmt = static::getPDO()->prepare("INSERT INTO $tableName (name, email, password) VALUES (:name, :email, :password)");
-        $stmt->execute(['name' => $name, 'email' => $email, 'password' => $password]);
+        if ($role==='user'){
+            $stmt = static::getPDO()->prepare("INSERT INTO $tableName (name, email, password) VALUES (:name, :email, :password)");
+            $stmt->execute(['name' => $name, 'email' => $email, 'password' => $password]);
+        } else {
+            $stmt = static::getPDO()->prepare("INSERT INTO $tableName (role, name, email, password) VALUES (:role, :name, :email, :password)");
+            $stmt->execute(['role'=> $role, 'name' => $name, 'email' => $email, 'password' => $password]);
+        }
     }
 
     public static function getBySessionId($sessionId): self|null
@@ -131,7 +137,27 @@ class User extends \Model\Model
         $stmt->execute([':image_url' => $avatar, ':userId' => $userId]);
     }
 
+    public static function getRoleByEmail($email):self|null
+    {
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("SELECT role FROM $tableName WHERE email = :email");
+        $stmt->execute([':email' => $email]);
+        $user = $stmt->fetch();
+        if (!$user){
+            return null;
+        }
+        $obj = new self();
+        if (isset($user['role'])){
+            $obj->role = $user['role'];
+        }
+        return $obj;
+    }
 
+
+    public function getRole():string
+    {
+        return $this->role;
+    }
     public function getId(): int
     {
         return $this->id;

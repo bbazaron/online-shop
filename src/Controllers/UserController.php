@@ -27,8 +27,9 @@ class UserController extends BaseController
         if ($this->authService->check()!==false) { // если user залогинен - перейдет на профиль
             header("Location: /profile");
             exit;
+        } else {
+            require_once '../Views/login_form.php';
         }
-        require_once '../Views/login_form.php';
     }
 
     public function getProfile()
@@ -69,7 +70,7 @@ class UserController extends BaseController
 
             $hashedPassword = password_hash($request->getPassword(), PASSWORD_DEFAULT);
 
-            User::insert( $request->getName(), $request->getEmail(), $hashedPassword);
+            User::insert($request->getRole(), $request->getName(), $request->getEmail(), $hashedPassword);
 
             echo "\n Пользователь зарегистрирован";
         }
@@ -148,5 +149,26 @@ class UserController extends BaseController
         header("Location: /login");
         exit;
     }
+
+    public function getAdminForm(array $errors = null)
+    {
+        require_once '../Views/admin/admin_registration_form.php';
+    }
+
+    public function registrateAdmin(RegistrateRequest $request)
+    {
+        $errors = $request->validateUser();
+
+        if (empty($errors)) {
+
+            $hashedPassword = password_hash($request->getPassword(), PASSWORD_DEFAULT);
+
+            User::insert($request->getRole(),$request->getName(), $request->getEmail(), $hashedPassword);
+
+            echo "\n Пользователь зарегистрирован";
+        }
+        $this->getRegistrate($errors);
+    }
+
 
 }

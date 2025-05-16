@@ -17,67 +17,49 @@
         <span class="cart-quantity"><?php echo $cartQuantity;?></span>
         <span class="cart-total"><?php echo $sum;?> ₽</span>
     </a>
-<?php if ($role==='admin'):?>
-    <a href="/product-management" class="btn btn-cart">
-        <i class="fas fa-shopping-cart"></i> Управление продуктами
-<!--        <span class="caa">--><?php //echo $role;?><!--</span>-->
-    </a>
-<?php endif;?>
-
-    <h3>Каталог</h3>
-  <div class="card-deck">
-      <?php foreach ($products as $product): ?>
-          <div class="card text-center">
-              <a>
-                  <hr>
-                  <img class="card-img-top" src="<?php echo $product->getImageUrl();?>" alt="Card image" width="300"  height="200">
-
-                  <div class="card-body">
-                      <p class="card-footer"><?php echo $product->getName(); ?></p>
-                      <?php if ($product->getDescription() !==null): ?>
-                      <a><h5 class="card-title">Описание <?php echo $product->getDescription(); ?></h5></a>
-                      <?php endif; ?>
-                      <div class="card-title">
-                          Цена: <?php echo $product->getPrice();?>
-                      </div>
-                       <br><form action="/product" method="POST">
-                          <div class="container">
-                              <input type="hidden"  value="<?php echo $product->getId();?>" name="product_id" id="product_id">
-                              <button type="submit" class="registerbtn">Открыть</button>
-                          </div>
-                      </form>
-                  </div>
-              </a>
-          </div>
-
-          <div class="card-title" style="display: flex; gap: 10px;">Добавить в корзину
-              <div style="display: flex; gap: 20px;">
-                  <form class='increase-button' onsubmit="return false">
-                      <div class="container">
-                          <input type="hidden" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
-                          <input type="hidden" value="<?php echo 1;?>" name="amount" id="amount">
-                          <button type="submit" class="registerbtn"> + </button>
-                      </div>
-                  </form>
-
-                  <form class='decrease-button' onsubmit="return false">
-                      <div class="container">
-                          <input type="hidden" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
-                          <input type="hidden" value="<?php echo 1;?>" name="amount" id="amount">
-                          <button type="submit" class="registerbtn"> - </button>
-                      </div>
-                  </form>
-              </div>
-          </div>
+    <?php if ($role==='admin'):?>
+        <a href="/product-management" class="btn btn-cart">
+            <i class="fas fa-shopping-cart"></i> Управление продуктами
+            <!--        <span class="caa">--><?php //echo $role;?><!--</span>-->
+        </a>
+    <?php endif;?>
 
 
-      <?php endforeach; ?>
-  </div>
+</div>
+
+<div class="form-container">
+    <h1>Добавление нового товара</h1>
+    <form action="/add-new-product" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="name" class="required">Название товара</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Описание товара</label>
+            <textarea id="description" name="description"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="price" class="required">Цена</label>
+            <input type="number" id="price" name="price" min="0" step="0.01" required>
+        </div>
+
+
+
+        <div class="form-group">
+            <label for="image_url" class="required">Изображение товара</label>
+            <input type="number" id="image_url" name="image_url" min="0" step="0.01" required>
+        </div>
+
+
+        <button type="submit" class="btn-submit">Добавить товар</button>
+    </form>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-            crossorigin="anonymous">
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+        crossorigin="anonymous">
 </script>
 
 <script>
@@ -92,10 +74,10 @@
                 data: $(this).serialize(),
                 dataType: 'json',
                 success: function (response) {
-                        $('.cart-quantity').text(response.cartQuantity);
-                        $('.cart-total').text(response.sum + ' ₽');
-                        console.log(response);
-                    },
+                    $('.cart-quantity').text(response.cartQuantity);
+                    $('.cart-total').text(response.sum + ' ₽');
+                    console.log(response);
+                },
                 error: function(xhr, status, error) {
                     console.error('Ошибка при добавлении товара:', error);
                 }
@@ -239,7 +221,7 @@
         background-color: #ff5252;
     }
 
-        .cart-quantity {
+    .cart-quantity {
         position: absolute;
         right: 10px;
         top: 50%;
@@ -259,4 +241,48 @@
         margin-left: 5px;
         font-size: 12px;
         opacity: 0.9;
+    }
+    .form-container {
+        background-color: #f9f9f9;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    textarea {
+        height: 100px;
+        resize: vertical;
+    }
+    .btn-submit {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    .btn-submit:hover {
+        background-color: #45a049;
+    }
+    .required:after {
+        content: " *";
+        color: red;
     }</style>

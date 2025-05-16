@@ -58,13 +58,6 @@ class App
 
     }
 
-//    private function getRequest($controller, $method)
-//    {
-//        if ($controller instanceof BaseController) {
-//
-//        }
-//    }
-
 
     public function get(string $route, string $className, string $method, string $requestClass = null)
     {

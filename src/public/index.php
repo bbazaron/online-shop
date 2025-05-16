@@ -40,4 +40,10 @@ $app->post('/create-order', OrderController::class, 'handleCheckout', \Request\O
 
 $app->get('/orders',  OrderController::class, 'getOrders');
 
+$app->get('/admin-registration',  UserController::class, 'getAdminForm');
+$app->post('/admin-registration',  UserController::class, 'registrateAdmin', \Request\RegistrateRequest::class);
+
+$app->get('/product-management',  ProductController::class, 'productManagement');
+$app->post('/add-new-product',  ProductController::class, 'addNewProduct', \Request\AddNewProductRequest::class);
+
 $app->run();

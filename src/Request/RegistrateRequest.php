@@ -9,6 +9,10 @@ class RegistrateRequest
     public function __construct(private array $post)
     {
     }
+    public function getRole(): string
+    {
+        return $this->post['role'];
+    }
     public function getName(): string
     {
         return $this->post['name'];

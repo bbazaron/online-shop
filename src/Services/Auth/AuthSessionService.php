@@ -35,14 +35,14 @@ class AuthSessionService implements AuthInterface
         if (!$user) {
             return false;
         } else {
-            $passwordDb = $user->getPassword();
-            if (password_verify($dto->getPassword(), $passwordDb)) {
-                $this->startSession();
-                $_SESSION['userId'] = $user->getId();
-                return true;
-            } else {
-                return false;
-            }
+                $passwordDb = $user->getPassword();
+                if (password_verify($dto->getPassword(), $passwordDb)) {
+                    $this->startSession();
+                    $_SESSION['userId'] = $user->getId();
+                    return true;
+                } else {
+                    return false;
+                }
         }
     }
 

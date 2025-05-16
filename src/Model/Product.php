@@ -65,6 +65,25 @@ class Product extends \Model\Model
         return $obj;
     }
 
+    public static function insert(string $name, int $price, string $image_url,string $description=null)
+    {
+        $tableName = static::getTableName();
+        if ($description!==null) {
+            $stmt = static::getPDO()->prepare("INSERT INTO $tableName (name, description, price, image_url)
+                                                    VALUES (:name, :description, :price, :image_url)");
+            $stmt->execute(['name' => $name,
+                'description' => $description,
+                'price' => $price,
+                'image_url' => $image_url]);
+        } else {
+            $stmt = static::getPDO()->prepare("INSERT INTO $tableName (name, price, image_url)
+                                                    VALUES (:name, :price, :image_url)");
+            $stmt->execute(['name' => $name,
+                'price' => $price,
+                'image_url' => $image_url]);
+        }
+    }
+
     public static function createObj(array $product, int $id=null): self|null
     {
         if (!$product){

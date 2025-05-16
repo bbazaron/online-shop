@@ -17,4 +17,6 @@ class AddProductRequest
     {
         return $this->post['amount'];
     }
+
+
 }

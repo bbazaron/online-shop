@@ -2,8 +2,12 @@
 
 namespace Controllers;
 
+use DTO\AddNewProductDTO;
+use DTO\OrderCreateDTO;
 use Model\Product;
 use Model\Review;
+use Model\User;
+use Request\AddNewProductRequest;
 use Request\ReviewRequest;
 
 class ProductController extends BaseController
@@ -24,6 +28,8 @@ class ProductController extends BaseController
             header("Location: /login");
             exit;
         }
+        $user = User::getRoleByEmail($this->authService->getCurrentUser()->getEmail());
+        $role=$user->getRole();
         $products=Product::getAll();
         $sum=$this->cartService->getSum();
         $cartQuantity=$this->cartService->getQuantity();
@@ -31,28 +37,6 @@ class ProductController extends BaseController
 
     }
 
-
-//    public function decreaseFromCart()
-//    {
-//            $user_id = $this->authService->getCurrentUser();
-//            $product_id = $_POST['product_id'];
-//
-//            $data = $this->userProducts->getByProductIdUserId($product_id,$user_id->getId());
-//
-//            if ($data === false) {
-//                echo "Продукта нет в корзине";
-//
-//            } elseif($data['amount'] === 1) {
-//                $this->userProducts->deleteByUserIdProductId($user_id->getId(),$product_id);
-//                echo "Продукт удален из корзины";
-//            }
-//                else {
-//                    $amount = $data['amount'] - 1;
-//                    $this->userProducts->updateToCart($user_id->getId(),$product_id,$amount);
-//                    echo "Количество продукта уменьшено";
-//                }
-//        $this->getCatalog();
-//    }
 
     public function getProductPage(array $errors=null)
     {
@@ -95,5 +79,29 @@ class ProductController extends BaseController
         }
     }
 
+    public function productManagement()
+    {
+        $user = User::getRoleByEmail($this->authService->getCurrentUser()->getEmail());
+        $role=$user->getRole();
+        $sum=$this->cartService->getSum();
+        $cartQuantity=$this->cartService->getQuantity();
+        $products=Product::getAll();
 
+        require_once '../Views/admin/product_management.php';
+    }
+
+    public function addNewProduct(AddNewProductRequest $request)
+    {
+        $errors = $request->validateProduct();
+        if (empty($errors)) {
+
+                $dto= new AddNewProductDTO(
+                    $request->getName(),
+                    $request->getPrice(),
+                    $request->getImageUrl(),
+                    $request->getDescription()
+                );
+
+        }
+    }
 }

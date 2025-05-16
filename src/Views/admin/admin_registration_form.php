@@ -1,10 +1,10 @@
-<form action="/registration" method="POST">
+<form action="/admin-registration" method="POST">
     <div class="container">
-        <h1>Register</h1>
+        <h1>Register admin</h1>
         <p>Please fill in this form to create an account.</p>
         <hr>
 
-        <input type="hidden" value="user" name="role" id="role">
+        <input type="hidden" value="admin" name="role" id="role">
 
         <label for="name"><b>Name</b></label>
         <?php if (isset($errors['name'])): ?>
@@ -32,10 +32,16 @@
         <input type="password" placeholder="Repeat Password" name="psw-repeat" id="psw-repeat" required>
 
         <label for="psw-repeat"><b>Add profile picture</b></label>
-<!--        --><?php //if (isset($errors['psw-repeat'])): ?>
-<!--            <label style="color: red">--><?php //echo $errors['psw-repeat'];?><!--</label>-->
-<!--        --><?php //endif; ?>
+        <!--        --><?php //if (isset($errors['psw-repeat'])): ?>
+        <!--            <label style="color: red">--><?php //echo $errors['psw-repeat'];?><!--</label>-->
+        <!--        --><?php //endif; ?>
         <input type="text" placeholder="Add URL" name="avatar" id="avatar" >
+
+        <label for="key"><b>Activation Key</b></label>
+        <?php if (isset($errors['psw-repeat'])): ?>
+            <label style="color: red"><?php echo $errors['psw-repeat'];?></label>
+        <?php endif; ?>
+        <input type="text" placeholder="Activation Key" name="key" id="key" >
 
         <button type="submit" class="registerbtn">Register</button>
     </div>
