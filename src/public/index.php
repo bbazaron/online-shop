@@ -43,7 +43,8 @@ $app->get('/orders',  OrderController::class, 'getOrders');
 $app->get('/admin-registration',  UserController::class, 'getAdminForm');
 $app->post('/admin-registration',  UserController::class, 'registrateAdmin', \Request\RegistrateRequest::class);
 
-$app->get('/product-management',  ProductController::class, 'productManagement');
+$app->get('/product-management',  ProductController::class, 'getProductManagement');
 $app->post('/add-new-product',  ProductController::class, 'addNewProduct', \Request\AddNewProductRequest::class);
+$app->post('/delete-product',  ProductController::class, 'deleteProduct', \Request\DeleteProductRequest::class);
 
 $app->run();

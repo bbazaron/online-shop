@@ -24,42 +24,144 @@
         </a>
     <?php endif;?>
 
-
 </div>
 
+<div class="forms">
 <div class="form-container">
     <h1>Добавление нового товара</h1>
     <form action="/add-new-product" method="POST" enctype="multipart/form-data">
         <div class="form-group">
             <label for="name" class="required">Название товара</label>
+            <?php if (isset($errors['name'])): ?>
+                <label style="color:red" ><?php echo $errors['name'];?></label>
+            <?php endif; ?>
             <input type="text" id="name" name="name" required>
         </div>
 
         <div class="form-group">
             <label for="description">Описание товара</label>
+            <?php if (isset($errors['description'])): ?>
+                <label style="color:red" ><?php echo $errors['description'];?></label>
+            <?php endif; ?>
             <textarea id="description" name="description"></textarea>
         </div>
 
         <div class="form-group">
             <label for="price" class="required">Цена</label>
-            <input type="number" id="price" name="price" min="0" step="0.01" required>
+            <?php if (isset($errors['price'])): ?>
+                <label style="color:red" ><?php echo $errors['price'];?></label>
+            <?php endif; ?>
+            <input type="number" id="price" name="price"  required>
         </div>
-
-
 
         <div class="form-group">
             <label for="image_url" class="required">Изображение товара</label>
-            <input type="number" id="image_url" name="image_url" min="0" step="0.01" required>
+            <?php if (isset($errors['image_url'])): ?>
+                <label style="color:red" ><?php echo $errors['image_url'];?></label>
+            <?php endif; ?>
+            <input type="text" id="image_url" name="image_url"  required>
         </div>
-
 
         <button type="submit" class="btn-submit">Добавить товар</button>
     </form>
 </div>
 
+    <div class="form-container">
+        <h1>Редактирование товара</h1>
+        <select name="product_id" required>
+            <option value=""> Выберите товар для редактирования </option>
+            <?php foreach ($products as $product): ?>
+                <option value="<?= htmlspecialchars($product->getId()) ?>">
+                    <?= htmlspecialchars($product->getName()) ?> (<?= $product->getPrice() ?> ₽)
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <br> <br>
+
+        <form action="/add-new-product" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="name" class="required">Новое название товара</label>
+                <?php if (isset($errors['name'])): ?>
+                    <label style="color:red" ><?php echo $errors['name'];?></label>
+                <?php endif; ?>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Новое описание товара</label>
+                <?php if (isset($errors['description'])): ?>
+                    <label style="color:red" ><?php echo $errors['description'];?></label>
+                <?php endif; ?>
+                <textarea id="description" name="description"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="price" class="required">Новая цена</label>
+                <?php if (isset($errors['price'])): ?>
+                    <label style="color:red" ><?php echo $errors['price'];?></label>
+                <?php endif; ?>
+                <input type="number" id="price" name="price"  required>
+            </div>
+
+            <div class="form-group">
+                <label for="image_url" class="required">Новое изображение товара</label>
+                <?php if (isset($errors['image_url'])): ?>
+                    <label style="color:red" ><?php echo $errors['image_url'];?></label>
+                <?php endif; ?>
+                <input type="text" id="image_url" name="image_url"  required>
+            </div>
+            <button type="submit" class="btn-submit">Добавить товар</button>
+        </form>
+    </div>
+
+
+<div class="form-container">
+    <h1>Удаление товара</h1>
+    <div class="product-list">
+        <form action="/delete-product" method="POST" ">
+            <select name="product_id" required>
+                <option value=""> Выберите товар для удаления</option>
+                <?php foreach ($products as $product): ?>
+                    <option value="<?= htmlspecialchars($product->getId()) ?>">
+                        <?= htmlspecialchars($product->getName()) ?> (<?= $product->getPrice() ?> ₽)
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            <br> <br>
+            <button type="submit" class="btn-submit" onclick="return confirm('Вы уверены, что хотите удалить этот товар?')">
+                Удалить товар
+            </button>
+        </form>
+    </div>
+
+</div>
+
+</div>
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
         crossorigin="anonymous">
+</script>
+
+<script>
+    $("document").ready(function () {
+        var form =  $('.delete-product');
+        console.log(form);
+
+        form.submit(function () {
+            $.ajax({
+                type: "POST",
+                url: "/delete-product",
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function (response) {
+                },
+                error: function(xhr, status, error) {
+                    console.error('Ошибка при удалении товара:', error);
+                }
+            });
+        });
+    });
 </script>
 
 <script>
@@ -243,6 +345,9 @@
         opacity: 0.9;
     }
     .form-container {
+        /*display: flex; !* Включаем flex-контейнер *!*/
+        /*flex-wrap: wrap; !* Разрешаем перенос на новую строку *!*/
+        /*gap: 20px;*/
         background-color: #f9f9f9;
         padding: 25px;
         border-radius: 8px;
@@ -285,4 +390,10 @@
     .required:after {
         content: " *";
         color: red;
-    }</style>
+    }
+    .forms {
+        display: flex;
+        flex-wrap: wrap ;
+        gap: 60px;
+    }
+</style>

@@ -3,22 +3,27 @@
 namespace Controllers;
 
 use DTO\AddNewProductDTO;
+use DTO\DeleteProductDTO;
 use DTO\OrderCreateDTO;
 use Model\Product;
 use Model\Review;
 use Model\User;
 use Request\AddNewProductRequest;
 use Request\ReviewRequest;
+use Services\CartService;
+use Services\ProductService;
 
 class ProductController extends BaseController
 {
-    private \Services\CartService $cartService;
+    private CartService $cartService;
+    private ProductService $productService;
 
     public function __construct()
     {
         parent::__construct();
         $this->authService = new \Services\Auth\AuthSessionService();
-        $this->cartService = new \Services\CartService();
+        $this->cartService = new CartService();
+        $this->productService = new ProductService();
     }
 
 
@@ -79,19 +84,21 @@ class ProductController extends BaseController
         }
     }
 
-    public function productManagement()
+    public function getProductManagement(array $errors=null)
     {
         $user = User::getRoleByEmail($this->authService->getCurrentUser()->getEmail());
         $role=$user->getRole();
         $sum=$this->cartService->getSum();
         $cartQuantity=$this->cartService->getQuantity();
         $products=Product::getAll();
+//        echo"<pre>";print_r($products);exit;
 
         require_once '../Views/admin/product_management.php';
     }
 
     public function addNewProduct(AddNewProductRequest $request)
     {
+//        echo"<pre>";print_r($request);exit;
         $errors = $request->validateProduct();
         if (empty($errors)) {
 
@@ -102,6 +109,17 @@ class ProductController extends BaseController
                     $request->getDescription()
                 );
 
+                $this->productService->addNewProduct($dto);
         }
+        $this->getProductManagement($errors);
+    }
+
+    public function deleteProduct(\Request\DeleteProductRequest $request)
+    {
+        $productId = $request->getProductId();
+        $dto = new DeleteProductDTO($productId);
+        $this->productService->deleteProduct($dto);
+        header("Location: /product-management");
+        exit;
     }
 }

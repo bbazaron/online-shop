@@ -45,8 +45,6 @@ class AddNewProductRequest
             $price = $this->post['price'];
             if (is_numeric($price) === false || $price < 0) {
                 $errors['price'] = "Введены неверные данные";
-            } else {
-                $errors['price']='Цена должна быть заполнена';
             }
         }
 

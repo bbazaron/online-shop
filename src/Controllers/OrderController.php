@@ -56,6 +56,7 @@ class OrderController extends BaseController
 
     public function handleCheckOut(OrderRequest $request)
     {
+
         $errors = $request->orderValidation();
 
         if (empty($errors)) {

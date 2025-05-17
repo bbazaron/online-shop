@@ -84,6 +84,13 @@ class Product extends \Model\Model
         }
     }
 
+    public static function deleteById(int $id)
+    {
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("DELETE FROM $tableName WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+    }
+
     public static function createObj(array $product, int $id=null): self|null
     {
         if (!$product){
