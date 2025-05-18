@@ -41,6 +41,13 @@ class AddNewProductRequest
             $errors['name']='Название должно быть заполнено';
         }
 
+        if ($this->post['description']!== ''){
+            $description = $this->post['description'];
+            if (strlen($description) < 2) {
+                $errors['name'] = 'Слишком короткое название';
+            }
+        }
+
         if (isset($this->post['price'])){
             $price = $this->post['price'];
             if (is_numeric($price) === false || $price < 0) {

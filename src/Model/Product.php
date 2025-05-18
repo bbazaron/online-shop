@@ -91,6 +91,31 @@ class Product extends \Model\Model
         $stmt->execute(['id' => $id]);
     }
 
+    public static function updateNameById(int $id, string $name)
+    {
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("UPDATE $tableName SET name = :name WHERE id = :id");
+        $stmt->execute(['name' => $name, 'id' => $id]);
+    }
+    public static function updateDescriptionById(int $id, string $description)
+    {
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("UPDATE $tableName SET description = :description WHERE id = :id");
+        $stmt->execute(['description' => $description, 'id' => $id]);
+    }
+    public static function updatePriceById(int $id, int $price)
+    {
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("UPDATE $tableName SET price = :price WHERE id = :id");
+        $stmt->execute(['price' => $price, 'id' => $id]);
+    }
+    public static function updateImageUrlById(int $id, string $image_url)
+    {
+        $tableName = static::getTableName();
+        $stmt = static::getPDO()->prepare("UPDATE $tableName SET image_url = :image_url WHERE id = :id");
+        $stmt->execute(['image_url' => $image_url, 'id' => $id]);
+    }
+
     public static function createObj(array $product, int $id=null): self|null
     {
         if (!$product){

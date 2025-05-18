@@ -5,10 +5,12 @@ namespace Controllers;
 use DTO\AddNewProductDTO;
 use DTO\DeleteProductDTO;
 use DTO\OrderCreateDTO;
+use DTO\EditProductDTO;
 use Model\Product;
 use Model\Review;
 use Model\User;
 use Request\AddNewProductRequest;
+use Request\EditProductRequest;
 use Request\ReviewRequest;
 use Services\CartService;
 use Services\ProductService;
@@ -121,5 +123,39 @@ class ProductController extends BaseController
         $this->productService->deleteProduct($dto);
         header("Location: /product-management");
         exit;
+    }
+
+    public function editProduct(EditProductRequest $request)
+    {
+//        echo "<pre>";
+//        print_r($request);
+//        exit;
+        $errors = $request->validateProduct();
+        if (empty($errors)) {
+            $id = $request->getId();
+            $name = $request->getName();
+            $description = $request->getDescription();
+            $price = $request->getPrice();
+            $image_url = $request->getImageUrl();
+
+            if ($name !== "") {
+                Product::updateNameById($id, $name);
+            }
+            if ($description !== "") {
+                Product::updateDescriptionById($id, $description);
+            }
+            if ($price !== "") {
+                Product::updatePriceById($id, $price);
+            }
+            if ($image_url !== "") {
+                Product::updateImageUrlById($id, $image_url);
+            }
+
+            header("Location: /product-management");
+            exit;
+        } else {
+            $this->getProductManagement($errors);
+        }
+
     }
 }

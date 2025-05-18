@@ -46,5 +46,6 @@ $app->post('/admin-registration',  UserController::class, 'registrateAdmin', \Re
 $app->get('/product-management',  ProductController::class, 'getProductManagement');
 $app->post('/add-new-product',  ProductController::class, 'addNewProduct', \Request\AddNewProductRequest::class);
 $app->post('/delete-product',  ProductController::class, 'deleteProduct', \Request\DeleteProductRequest::class);
+$app->post('/edit-product',  ProductController::class, 'editProduct', \Request\EditProductRequest::class);
 
 $app->run();

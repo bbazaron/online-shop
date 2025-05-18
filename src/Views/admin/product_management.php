@@ -26,10 +26,35 @@
 
 </div>
 
+<h2 style="text-align: center;">Список товаров</h2>
+<table class="product-table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Название</th>
+        <th>Описание</th>
+        <th>Цена</th>
+        <th>Изображение</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($products as $product): ?>
+        <tr>
+            <td><?= htmlspecialchars($product->getId()) ?></td>
+            <td><?= htmlspecialchars($product->getName()) ?></td>
+            <td><?= htmlspecialchars($product->getDescription()) ?></td>
+            <td><?= number_format($product->getPrice(), 0, '', ' ') ?> ₽</td>
+            <td><?= htmlspecialchars($product->getImageUrl()) ?></td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+
+
 <div class="forms">
 <div class="form-container">
     <h1>Добавление нового товара</h1>
-    <form action="/add-new-product" method="POST" enctype="multipart/form-data">
+    <form action="/add-new-product" method="post">
         <div class="form-group">
             <label for="name" class="required">Название товара</label>
             <?php if (isset($errors['name'])): ?>
@@ -68,23 +93,23 @@
 
     <div class="form-container">
         <h1>Редактирование товара</h1>
-        <select name="product_id" required>
-            <option value=""> Выберите товар для редактирования </option>
-            <?php foreach ($products as $product): ?>
-                <option value="<?= htmlspecialchars($product->getId()) ?>">
-                    <?= htmlspecialchars($product->getName()) ?> (<?= $product->getPrice() ?> ₽)
-                </option>
-            <?php endforeach; ?>
-        </select>
-        <br> <br>
 
-        <form action="/add-new-product" method="POST" enctype="multipart/form-data">
+        <form action="/edit-product" method="post" >
+            <select name="product_id" required>
+                <option value=""> Выберите товар для редактирования </option>
+                <?php foreach ($products as $product): ?>
+                    <option value="<?= htmlspecialchars($product->getId()) ?>">
+                        <?= htmlspecialchars($product->getName()) ?> (<?= $product->getPrice() ?> ₽)
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            <br> <br>
             <div class="form-group">
-                <label for="name" class="required">Новое название товара</label>
+                <label for="name">Новое название товара</label>
                 <?php if (isset($errors['name'])): ?>
                     <label style="color:red" ><?php echo $errors['name'];?></label>
                 <?php endif; ?>
-                <input type="text" id="name" name="name" required>
+                <input type="text" id="name" name="name">
             </div>
 
             <div class="form-group">
@@ -96,19 +121,19 @@
             </div>
 
             <div class="form-group">
-                <label for="price" class="required">Новая цена</label>
+                <label for="price" >Новая цена</label>
                 <?php if (isset($errors['price'])): ?>
                     <label style="color:red" ><?php echo $errors['price'];?></label>
                 <?php endif; ?>
-                <input type="number" id="price" name="price"  required>
+                <input type="number" id="price" name="price">
             </div>
 
             <div class="form-group">
-                <label for="image_url" class="required">Новое изображение товара</label>
+                <label for="image_url">Новое изображение товара</label>
                 <?php if (isset($errors['image_url'])): ?>
                     <label style="color:red" ><?php echo $errors['image_url'];?></label>
                 <?php endif; ?>
-                <input type="text" id="image_url" name="image_url"  required>
+                <input type="text" id="image_url" name="image_url">
             </div>
             <button type="submit" class="btn-submit">Добавить товар</button>
         </form>
@@ -118,7 +143,7 @@
 <div class="form-container">
     <h1>Удаление товара</h1>
     <div class="product-list">
-        <form action="/delete-product" method="POST" ">
+        <form action="/delete-product" method="POST">
             <select name="product_id" required>
                 <option value=""> Выберите товар для удаления</option>
                 <?php foreach ($products as $product): ?>
@@ -136,11 +161,61 @@
 
 </div>
 
+
+
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
         crossorigin="anonymous">
+</script>
+
+
+<script>
+    $("document").ready(function () {
+        var form =  $('.add-new-product');
+        console.log(form);
+
+        form.submit(function () {
+            $.ajax({
+                type: "POST",
+                url: "/add-new-product",
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+
+                },
+                error: function(xhr, status, error) {
+                    console.error('Ошибка при добавлении нового товара:', error);
+                }
+            });
+        });
+    });
+</script>
+
+
+<script>
+    $("document").ready(function () {
+        var form =  $('.edit-product');
+        console.log(form);
+
+        form.submit(function () {
+            $.ajax({
+                type: "POST",
+                url: "/edit-product",
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+
+                },
+                error: function(xhr, status, error) {
+                    console.error('Ошибка при редактировании товара:', error);
+                }
+            });
+        });
+    });
 </script>
 
 <script>
@@ -155,6 +230,9 @@
                 data: $(this).serialize(),
                 dataType: 'json',
                 success: function (response) {
+                    console.log(response);
+                    console.log(form);
+
                 },
                 error: function(xhr, status, error) {
                     console.error('Ошибка при удалении товара:', error);
@@ -164,57 +242,8 @@
     });
 </script>
 
-<script>
-    $("document").ready(function () {
-        var form =  $('.increase-button');
-        console.log(form);
-
-        form.submit(function () {
-            $.ajax({
-                type: "POST",
-                url: "/add-product",
-                data: $(this).serialize(),
-                dataType: 'json',
-                success: function (response) {
-                    $('.cart-quantity').text(response.cartQuantity);
-                    $('.cart-total').text(response.sum + ' ₽');
-                    console.log(response);
-                },
-                error: function(xhr, status, error) {
-                    console.error('Ошибка при добавлении товара:', error);
-                }
-            });
-        });
-    });
-</script>
-
-<script>
-    $("document").ready(function () {
-        var form =  $('.decrease-button');
-        console.log(form);
-
-        form.submit(function () {
-            $.ajax({
-                type: "POST",
-                url: "/decrease-product",
-                data: $(this).serialize(),
-                dataType: 'json',
-                success: function (response) {
-                    // Обновляем количество товаров в бейдже корзины
-                    $('.cart-quantity').text(response.cartQuantity);
-                    $('.cart-total').text(response.sum + ' ₽');
-                    console.log(response);
-                },
-                error: function(xhr, status, error) {
-                    console.error('Ошибка при добавлении товара:', error);
-                }
-            });
-        });
-    });
-</script>
-
 <style>
-    :root {
+      :root {
         --primary-color: #4a6bff;
         --secondary-color: #ff6b6b;
         --dark-color: #2c3e50;
