@@ -8,38 +8,61 @@
 <div class="registration-container">
     <div class="registration-header">
         <h1>Создайте аккаунт</h1>
-        @if($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+{{--        @if($errors->any())--}}
+{{--            <div class="alert alert-danger">--}}
+{{--                <ul>--}}
+{{--                    @foreach($errors->all() as $error)--}}
+{{--                        <li>{{ $error }}</li>--}}
+{{--                    @endforeach--}}
+{{--                </ul>--}}
+{{--            </div>--}}
+{{--        @endif--}}
     </div>
 
     <form action="/signUp" method="post">
         @csrf
         <div class="form-group">
             <label for="name">Имя</label>
-            <input type="text" id="name" name="name" placeholder="Ваше полное имя" required>
+            <input type="text"
+                   id="name"
+                   name="name"
+                   class="{{ $errors->has('name') ? 'error-field' : '' }}"
+                   placeholder="Ваше полное имя" required>
         </div>
+        @error('name')
+        <div class="error-message">{{ $message }}</div>
+        @enderror
+
 
         <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="example@mail.com" required>
+            <input type="email" id="email" name="email"
+                   class="{{ $errors->has('email') ? 'error-field' : '' }}"
+                   placeholder="example@mail.com" required>
         </div>
+        @error('email')
+        <div class="error-message">{{ $message }}</div>
+        @enderror
 
         <div class="form-group">
             <label for="password">Пароль</label>
-            <input type="password" id="password" name="password" placeholder="Введите пароль" required>
+            <input type="password" id="password" name="password"
+                   class="{{ $errors->has('password') ? 'error-field' : '' }}"
+                   placeholder="Введите пароль" required>
         </div>
+        @error('password')
+        <div class="error-message">{{ $message }}</div>
+        @enderror
 
         <div class="form-group">
-            <label for="confirm-password">Подтвердите пароль</label>
-            <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Повторите пароль" required>
+            <label for="password_confirmation">Подтвердите пароль</label>
+            <input type="password" id="password_confirmation" name="password_confirmation"
+                   class="{{ $errors->has('password_confirmation') ? 'error-field' : '' }}"
+                   placeholder="Повторите пароль" required>
         </div>
+        @error('password_confirmation')
+        <div class="error-message">{{ $message }}</div>
+        @enderror
 
         <button type="submit" class="btn btn-submit">Зарегистрироваться</button>
     </form>
@@ -125,6 +148,9 @@
         font-size: 14px;
         transition: all 0.3s ease;
     }
+    .form-group input.error-field {
+        border: 1px solid red; /* красная рамка */
+    }
 
     .form-group input:focus {
         border-color: var(--primary-color);
@@ -186,5 +212,11 @@
         font-size: 11px;
         color: var(--muted-color);
         margin-top: 5px;
+    }
+
+    .error-message {
+        color: red;
+        font-size: 14px;
+        margin-top: 3px;
     }
 </style>

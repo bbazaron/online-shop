@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-//use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-class User extends Authenticatable
+use Illuminate\Foundation\Auth\User as BaseUser;
+class User extends BaseUser
 {
     protected $fillable = [
         'username',

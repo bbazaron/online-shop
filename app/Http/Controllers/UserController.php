@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\SignUpRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -16,39 +18,29 @@ class UserController
         return view('loginForm');
     }
 
-    public function signUp(Request $request)
+    public function signUp(SignUpRequest $request)
     {
-        $request->validate([
-            'name' => 'required|min:5',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6|confirmed',
-        ]);
-
         User::query()->create([
             'username' => $request->get('name'),
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password'))
         ]);
-
-        return redirect('/login');
+        response()->redirectTo('login');
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
         $data = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required']
         ]);
 
-        if (Auth::attempt($data)){
-            $request->session()->regenerate();
+        Auth::attempt([
+            'email' => $request->get('email'),
+            'password' => $request->get('password')
+        ]);
 
-            return redirect()->intended('catalog');
-        }
 
-        return back()->withErrors([
-            'email' => 'Введены неверные данные'
-        ])->onlyInput('email');
     }
 
 }

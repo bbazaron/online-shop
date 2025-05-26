@@ -11,6 +11,7 @@ Route::get('/', function () {
 
 Route::get('/signUp', [UserController::class, 'getSignUpForm']);
 Route::post('/signUp', [UserController::class, 'signUp']);
+
 Route::get('/login', [UserController::class, 'getLoginForm']);
 Route::post('/login', [UserController::class, 'login']);
 //Route::get('/catalog', [ProductController::class, 'getCatalog'])->middleware('auth');
