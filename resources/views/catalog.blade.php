@@ -3,7 +3,6 @@
         <i class="fas fa-list"></i> Каталог
     </a>
 
-
     <a href="/profile" class="btn btn-profile">
         <i class="fas fa-user"></i> Профиль
     </a>
@@ -25,25 +24,25 @@
 {{--    <?php endif;?>--}}
 
     <h3>Каталог</h3>
+
+    @foreach($products as $product)
     <div class="card-deck">
-        <?php foreach ($products as $product): ?>
         <div class="card text-center">
             <a>
                 <hr>
-                <img class="card-img-top" src="<?php echo $product->getImageUrl();?>" alt="Card image" width="300"  height="200">
+                <img class="card-img-top" src="{{ $product['image'] }}" alt="Card image" width="300"  height="200">
 
                 <div class="card-body">
-                    <p class="card-footer"><?php echo $product->getName(); ?></p>
-                        <?php if ($product->getDescription() !==null): ?>
-                    <a><h5 class="card-title">Описание <?php echo $product->getDescription(); ?></h5></a>
-                    <?php endif; ?>
+                    <p class="card-footer">{{ $product['name'] }}</p>
+                    <a><h5 class="card-title">Описание {{ $product['description'] }}</h5></a>
                     <div class="card-title">
-                        Цена: <?php echo $product->getPrice();?>
+                        Цена: {{ $product['price'] }}
                     </div>
                     <br><form action="/product" method="POST">
+                        @csrf
                         <div class="container">
-                            <input type="hidden"  value="<?php echo $product->getId();?>" name="product_id" id="product_id">
-                            <button type="submit" class="registerbtn">Открыть</button>
+                            <input type="hidden"  value="{{ $product['id'] }}" name="product_id" id="product_id">
+                            <button type="submit" class="register btn">Открыть</button>
                         </div>
                     </form>
                 </div>
@@ -52,27 +51,29 @@
 
         <div class="card-title" style="display: flex; gap: 10px;">Добавить в корзину
             <div style="display: flex; gap: 20px;">
-                <form class='increase-button' onsubmit="return false">
+{{--                <form class='increase-button' onsubmit="return false">--}}
+                    <form action="/add-product" method="post">
+                    @csrf
                     <div class="container">
-                        <input type="hidden" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
-                        <input type="hidden" value="<?php echo 1;?>" name="amount" id="amount">
-                        <button type="submit" class="registerbtn"> + </button>
+                        <input type="hidden" value="{{ $product['id'] }}" name="product_id" id="product_id">
+                        <button type="submit" class="register btn"> + </button>
                     </div>
                 </form>
 
                 <form class='decrease-button' onsubmit="return false">
+                    @csrf
                     <div class="container">
-                        <input type="hidden" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
+                        <input type="hidden" value="{{ $product['id'] }}" name="product_id" id="product_id">
                         <input type="hidden" value="<?php echo 1;?>" name="amount" id="amount">
-                        <button type="submit" class="registerbtn"> - </button>
+                        <button type="submit" class="register btn"> - </button>
                     </div>
                 </form>
             </div>
         </div>
 
-
-        <?php endforeach; ?>
     </div>
+    @endforeach
+
 </div>
 
 

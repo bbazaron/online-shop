@@ -25,7 +25,7 @@
             <label for="name">Имя</label>
             <input type="text"
                    id="name"
-                   name="name"
+                   name="username"
                    class="{{ $errors->has('name') ? 'error-field' : '' }}"
                    placeholder="Ваше полное имя" required>
         </div>

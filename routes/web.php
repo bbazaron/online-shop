@@ -11,12 +11,15 @@ Route::get('/', function () {
 
 Route::get('/signUp', [UserController::class, 'getSignUpForm']);
 Route::post('/signUp', [UserController::class, 'signUp']);
-
 Route::get('/login', [UserController::class, 'getLoginForm']);
 Route::post('/login', [UserController::class, 'login']);
-//Route::get('/catalog', [ProductController::class, 'getCatalog'])->middleware('auth');
-Route::get('/catalog', function () {
-    return view('catalog', [
-        'products' => Product::all()
-    ]);
-});
+Route::get('/profile',[UserController::class, 'getProfile']);
+Route::get('/editProfile',[UserController::class, 'getEditProfile']);
+Route::post('/editProfile',[UserController::class, 'handleEditProfile']);
+Route::get('/logout',[UserController::class, 'logout']);
+
+Route::get('/catalog',[ProductController::class, 'getCatalog']);
+Route::post('/product',[ProductController::class, 'getProductPage']);
+Route::post('/add-product',[ProductController::class, 'addProductToCart']);
+Route::post('/decrease-product',[ProductController::class, 'decreaseProductFromCart']);
+

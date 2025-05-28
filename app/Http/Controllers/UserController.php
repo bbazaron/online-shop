@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Http\Requests\EditProfileRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignUpRequest;
 use App\Models\User;
@@ -30,17 +31,57 @@ class UserController
 
     public function login(LoginRequest $request)
     {
-        $data = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required']
-        ]);
-
         Auth::attempt([
             'email' => $request->get('email'),
             'password' => $request->get('password')
         ]);
+        return response()->redirectTo('catalog');
 
+    }
 
+    public function logout()
+    {
+        Auth::logout();
+        return response()->redirectTo('login');
+    }
+
+    public function getProfile()
+    {
+        if (Auth::check()) {
+//            $user = User::query()
+//                ->select('id', 'username', 'email', 'image')
+//                ->where('id', Auth::id())
+//                ->first();
+            $user=User::find(Auth::id());
+            $userData=$user->only(['id','username','email','image']);
+
+            return view('profile', ['user' => $userData]);
+        } else {
+            return response()->redirectTo('login');
+        }
+    }
+
+    public function getEditProfile()
+    {
+        if (Auth::check()) {
+            $user=User::find(Auth::id());
+            $userData=$user->only(['id','username','email','image']);
+
+            return view('editProfileForm', ['user' => $userData]);
+        } else {
+            return response()->redirectTo('login');
+        }
+    }
+
+    public function handleEditProfile(EditProfileRequest $request)
+    {
+//        print_r($request->all());
+        User::query()->where('id', Auth::id())->update([
+            'username' => $request->get('username'),
+            'email' => $request->get('email'),
+            'image' => $request->get('avatar')
+            ]);
+        return response()->redirectTo('profile');
     }
 
 }
