@@ -1,95 +1,87 @@
+<title>Корзина</title>
+
 <div class="container">
-    <a href="/catalog" class="btn btn-catalog">
+    <a href="{{route('catalog')}}" class="btn btn-catalog">
         <i class="fas fa-list"></i> Каталог
     </a>
 
-    <a href="/profile" class="btn btn-profile">
+    <a href="{{route('profile')}}" class="btn btn-profile">
         <i class="fas fa-user"></i> Профиль
     </a>
 
-    <a href="/orders" class="btn btn-orders">
+    <a href="{{route('orders')}}" class="btn btn-orders">
         <i class="fas fa-clipboard-list"></i> Мои заказы
     </a>
 
-    <a href="/cart" class="btn btn-cart">
+    <a href="{{route('cart')}}" class="btn btn-cart">
         <i class="fas fa-shopping-cart"></i> Корзина
-        <span class="cart-quantity"><?php echo $cartQuantity;?></span>
-        <span class="cart-total"><?php echo $sum;?> ₽</span>
+{{--        <span class="cart-quantity"><?php echo $cartQuantity;?></span>--}}
+{{--        <span class="cart-total"><?php echo $sum;?> ₽</span>--}}
     </a>
 
-    <?php if (count($list)!==0):?>
     <h3>Корзина</h3>
-    <?php else:?>
-    <h3>Корзина пуста</h3>
-    <?php endif;?>
-    <div class="card-deck">
-        <?php if (isset($list)): ?>
-            <?php foreach ($list as $product): ?>
-                <div class="card text-center">
-                    <a>
-                        <hr>
-                        <img class="card-img-top" src="<?php echo $product->getImageUrl();?>" alt="Card image" width="300" height="200">
-                        <div class="card-body">
-                            <p class="card-footer"><?php echo $product->getName(); ?></p>
-                            <a><h5 class="card-title">Описание <?php echo $product->getDescription(); ?></h5></a>
-                            <div class="card-title">
-                                Цена: <?php echo $product->getPrice(); ?>
-                            </div> <br>
-                            <div class="card-title">
-                                Количество: <?php echo $product->getAmount(); ?>
-                            </div> <br><form action="/product" method="POST">
-                                <div class="container">
-                                    <input type="hidden"  value="<?php echo $product->getId();?>" name="product_id" id="product_id">
-                                    <button type="submit" class="registerbtn">Открыть</button>
-                                </div>
-                            </form>
-                        </div>
-                    </a>
-                </div>
-                <div class="card-title" style="display: flex; gap: 10px;">Изменить количество
-                    <div style="display: flex; gap: 20px;">
-                        <form class="increase-button" onsubmit="return false">
-                            <div class="container">
-                                <input type="hidden"  value="<?php echo $product->getId();?>" name="product_id" id="product_id">
-                                <input type="hidden"  value="<?php echo 1;?>" name="amount" id="amount">
-                                <button type="submit" class="registerbtn"> + </button>
-                            </div>
-                        </form>
 
-                        <form class="decrease-button" onsubmit="return false">
-                            <div class="container">
-                                <input type="hidden" value="<?php echo $product->getId();?>" name="product_id" id="product_id">
-                                <input type="hidden" value="<?php echo 1;?>" name="amount" id="amount">
-                                <button type="submit" class="registerbtn"> - </button>
-                            </div>
-                        </form>
-                    </div>
+    <div class="card-deck">
+            @foreach ($userProducts as $product)
+        <div class="card text-center">
+            <a>
+                <hr>
+                <img class="card-img-top" src="{{ $product->image }}" alt="Card image" width="300" height="200">
+                <div class="card-body">
+                    <p class="card-footer">{{ $product->name}}</p>
+                    <a><h5 class="card-title">Описание {{ $product->description }}</h5></a>
+                    <div class="card-title">
+                        Цена: {{ $product->price }}
+                    </div> <br>
+                    <div class="card-title">
+                        Количество: {{ $product->amount}}
+                    </div><br>
+                    <form action="{{route('productPage', ['id' =>  $product->id]) }}">
+                        @csrf
+                        <div class="container">
+                            <button type="submit" class="register btn">Открыть</button>
+                        </div>
+                    </form>
                 </div>
+            </a>
+        </div>
+            <div class="card-title" style="display: flex; gap: 10px;">Добавить в корзину
+                <div style="display: flex; gap: 20px;">
+                    <form class='increase-button' onsubmit="return false">
+                        @csrf
+                        <div class="container">
+                            <input type="hidden" value="{{ $product->id }}" name="product_id" id="product_id">
+                            <button type="submit" class="register btn"> + </button>
+                        </div>
+                    </form>
+
+                    <form class='decrease-button' onsubmit="return false">
+                        @csrf
+                        <div class="container">
+                            <input type="hidden" value="{{ $product->id }}" name="product_id" id="product_id">
+                            <button type="submit" class="register btn"> - </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </form>
-            <?php endforeach; ?>
-        <?php endif; ?>
+        @endforeach
         <br>
 
-        <?php if (isset($sum)):?>
-        <?php if ($sum!==0):?>
-                <i class="fas fa-shopping-cart"></i> Итого:
-                <span class="cart-total-2"><?php echo $sum;?> ₽</span>
-            <?php endif; ?>
-        <?php endif; ?>
+                <div class="total-block">
+                    Итого: {{ $totalSum }}
+                </div>
 
-        <?php if (count($list)!==0): ?>
-        <form action="/create-order" method="GET">
             <div class="profile-social" style="text-align: center">
-                <a href="/create-order" class="btn btn-profile">
+                <a href="{{route('orderForm')}}" class="btn btn-profile">
                     <i class="fas fa-user"></i>Перейти к оформлению
                 </a>
-        <?php endif; ?>
 
-        </div>
-        </form>
+            </div>
 
 
     </div>
+</div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -105,13 +97,13 @@
         form.submit(function () {
             $.ajax({
                 type: "POST",
-                url: "/add-product",
+                url: "{{route('addProductToCart')}}",
                 data: $(this).serialize(),
                 dataType: 'json',
                 success: function (response) {
                     $('.cart-quantity').text(response.cartQuantity);
-                    $('.cart-total').text(response.sum + ' ₽');
-                    $('.cart-total-2').text(response.sum + ' ₽');
+                    // $('.cart-total').text(response.sum + ' ₽');
+                    // $('.cart-total-2').text(response.sum + ' ₽');
                     console.log(response);
                 },
                 error: function(xhr, status, error) {
@@ -130,13 +122,13 @@
         form.submit(function () {
             $.ajax({
                 type: "POST",
-                url: "/decrease-product",
+                url: "{{route('decreaseProductFromCart')}}",
                 data: $(this).serialize(),
                 dataType: 'json',
                 success: function (response) {
                     $('.cart-quantity').text(response.cartQuantity);
-                    $('.cart-total').text(response.sum + ' ₽');
-                    $('.cart-total-2').text(response.sum + ' ₽');
+                    // $('.cart-total').text(response.sum + ' ₽');
+                    // $('.cart-total-2').text(response.sum + ' ₽');
                     console.log(response);
                 },
                 error: function(xhr, status, error) {
@@ -279,4 +271,5 @@
         margin-left: 5px;
         font-size: 12px;
         opacity: 0.9;
-    }</style>
+    }
+</style>

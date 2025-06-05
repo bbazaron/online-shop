@@ -1,20 +1,20 @@
 <div class="container">
-    <a href="/catalog" class="btn btn-catalog">
+    <a href="{{route('catalog')}}" class="btn btn-catalog">
         <i class="fas fa-list"></i> Каталог
     </a>
 
-    <a href="/profile" class="btn btn-profile">
+    <a href="{{route('profile')}}" class="btn btn-profile">
         <i class="fas fa-user"></i> Профиль
     </a>
 
-    <a href="/orders" class="btn btn-orders">
+    <a href="{{route('orders')}}" class="btn btn-orders">
         <i class="fas fa-clipboard-list"></i> Мои заказы
     </a>
 
-    <a href="/cart" class="btn btn-cart">
+    <a href="{{route('cart')}}" class="btn btn-cart">
         <i class="fas fa-shopping-cart"></i> Корзина
-        <span class="cart-quantity"><?php //echo $cartQuantity;?></span>
-        <span class="cart-total"><!----><?php //echo $sum;?> ₽</span>
+{{--        <span class="cart-quantity"><?php //echo $cartQuantity;?></span>--}}
+{{--        <span class="cart-total"><!----><?php //echo $sum;?> ₽</span>--}}
     </a>
 
     <h3>Карточка товара</h3>
@@ -23,13 +23,13 @@
         <div class="card text-center">
             <a>
                 <hr>
-                <img class="card-img-top" src="{{ $product['image'] }}" alt="Card image" width="300"  height="200">
+                <img class="card-img-top" src="{{ $product->image }}" alt="Card image" width="300"  height="200">
 
                 <div class="card-body">
-                    <p class="card-footer">{{ $product['name'] }}</p>
-                    <a><h5 class="card-title">Описание {{ $product['description'] }}</h5></a>
+                    <p class="card-footer">{{ $product->name }}</p>
+                    <a><h5 class="card-title">Описание {{ $product->description }}</h5></a>
                     <div class="card-title">
-                        Цена: {{ $product['price'] }}
+                        Цена: {{ $product->price }}
                     </div>
                 </div>
             </a>
@@ -38,15 +38,18 @@
         <br><div class="card-title" style="display: flex; gap: 10px;">Добавить в корзину
             <div style="display: flex; gap: 20px;">
                 <form class='increase-button' onsubmit="return false">
+                    @csrf
                     <div class="container">
-                        <input type="hidden"  value="<!---->{{ $product['id'] }}" name="product_id" id="product_id">
+                        <input type="hidden"  value="{{ $product->id }}" name="product_id" id="product_id">
                         <button type="submit" class="registerbtn"> + </button>
                     </div>
                 </form>
 
                 <form class='decrease-button' onsubmit="return false">
+                    @csrf
+
                     <div class="container">
-                        <input type="hidden"  value="<!---->{{ $product['id'] }}" name="product_id" id="product_id">
+                        <input type="hidden"  value="{{ $product->id }}" name="product_id" id="product_id">
                         <button type="submit" class="registerbtn"> - </button>
                     </div>
                 </form>
@@ -112,7 +115,7 @@
 
             <div class="form-group" >
                 <label for="rating">Оценка:</label>
-                <label style="color:red" >Рейтинг</label>
+{{--                <label style="color:red" >Рейтинг</label>--}}
                 <select id="rating" name="rating" required>
                     <option value="">Выберите оценку</option>
                     <option value="5">Отлично (5)</option>
@@ -125,11 +128,11 @@
 
             <div class="form-group">
                 <label for="comment">Ваш отзыв:</label>
-                <label style="color:red" >Коммент</label>
+{{--                <label style="color:red" >Коммент</label>--}}
                 <textarea id="comment" name="comment" rows="4" required></textarea>
             </div>
 
-            <input type="hidden" value="{{ $product['id'] }}" name="product_id" id="product_id">
+            <input type="hidden" value="{{ $product->id }}" name="product_id" id="product_id">
 
             <button type="submit" class="submit-btn">Отправить отзыв</button>
         </form>
@@ -148,7 +151,7 @@
             form.submit(function () {
                 $.ajax({
                     type: "POST",
-                    url: "/add-product",
+                    url: "{{route('addProductToCart')}}",
                     data: $(this).serialize(),
                     dataType: 'json',
                     success: function (response) {
@@ -171,7 +174,7 @@
             form.submit(function () {
                 $.ajax({
                     type: "POST",
-                    url: "/decrease-product",
+                    url: "{{route('decreaseProductFromCart')}}",
                     data: $(this).serialize(),
                     dataType: 'json',
                     success: function (response) {

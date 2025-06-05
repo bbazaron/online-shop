@@ -8,19 +8,19 @@
 </head>
 <body>
 <div class="container">
-    <a href="/catalog" class="btn btn-catalog">
+    <a href="{{route('catalog')}}" class="btn btn-catalog">
         <i class="fas fa-list"></i> Каталог
     </a>
 
-    <a href="/profile" class="btn btn-profile">
+    <a href="{{route('profile')}}" class="btn btn-profile">
         <i class="fas fa-user"></i> Профиль
     </a>
 
-    <a href="/orders" class="btn btn-orders">
+    <a href="{{route('orders')}}" class="btn btn-orders">
         <i class="fas fa-clipboard-list"></i> Мои заказы
     </a>
 
-    <a href="/cart" class="btn btn-cart">
+    <a href="{{route('cart')}}" class="btn btn-cart">
         <i class="fas fa-shopping-cart"></i> Корзина
         {{--        <span class="cart-quantity"><?php echo $cartQuantity;?></span>--}}
         {{--        <span class="cart-total"><?php echo $sum;?> ₽</span>--}}
@@ -45,8 +45,8 @@
         </div>
     </div>
 
-    <a href="/editProfile" class="btn-edit">Редактировать профиль</a>
-    <a href="/logout" class="btn-logout">Выйти из системы</a>
+    <a href="{{route('editProfile')}}" class="btn-edit">Редактировать профиль</a>
+    <a href="{{route('logout')}}" class="btn-logout">Выйти из системы</a>
 </div>
 
 <script>

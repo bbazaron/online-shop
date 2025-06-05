@@ -20,7 +20,7 @@
         @endif
     </div>
 
-    <form action="/login" method="post">
+    <form action="{{route('post.login')}}" method="post">
         @csrf
         <div class="form-group">
             <label for="email">Email</label>
@@ -36,7 +36,7 @@
     </form>
 
     <div class="register-link">
-        Нет аккаунта? <a href="/signUp">Зарегистрироваться</a>
+        Нет аккаунта? <a href="{{route('signUp')}}">Зарегистрироваться</a>
     </div>
 </div>
 </body>

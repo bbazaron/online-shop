@@ -47,30 +47,17 @@ class UserController
 
     public function getProfile()
     {
-        if (Auth::check()) {
-//            $user = User::query()
-//                ->select('id', 'username', 'email', 'image')
-//                ->where('id', Auth::id())
-//                ->first();
             $user=User::find(Auth::id());
             $userData=$user->only(['id','username','email','image']);
-
+//            print_r($userData);exit;
             return view('profile', ['user' => $userData]);
-        } else {
-            return response()->redirectTo('login');
-        }
     }
 
     public function getEditProfile()
     {
-        if (Auth::check()) {
             $user=User::find(Auth::id());
             $userData=$user->only(['id','username','email','image']);
-
             return view('editProfileForm', ['user' => $userData]);
-        } else {
-            return response()->redirectTo('login');
-        }
     }
 
     public function handleEditProfile(EditProfileRequest $request)
