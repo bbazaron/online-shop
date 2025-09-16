@@ -18,6 +18,7 @@
     </a>
 
     <h3>Карточка товара</h3>
+
     <div class="card-deck">
 
         <div class="card text-center">
@@ -55,59 +56,62 @@
                 </form>
             </div>
         </div>
-        <!----><?php //if (isset($averageRating)): ?>
+
+       @isset($averageRating)
         <p class="card-footer" >Средняя оценка</p>
         <div class="review-rating">
-                <!----><?php //if ($averageRating >= 1 && $averageRating < 2 ): ?>
+                @if ($averageRating >= 1 && $averageRating < 2 )
             <span class="stars">★☆☆☆☆</span>
-            <!----><?php //elseif ($averageRating >= 2 && $averageRating < 3): ?>
+            @elseif ($averageRating >= 2 && $averageRating < 3)
             <span class="stars">★★☆☆☆</span>
-            <!----><?php //elseif ($averageRating >= 3 && $averageRating < 4): ?>
+            @elseif ($averageRating >= 3 && $averageRating < 4)
             <span class="stars">★★★☆☆</span>
-            <!----><?php //elseif ($averageRating >= 4 && $averageRating < 5): ?>
+            @elseif ($averageRating >= 4 && $averageRating < 5)
             <span class="stars">★★★★☆</span>
-            <!----><?php //elseif ($averageRating >= 5 && $averageRating == 5): ?>
+            @elseif ($averageRating >= 5 && $averageRating == 5)
             <span class="stars">★★★★★</span>
-            <!----><?php //endif;?>
-            <span class="rating-value"><!----><?php //echo $averageRating;?></span>
+            @endif
+            <span class="rating-value">{{$averageRating}}</span>
         </div>
-        <!----><?php //endif; ?>
+        @endisset
     </div>
 </div>
 
-<!----><?php //if (isset($reviews)): ?>
-<!---->
-<!--    --><?php //foreach ($reviews as $review):?><!---->
+@isset ($reviews)
+    @foreach($reviews as $review)
 <div class="review-container">
     <div class="review">
         <div class="review-header">
-            <div class="review-author"><?php //echo $review->getName();?><!----></div>
+            <div class="review-author">{{$review->name}}</div>
             <div class="review-rating">
-                    <?php //if ($review->getRating()===1): ?><!---->
-                <span class="stars">★☆☆☆☆</span>
-                <?php //elseif ($review->getRating()===2): ?><!---->
-                <span class="stars">★★☆☆☆</span>
-                <?php //elseif ($review->getRating()===3): ?><!---->
-                <span class="stars">★★★☆☆</span>
-                <?php //elseif ($review->getRating()===4): ?><!---->
-                <span class="stars">★★★★☆</span>
-                <?php //elseif ($review->getRating()===5): ?><!---->
-                <span class="stars">★★★★★</span>
-                <?php //endif;?><!---->
-                <span class="rating-value"><?php //echo $review->getRating();?><!----></span>
+                @if($review->rating === 1)
+                    <span class="stars">★☆☆☆☆</span>
+                @elseif($review->rating === 2)
+                    <span class="stars">★★☆☆☆</span>
+                @elseif($review->rating === 3)
+                    <span class="stars">★★★☆☆</span>
+                @elseif($review->rating === 4)
+                    <span class="stars">★★★★☆</span>
+                @elseif($review->rating === 5)
+                    <span class="stars">★★★★★</span>
+                @endif
+
+                <span class="rating-value">{{ $review->rating }}</span>
+
             </div>
         </div>
         <!--        <div class="review-date">15 мая 2023</div>-->
         <div class="review-content">
-                <?php //echo $review->getComment();?><!---->
+            {{$review->comment}}
         </div>
     </div>
-
+    @endforeach
+    @endisset
 
     <div class="feedback-form" >
         <h3>Оставьте ваш отзыв</h3>
-        <form action="/review" method="POST">
-
+        <form action="{{route('review')}}" method="POST">
+        @csrf
             <div class="form-group">
                 <label for="name">Ваше имя:</label>
                 <input type="text" id="name" name="name" required>

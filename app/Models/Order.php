@@ -13,4 +13,9 @@ class Order extends Model
         'address',
         'comment'
     ];
+
+    public function orderProducts()
+    {
+        return $this->hasMany(OrderProduct::class);
+    }
 }

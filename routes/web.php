@@ -25,7 +25,7 @@ Route::get('/catalog',[ProductController::class, 'getCatalog'])->name('catalog')
 
 Route::middleware('auth')->get('/cart',[CartController::class, 'getCart'])->name('cart');
 
-Route::middleware('auth')->get('/orders',[ProductController::class, 'getOrders'])->name('orders');
+Route::middleware('auth')->get('/orders',[OrderController::class, 'getOrders'])->name('orders');
 
 Route::get('/product/{id}',[ProductController::class, 'getProductPage'])->name('productPage');
 
@@ -35,3 +35,4 @@ Route::post('/createOrder',[OrderController::class, 'createOrder'])->name('post.
 Route::post('/add-product',[CartController::class, 'addProductToCart'])->name('addProductToCart');
 Route::post('/decrease-product',[CartController::class, 'decreaseProductFromCart'])->name('decreaseProductFromCart');
 
+Route::post('/review',[UserController::class, 'createReview'])->name('review');

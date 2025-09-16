@@ -16,7 +16,7 @@ class User extends BaseUser
         return $this->hasMany(UserProduct::class, 'user_id', 'id');
     }
 
-    public function products()
+    public function products() //cart
     {
         return $this->hasManyThrough(
             Product::class,
@@ -26,4 +26,10 @@ class User extends BaseUser
             'id',
             'product_id');
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'user_id', 'id');
+    }
+
 }

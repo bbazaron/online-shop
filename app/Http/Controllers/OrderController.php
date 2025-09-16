@@ -6,6 +6,7 @@ use App\Http\Requests\CreateOrderRequest;
 use App\Http\Services\CartService;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\User;
 use App\Models\UserProduct;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,7 +24,7 @@ class OrderController
         return view('orderForm', ['userProducts' => $userProducts, 'totalSum' => $totalSum]);
     }
 
-        public function createOrder(CreateOrderRequest $request)
+    public function createOrder(CreateOrderRequest $request)
     {
         $order = Order::query()->create([
             'user_id' => Auth::id(),
@@ -45,5 +46,14 @@ class OrderController
             UserProduct::query()->where('user_id',Auth::id())->delete();
 
             return response()->redirectTo('catalog');
+    }
+
+    public function getOrders()
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $orders = $user->orders()->with('orderProducts.product')->get();
+//        echo"<pre>";print_r($orders);
+        return view('orders', ['orders' => $orders]);
     }
 }

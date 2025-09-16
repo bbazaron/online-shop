@@ -20,7 +20,7 @@
     </a>
 
     <h3>Корзина</h3>
-
+@isset($userProducts)
     <div class="card-deck">
             @foreach ($userProducts as $product)
         <div class="card text-center">
@@ -67,7 +67,6 @@
         </form>
         @endforeach
         <br>
-
                 <div class="total-block">
                     Итого: {{ $totalSum }}
                 </div>
@@ -76,11 +75,12 @@
                 <a href="{{route('orderForm')}}" class="btn btn-profile">
                     <i class="fas fa-user"></i>Перейти к оформлению
                 </a>
-
             </div>
 
 
     </div>
+    @else Корзина пуста
+    @endisset
 </div>
 </div>
 
