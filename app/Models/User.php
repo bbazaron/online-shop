@@ -5,6 +5,13 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as BaseUser;
 class User extends BaseUser
 {
+    /**
+     * @property int $id
+     * @property string $username
+     * @property string $email
+     * @property string $password
+     * @property string $image
+     */
     protected $fillable = [
         'username',
         'email',

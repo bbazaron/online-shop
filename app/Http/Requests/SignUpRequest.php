@@ -32,8 +32,8 @@ class SignUpRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Имя должно быть заполнено',
-            'name.min' => 'Имя должно содержать больше 5 символов',
+            'username.required' => 'Имя должно быть заполнено',
+            'username.min' => 'Имя должно содержать больше 5 символов',
 
             'email.required' => 'Email должен быть заполнен',
             'email.email' => 'Email введён не корректно',
@@ -42,9 +42,6 @@ class SignUpRequest extends FormRequest
             'password.required' => 'Пароль должен быть заполнен',
             'password.min' => 'Пароль должен содержать больше 6 символов',
             'password.confirmed' => 'Пароли не совпадают',
-
-            'password_confirmation.required' => 'Пароль должен быть заполнен',
-            'password_confirmation.min' => 'Пароль должен содержать больше 6 символов',
         ];
     }
 }

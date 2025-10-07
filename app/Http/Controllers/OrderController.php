@@ -4,11 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateOrderRequest;
 use App\Http\Services\CartService;
+use App\Jobs\CreateYouGileTask;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\User;
 use App\Models\UserProduct;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
 
 class OrderController
 {
@@ -26,15 +32,17 @@ class OrderController
 
     public function createOrder(CreateOrderRequest $request)
     {
-        $order = Order::query()->create([
-            'user_id' => Auth::id(),
-            'contact_name' => $request->get('contact_name'),
-            'contact_phone' => $request->get('contact_phone'),
-            'address' => $request->get('address'),
-            'comment' => $request->get('comment'),
-        ]);
-
         $userProducts = $this->cartService->getUserProductsWithSum();
+        DB::beginTransaction();
+        try {
+            $order = Order::query()->create([
+                'user_id' => Auth::id(),
+                'contact_name' => $request->get('contact_name'),
+                'contact_phone' => $request->get('contact_phone'),
+                'address' => $request->get('address'),
+                'comment' => $request->get('comment'),
+            ]);
+
             foreach ($userProducts as $userProduct) {
                 OrderProduct::query()->create([
                     'order_id' => $order->id,
@@ -44,6 +52,15 @@ class OrderController
             }
 
             UserProduct::query()->where('user_id',Auth::id())->delete();
+            DB::commit();
+
+            CreateYouGileTask::dispatch($order);
+
+
+        } catch(\Throwable $exception) {
+            DB::rollBack();
+            throw $exception;
+        }
 
             return response()->redirectTo('catalog');
     }

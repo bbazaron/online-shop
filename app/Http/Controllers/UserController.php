@@ -5,13 +5,26 @@ use App\Http\Requests\CreateReviewRequest;
 use App\Http\Requests\EditProfileRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignUpRequest;
+use App\Http\Services\RabbitmqService;
+use App\Jobs\SendTestEmailJob;
+use App\Mail\Testmail;
+use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
+
 class UserController
 {
+    private RabbitmqService $rabbitmqService;
+    public function __construct(RabbitmqService $rabbitmqService)
+    {
+        $this->rabbitmqService = $rabbitmqService;
+    }
     public function getSignUpForm()
     {
        return view('signUpForm');
@@ -23,12 +36,21 @@ class UserController
 
     public function signUp(SignUpRequest $request)
     {
+        $data = $request->validated();
+
         User::query()->create([
-            'username' => $request->get('username'),
-            'email' => $request->get('email'),
-            'password' => Hash::make($request->get('password'))
+            'username' => $data['username'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
         ]);
+
+        $email = $request->input('email', 'youremail@example.com');
+
+        SendTestEmailJob::dispatch($email);
+
         return response()->redirectTo('login');
+
+
     }
 
     public function login(LoginRequest $request)
@@ -64,12 +86,29 @@ class UserController
 
     public function handleEditProfile(EditProfileRequest $request)
     {
-        User::query()->where('id', Auth::id())->update([
-            'username' => $request->get('username'),
-            'email' => $request->get('email'),
-            'image' => $request->get('avatar')
-            ]);
-        return response()->redirectTo('profile');
+        $data = $request->validated();
+//        User::query()->where('id', Auth::id())->update([
+//            'username' => $data['username'],
+//            'email' => $data['email'],
+//            'image' => $data['image'],
+//            ]);
+
+        $updateData=[];
+
+        if (!empty($data['username'])) {
+            $updateData['username'] = $data['username'];
+        }
+
+        if (!empty($data['email'])) {
+            $updateData['email'] = $data['email'];
+        }
+
+        if (!empty($data['image'])) {
+            $updateData['image'] = $data['image'];
+        }
+
+        Product::query()->where('id', Auth::id())->update($updateData);
+        return redirect()->route('profile')->with('success', 'Сохранения изменены!');
     }
 
     public function createReview(CreateReviewRequest $request)

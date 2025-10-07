@@ -17,6 +17,7 @@ class CartController
     }
     public function getCart()
     {
+
         $userProducts = $this->cartService->getUserProductsWithSum();
         $totalSum = $this->cartService->getTotalSum();
         return view('cart', ['userProducts' => $userProducts, 'totalSum' => $totalSum]);

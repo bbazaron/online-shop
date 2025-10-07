@@ -5,6 +5,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserProduct extends Model
 {
+    /**
+     * @property int $id
+     * @property int $user_id
+     * @property int $product_id
+     * @property int $amount
+     */
     protected $fillable = [
         'user_id',
         'product_id',
@@ -13,6 +19,10 @@ class UserProduct extends Model
 
     public function product() {
         return $this->belongsTo(Product::class);
+    }
+
+    public function sum() {
+        return $this->amount*$this->product()->first()->price;
     }
 
 }

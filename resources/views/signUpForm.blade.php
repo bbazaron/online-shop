@@ -19,17 +19,17 @@
 {{--        @endif--}}
     </div>
 
-    <form action="{{route('signUp')}}" method="post">
+    <form action="{{route('post.signUp')}}" method="post">
         @csrf
         <div class="form-group">
-            <label for="name">Имя</label>
+            <label for="username">Имя</label>
             <input type="text"
-                   id="name"
+                   id="username"
                    name="username"
-                   class="{{ $errors->has('name') ? 'error-field' : '' }}"
+                   class="{{ $errors->has('username') ? 'error-field' : '' }}"
                    placeholder="Ваше полное имя" required>
         </div>
-        @error('name')
+        @error('username')
         <div class="error-message">{{ $message }}</div>
         @enderror
 

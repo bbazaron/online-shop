@@ -46,6 +46,7 @@
     </div>
 
     <a href="{{route('editProfile')}}" class="btn-edit">Редактировать профиль</a>
+    <a href="{{route('editProducts')}}" class="btn-edit-product">Редактировать продукты</a>
     <a href="{{route('logout')}}" class="btn-logout">Выйти из системы</a>
 </div>
 
@@ -344,6 +345,32 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
 
+    .btn-edit-product {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        border: none;
+        outline: none;
+        width: 100%;
+        background-color: #22c55e;
+        color: white;
+        margin-top: 20px;
+    }
+
+    .btn-edit-product:hover {
+        background-color: #3a5bef;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
     .btn-logout {
         display: inline-flex;
         align-items: center;
@@ -359,7 +386,7 @@
         border: none;
         outline: none;
         width: 100%;
-        background-color: var(--primary-color);
+        background-color: var(--secondary-color);
         color: white;
         margin-top: 20px;
     }

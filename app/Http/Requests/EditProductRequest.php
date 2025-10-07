@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class EditProfileRequest extends FormRequest
+class EditProductRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,13 +22,10 @@ class EditProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => ['min:5','nullable','string'],
-            'email' => [
-                'email',
-                'nullable',
-                Rule::unique('users', 'email')->ignore($this->user()->id),
-            ],
-            'avatar'=> ['nullable'],
+            'name' => 'nullable|string|max:255',
+            'price' => 'nullable|numeric|min:1',
+            'description' => 'nullable|string',
+            'image' => 'nullable|url|max:255',
         ];
     }
 }
