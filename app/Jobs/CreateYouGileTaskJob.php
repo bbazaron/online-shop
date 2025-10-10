@@ -36,10 +36,13 @@ class CreateYouGileTaskJob implements ShouldQueue
 
         $dto = new YouGileClientCreateTaskDTO($description, $orderId );
 
-        $success = $this->youGileClient->createTask($dto);
+        $taskId = $this->youGileClient->createTask($dto);
 
-        if (!$success) {
+
+        if ($taskId===false) {
             Log::warning("YouGile: не удалось создать задачу для заказа #{$this->order->id}");
+        } else{
+                Order::query()->where('id',$orderId)->update(['yougile_task_id' => $taskId]);
         }
 
 

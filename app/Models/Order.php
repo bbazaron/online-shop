@@ -13,13 +13,15 @@ class Order extends Model
      * @property string $contact_phone
      * @property string $address
      * @property string $comment
+     * @property string $yougile_task_id
      */
     protected $fillable = [
         'user_id',
         'contact_name',
         'contact_phone',
         'address',
-        'comment'
+        'comment',
+        'yougile_task_id'
     ];
 
     public function orderProducts()

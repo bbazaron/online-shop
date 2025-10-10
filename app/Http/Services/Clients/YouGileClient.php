@@ -18,7 +18,7 @@ class YouGileClient
         $this->apiKey = config('services.yougile.api_key');
         $this->columnId = config('services.yougile.column_id');
     }
-    public function createTask(YouGileClientCreateTaskDTO $dto):bool
+    public function createTask(YouGileClientCreateTaskDTO $dto):string|false
     {
         $maxAttempts = 3;
         $attempt = 0;
@@ -37,7 +37,8 @@ class YouGileClient
             ]);
 
             if ($response->successful()) {
-                return true;
+                $data = $response->json();
+                return $data['id'];
             }
 
         } while($attempt < $maxAttempts);
