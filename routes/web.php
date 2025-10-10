@@ -41,4 +41,8 @@ Route::middleware('auth')->group(function()
     Route::get('/createProductForm',[ProductController::class, 'getCreateProductForm'])->name('createProductForm');
     Route::post('/create-product',[ProductController::class, 'create'])->name('post.createProductForm');
     Route::delete('/products/{product}',[ProductController::class, 'delete'])->name('deleteProduct');
+
+    Route::get('/deleteTask/{taskId}',[OrderController::class, 'deleteTask'])->name('deleteTask'); // тестовый
+
+
 });

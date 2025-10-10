@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'yougile' => [
+        'base_url' => env('YOUGILE_BASE_URL'),
+        'api_key' => env('YOUGILE_API_KEY'),
+        'column_id' => env('YOUGILE_COLUMN_ID'),
+    ]
+
 ];

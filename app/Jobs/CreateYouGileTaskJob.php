@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Http\Services\Clients\DTO\YouGileClientCreateTaskDTO;
+use App\Http\Services\Clients\YouGileClient;
 use App\Models\Order;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -11,41 +13,35 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class CreateYouGileTask implements ShouldQueue
+class CreateYouGileTaskJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public Order $order;
+    private YouGileClient $youGileClient;
     public function __construct(Order $order)
     {
         $this->order = $order;
+        $this->youGileClient = new YouGileClient();
     }
 
     public function handle(): void
     {
-        $token = 'rHKssJmK3aYTfF38o6dxIX-YQknhBjs4dkii2fP38aC7dW4ibuUoKWZuc2glxzhK';
-        $columnId = 'bada0a7d-13bb-4a1a-9498-5780f2f76fda';
+        $orderId = $this->order->id;
         $description = "
                             - Имя: {$this->order->contact_name}<br>
                             - Телефон: {$this->order->contact_phone}<br>
                             - Адрес: {$this->order->address}<br>
                             - Комментарий: {$this->order->comment}";
 
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $token,
-            'Content-Type' => 'application/json',
+        $dto = new YouGileClientCreateTaskDTO($description, $orderId );
 
-        ])->post("https://ru.yougile.com/api-v2/tasks", [
-            'title' => 'Заказ #' . $this->order->id,
-            'columnId' => $columnId,
-            'description' => $description,
-        ]);
+        $success = $this->youGileClient->createTask($dto);
 
-        if (!$response->successful()) {
-            Log::error('Yougile API error', [
-                'status' => $response->status(),
-                'body' => $response->body(),
-            ]);
+        if (!$success) {
+            Log::warning("YouGile: не удалось создать задачу для заказа #{$this->order->id}");
         }
+
+
     }
 }

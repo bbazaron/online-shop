@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateOrderRequest;
 use App\Http\Services\CartService;
-use App\Jobs\CreateYouGileTask;
+use App\Jobs\CreateYouGileTaskJob;
+use App\Jobs\DeleteYouGileTaskJob;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\User;
@@ -54,7 +55,7 @@ class OrderController
             UserProduct::query()->where('user_id',Auth::id())->delete();
             DB::commit();
 
-            CreateYouGileTask::dispatch($order);
+            CreateYouGileTaskJob::dispatch($order);
 
 
         } catch(\Throwable $exception) {
@@ -72,5 +73,10 @@ class OrderController
         $orders = $user->orders()->with('orderProducts.product')->get();
 //        echo"<pre>";print_r($orders);
         return view('orders', ['orders' => $orders]);
+    }
+
+    public function deleteTask(string $taskId)
+    {
+        DeleteYouGileTaskJob::dispatch($taskId);
     }
 }
