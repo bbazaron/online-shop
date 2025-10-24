@@ -58,8 +58,8 @@
         </div>
 
         <div class="form-group">
-            <label for="avatar">Аватар</label>
-            <input type="text" id="avatar" name="avatar" value="{{ $user['image'] }}">
+            <label for="image">Аватар</label>
+            <input type="text" id="image" name="image" value="{{ $user['image'] }}">
         </div>
 
         <button type="submit" class="btn-save">Сохранить изменения</button>

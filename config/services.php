@@ -39,6 +39,13 @@ return [
         'base_url' => env('YOUGILE_BASE_URL'),
         'api_key' => env('YOUGILE_API_KEY'),
         'column_id' => env('YOUGILE_COLUMN_ID'),
+    ],
+
+    'yookassa' => [
+        'base_url' => env('YOOKASSA_BASE_URL'),
+        'api_key' => env('YOOKASSA_API_KEY'),
+        'shop_id' => env('YOOKASSA_SHOP_ID'),
     ]
+
 
 ];

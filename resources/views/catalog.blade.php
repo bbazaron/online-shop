@@ -23,6 +23,7 @@
 {{--    </a>--}}
 {{--    <?php endif;?>--}}
 
+{{--    <h1>{{ $message }}</h1>--}}
     <h3>Каталог</h3>
 
     @foreach($products as $product)

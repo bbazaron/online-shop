@@ -14,6 +14,8 @@ class Order extends Model
      * @property string $address
      * @property string $comment
      * @property string $yougile_task_id
+     * @property float $totalSum
+     * @property string $status
      */
     protected $fillable = [
         'user_id',
@@ -21,7 +23,9 @@ class Order extends Model
         'contact_phone',
         'address',
         'comment',
-        'yougile_task_id'
+        'yougile_task_id',
+        'total_sum',
+        'status',
     ];
 
     public function orderProducts()

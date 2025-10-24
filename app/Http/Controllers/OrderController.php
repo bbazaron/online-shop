@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateOrderRequest;
 use App\Http\Services\CartService;
+use App\Http\Services\YooKassaService;
 use App\Jobs\CreateYouGileTaskJob;
 use App\Jobs\DeleteYouGileTaskJob;
 use App\Models\Order;
@@ -19,10 +20,14 @@ use Illuminate\Support\Facades\Log;
 
 class OrderController
 {
-    protected $cartService;
+    protected CartService $cartService;
+    private YooKassaService $yooKassaService;
+
     public function __construct()
     {
         $this->cartService = new cartService();
+        $this->yooKassaService = new YooKassaService();
+
     }
     public function getOrderForm()
     {
@@ -34,6 +39,7 @@ class OrderController
     public function createOrder(CreateOrderRequest $request)
     {
         $userProducts = $this->cartService->getUserProductsWithSum();
+        $totalSum = $this->cartService->getTotalSum();
         DB::beginTransaction();
         try {
             $order = Order::query()->create([
@@ -42,6 +48,7 @@ class OrderController
                 'contact_phone' => $request->get('contact_phone'),
                 'address' => $request->get('address'),
                 'comment' => $request->get('comment'),
+                'total_sum' => $totalSum,
             ]);
 
             foreach ($userProducts as $userProduct) {
@@ -57,13 +64,15 @@ class OrderController
 
             CreateYouGileTaskJob::dispatch($order);
 
+            $paymentUrl = $this->yooKassaService->createPayment($order);
+            return redirect($paymentUrl);
+
 
         } catch(\Throwable $exception) {
             DB::rollBack();
             throw $exception;
         }
 
-            return response()->redirectTo('catalog');
     }
 
     public function getOrders()

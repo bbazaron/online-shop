@@ -29,7 +29,7 @@ class EditProfileRequest extends FormRequest
                 'nullable',
                 Rule::unique('users', 'email')->ignore($this->user()->id),
             ],
-            'avatar'=> ['nullable'],
+            'image'=> ['nullable'],
         ];
     }
 }

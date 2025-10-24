@@ -87,27 +87,11 @@ class UserController
     public function handleEditProfile(EditProfileRequest $request)
     {
         $data = $request->validated();
-//        User::query()->where('id', Auth::id())->update([
-//            'username' => $data['username'],
-//            'email' => $data['email'],
-//            'image' => $data['image'],
-//            ]);
-
-        $updateData=[];
-
-        if (!empty($data['username'])) {
-            $updateData['username'] = $data['username'];
-        }
-
-        if (!empty($data['email'])) {
-            $updateData['email'] = $data['email'];
-        }
-
-        if (!empty($data['image'])) {
-            $updateData['image'] = $data['image'];
-        }
-
-        Product::query()->where('id', Auth::id())->update($updateData);
+        User::query()->where('id', Auth::id())->update([
+            'username' => $data['username'],
+            'email' => $data['email'],
+            'image' => $data['image'],
+            ]);
         return redirect()->route('profile')->with('success', 'Сохранения изменены!');
     }
 
