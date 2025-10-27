@@ -13,6 +13,10 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
+
+/**
+ * Создает task в Yougile
+ */
 class CreateYouGileTaskJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -44,7 +48,6 @@ class CreateYouGileTaskJob implements ShouldQueue
         } else{
                 Order::query()->where('id',$orderId)->update(['yougile_task_id' => $taskId]);
         }
-
 
     }
 }

@@ -6,6 +6,10 @@ use App\Http\Services\Clients\DTO\YouGileClientCreateTaskDTO;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
+
+/**
+ * Работа с Yougile
+ */
 class YouGileClient
 {
     private string $baseUrl;
@@ -18,6 +22,14 @@ class YouGileClient
         $this->apiKey = config('services.yougile.api_key');
         $this->columnId = config('services.yougile.column_id');
     }
+
+    /**
+     * Создание task на доске
+     *
+     * @param YouGileClientCreateTaskDTO $dto
+     * @return string|false
+     * @throws \Illuminate\Http\Client\ConnectionException
+     */
     public function createTask(YouGileClientCreateTaskDTO $dto):string|false
     {
         $maxAttempts = 3;
@@ -53,6 +65,14 @@ class YouGileClient
     }
 
 
+    /**
+     * Удаление task с доски
+     *
+     * @param string $taskId
+     * @return bool
+     * @throws \Illuminate\Http\Client\ConnectionException
+     *
+     */
     public function deleteTask(string $taskId):bool
     {
         $response = Http::withHeaders([
@@ -72,4 +92,5 @@ class YouGileClient
         }
         return true;
     }
+
 }

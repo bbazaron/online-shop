@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateOrderRequest;
 use App\Http\Services\CartService;
+use App\Http\Services\OrderService;
 use App\Http\Services\YooKassaService;
 use App\Jobs\CreateYouGileTaskJob;
 use App\Jobs\DeleteYouGileTaskJob;
@@ -17,18 +18,24 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-
+/**
+ * Контроллер отвечающий за заказы
+ */
 class OrderController
 {
     protected CartService $cartService;
-    private YooKassaService $yooKassaService;
+    private OrderService $orderService;
 
-    public function __construct()
+    public function __construct(cartService $cartService, OrderService $orderService)
     {
-        $this->cartService = new cartService();
-        $this->yooKassaService = new YooKassaService();
-
+        $this->cartService = $cartService;
+        $this->orderService = $orderService;
     }
+
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|object
+     * Выдает страницу оформления заказа
+     */
     public function getOrderForm()
     {
         $userProducts = $this->cartService->getUserProductsWithSum();
@@ -36,54 +43,36 @@ class OrderController
         return view('orderForm', ['userProducts' => $userProducts, 'totalSum' => $totalSum]);
     }
 
+    /**
+     * @param CreateOrderRequest $request
+     * @return \Illuminate\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|object
+     * @throws \Throwable
+     * Создает заказ, отправляет в очередь создание task в yougile
+     * Создает платеж в Юкассе и выдает страницу с оплатой
+     */
     public function createOrder(CreateOrderRequest $request)
     {
-        $userProducts = $this->cartService->getUserProductsWithSum();
-        $totalSum = $this->cartService->getTotalSum();
-        DB::beginTransaction();
-        try {
-            $order = Order::query()->create([
-                'user_id' => Auth::id(),
-                'contact_name' => $request->get('contact_name'),
-                'contact_phone' => $request->get('contact_phone'),
-                'address' => $request->get('address'),
-                'comment' => $request->get('comment'),
-                'total_sum' => $totalSum,
-            ]);
-
-            foreach ($userProducts as $userProduct) {
-                OrderProduct::query()->create([
-                    'order_id' => $order->id,
-                    'product_id' => $userProduct->id,
-                    'amount' => $userProduct->amount,
-                ]);
-            }
-
-            UserProduct::query()->where('user_id',Auth::id())->delete();
-            DB::commit();
-
-            CreateYouGileTaskJob::dispatch($order);
-
-            $paymentUrl = $this->yooKassaService->createPayment($order);
-            return redirect($paymentUrl);
-
-
-        } catch(\Throwable $exception) {
-            DB::rollBack();
-            throw $exception;
-        }
-
+        $paymentUrl = $this->orderService->createOrder($request);
+        return redirect($paymentUrl);
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|object
+     * Выдает страницу заказов пользователя
+     */
     public function getOrders()
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
         $orders = $user->orders()->with('orderProducts.product')->get();
-//        echo"<pre>";print_r($orders);
         return view('orders', ['orders' => $orders]);
     }
 
+    /**
+     * @param string $taskId
+     * @return void
+     * Удаляет task с доски yougileУ
+     */
     public function deleteTask(string $taskId)
     {
         DeleteYouGileTaskJob::dispatch($taskId);

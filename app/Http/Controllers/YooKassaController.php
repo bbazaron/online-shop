@@ -9,27 +9,26 @@ use Illuminate\Support\Facades\Log;
 
 //use Illuminate\Support\Facades\Request;
 
+/**
+ * Контроллер отвечающий за Юкассу
+ */
 class YooKassaController
 {
+    private YooKassaService $yooKassaService;
+    public function __construct(YooKassaService $yooKassaService)
+    {
+        $this->yooKassaService = $yooKassaService;
+    }
+
+    /**
+     * Обрабатывает вебхук
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function handle(Request $request)
     {
-        $data = $request->json()->all();
-        \Log::info('YooKassa webhook received: ' . json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-
-        if (isset($data['event']) && $data['event'] === 'payment.succeeded') {
-            $payment = $data['object'];
-            $orderId = $payment['metadata']['order_id'] ?? null;
-
-            if ($orderId) {
-
-                $order = Order::find($orderId);
-                if ($order) {
-                    $order->status = 'paid';
-                    $order->save();
-                }
-            }
-        }
-
+        $this->yooKassaService->handleWebhook($request);
         return response()->json(['status' => 'ok']);
     }
 

@@ -6,6 +6,7 @@ use App\Http\Requests\EditProfileRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignUpRequest;
 use App\Http\Services\RabbitmqService;
+use App\Http\Services\UserService;
 use App\Jobs\SendTestEmailJob;
 use App\Mail\Testmail;
 use App\Models\Product;
@@ -18,65 +19,83 @@ use Illuminate\Support\Facades\Mail;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
+/**
+ * Контроллер отвечающий за пользователя
+ */
+
 class UserController
 {
-    private RabbitmqService $rabbitmqService;
-    public function __construct(RabbitmqService $rabbitmqService)
+    private UserService $userService;
+    public function __construct(UserService $userService)
     {
-        $this->rabbitmqService = $rabbitmqService;
+        $this->userService = $userService;
     }
+
+    /**
+     * Выдает форму регистрации
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|object
+     */
     public function getSignUpForm()
     {
        return view('signUpForm');
     }
+
+    /**
+     * Выдает форму логина
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|object
+     */
     public function getLoginForm()
     {
         return view('loginForm');
     }
 
+
+    /**
+     * Регистрация пользователя, отдает в очередь отправление письма на указанный email пользователя
+     *
+     * @param SignUpRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function signUp(SignUpRequest $request)
     {
-        $data = $request->validated();
-
-        User::query()->create([
-            'username' => $data['username'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
-
-        $email = $request->input('email', 'youremail@example.com');
-
-        SendTestEmailJob::dispatch($email);
-
+        $this->userService->signUp($request);
         return response()->redirectTo('login');
-
-
     }
 
+
+    /**
+     * Логин пользователя
+     *
+     * @param LoginRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function login(LoginRequest $request)
     {
-        Auth::attempt([
-            'email' => $request->get('email'),
-            'password' => $request->get('password')
-        ]);
+        $this->userService->login($request);
         return response()->redirectTo('catalog');
-
     }
 
-    public function logout()
-    {
-        Auth::logout();
-        return response()->redirectTo('login');
-    }
 
+    /**
+     * Выдача страницы пользователя
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|object
+     */
     public function getProfile()
     {
             $user=User::find(Auth::id());
             $userData=$user->only(['id','username','email','image']);
-//            print_r($userData);exit;
             return view('profile', ['user' => $userData]);
     }
 
+
+    /**
+     * Выдает страницу редактирования пользователя
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|object
+     */
     public function getEditProfile()
     {
             $user=User::find(Auth::id());
@@ -84,28 +103,29 @@ class UserController
             return view('editProfileForm', ['user' => $userData]);
     }
 
+
+    /**
+     * Редактирование пользователя
+     *
+     * @param EditProfileRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function handleEditProfile(EditProfileRequest $request)
     {
-        $data = $request->validated();
-        User::query()->where('id', Auth::id())->update([
-            'username' => $data['username'],
-            'email' => $data['email'],
-            'image' => $data['image'],
-            ]);
+        $this->userService->editProfile($request);
         return redirect()->route('profile')->with('success', 'Сохранения изменены!');
     }
 
-    public function createReview(CreateReviewRequest $request)
+    /**
+     * Выход из системы
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function logout()
     {
-        $userId=Auth::id();
-        Review::query()->create([
-            'name' => $request->get('name'),
-            'comment' => $request->get('comment'),
-            'rating' => $request->get('rating'),
-            'product_id' => $request->get('product_id'),
-            'user_id' => $userId
-        ]);
-        return redirect()->back()->with('Success', 'Спасибо за отзыв!');
+        Auth::logout();
+        return response()->redirectTo('login');
     }
+
+
 
 }

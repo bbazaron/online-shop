@@ -29,7 +29,7 @@ Route::middleware('auth')->group(function()
     Route::get('/editProfile',[UserController::class, 'getEditProfile'])->name('editProfile');
     Route::get('/profile',[UserController::class, 'getProfile'])->name('profile');
     Route::post('/createOrder',[OrderController::class, 'createOrder'])->name('post.orderForm');
-    Route::post('/review',[UserController::class, 'createReview'])->name('review');
+    Route::post('/review',[ProductController::class, 'createReview'])->name('review');
     Route::get('/logout',[UserController::class, 'logout'])->name('logout');
     Route::post('/editProfile',[UserController::class, 'handleEditProfile'])->name('post.editProfile');
     Route::post('/add-product',[CartController::class, 'addProductToCart'])->name('addProductToCart');
