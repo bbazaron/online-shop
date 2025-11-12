@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Http\Services\Clients\YouGileClient;
+use App\Services\Clients\YouGileClient;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;

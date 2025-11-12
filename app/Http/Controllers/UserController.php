@@ -1,23 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Requests\CreateReviewRequest;
 use App\Http\Requests\EditProfileRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignUpRequest;
-use App\Http\Services\RabbitmqService;
-use App\Http\Services\UserService;
-use App\Jobs\SendTestEmailJob;
-use App\Mail\Testmail;
-use App\Models\Product;
-use App\Models\Review;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use App\Services\UserService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
-use PhpAmqpLib\Connection\AMQPStreamConnection;
-use PhpAmqpLib\Message\AMQPMessage;
 
 /**
  * Контроллер отвечающий за пользователя

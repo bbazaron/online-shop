@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Services\CartService;
-use App\Models\UserProduct;
-use http\Client\Curl\User;
+use App\Services\CartService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * Контроллер корзины

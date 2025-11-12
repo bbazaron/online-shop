@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Services;
 
 use App\Models\UserProduct;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Сервис отвечающий за бизнес логику внутри корзины
@@ -15,7 +15,7 @@ class CartService
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
      * Возвращает продукты c их количеством и суммой одного конкретного продукта
      */
-    public function getUserProductsWithSum() //что возвращать (коллекция)?
+    public function getUserProductsWithSum()
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();

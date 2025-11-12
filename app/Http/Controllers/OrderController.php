@@ -3,20 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateOrderRequest;
-use App\Http\Services\CartService;
-use App\Http\Services\OrderService;
-use App\Http\Services\YooKassaService;
-use App\Jobs\CreateYouGileTaskJob;
 use App\Jobs\DeleteYouGileTaskJob;
-use App\Models\Order;
-use App\Models\OrderProduct;
-use App\Models\User;
-use App\Models\UserProduct;
-use Illuminate\Support\Facades\App;
+use App\Services\CartService;
+use App\Services\OrderService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Контроллер отвечающий за заказы

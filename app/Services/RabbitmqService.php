@@ -1,10 +1,7 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Services;
 
-use App\Mail\Testmail;
-use App\Models\User;
-use Illuminate\Support\Facades\Mail;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 

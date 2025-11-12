@@ -5,15 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateProductRequest;
 use App\Http\Requests\CreateReviewRequest;
 use App\Http\Requests\EditProductRequest;
-use App\Http\Services\ProductService;
 use App\Models\Product;
 use App\Models\Review;
-use App\Models\User;
-use App\Models\UserProduct;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Hash;
+use App\Services\ProductService;
+
 /**
  * Контроллер отвечает за продукты
  */
@@ -33,10 +28,7 @@ class ProductController
     */
     public function getCatalog()
     {
-        $products = Cache::remember('products_all', 3600, function () {
-            return Product::all();
-        });
-
+        $products = $this->productService->catalog();
         return view('catalog', compact('products'));
     }
 

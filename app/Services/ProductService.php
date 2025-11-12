@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Services;
 
 use App\Http\Requests\CreateProductRequest;
 use App\Http\Requests\CreateReviewRequest;
@@ -12,6 +12,18 @@ use Illuminate\Support\Facades\Cache;
 
 class ProductService
 {
+    /**
+     * Выдает все продукты из кэша
+     *
+     * @return Product
+     */
+    public function catalog()
+    {
+        return Cache::remember('products_all', 3600, function () {
+            return Product::all();
+        });
+    }
+
     /**
      * Изменяет данные товара
      *

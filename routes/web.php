@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\YooKassaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -44,6 +45,8 @@ Route::middleware('auth')->group(function()
     Route::delete('/products/{product}',[ProductController::class, 'delete'])->name('deleteProduct');
 
     Route::get('/deleteTask/{taskId}',[OrderController::class, 'deleteTask'])->name('deleteTask'); // тестовый
+
+    Route::get('/search',[SearchController::class, 'search'])->name('catalog.search');
 
 
 });

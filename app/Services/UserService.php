@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Services;
 
 use App\Http\Requests\EditProfileRequest;
 use App\Http\Requests\LoginRequest;

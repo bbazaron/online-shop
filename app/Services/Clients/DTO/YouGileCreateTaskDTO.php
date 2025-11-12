@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services\Clients\DTO;
+namespace App\Services\Clients\DTO;
 
 class YouGileClientCreateTaskDTO
 {

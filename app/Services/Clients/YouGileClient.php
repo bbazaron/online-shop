@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Services\Clients;
+namespace App\Services\Clients;
 
-use App\Http\Services\Clients\DTO\YouGileClientCreateTaskDTO;
+use App\Services\Clients\DTO\YouGileClientCreateTaskDTO;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 

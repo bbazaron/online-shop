@@ -13,68 +13,71 @@
 
     <a href="{{route('cart')}}" class="btn btn-cart">
         <i class="fas fa-shopping-cart"></i> Корзина
-{{--        <span class="cart-quantity"><?php echo $cartQuantity;?></span>--}}
-{{--        <span class="cart-total"><?php echo $sum;?> ₽</span>--}}
     </a>
-{{--    <?php if ($role==='admin'):?>--}}
-{{--    <a href="/product-management" class="b  tn btn-cart">--}}
-{{--        <i class="fas fa-shopping-cart"></i> Управление продуктами--}}
-{{--        <!--        <span class="caa">--><?php //echo $role;?><!--</span>-->--}}
-{{--    </a>--}}
-{{--    <?php endif;?>--}}
 
-{{--    <h1>{{ $message }}</h1>--}}
+    <a>
+        <form action="{{ route('catalog.search') }}" method="GET" class="d-flex mb-4" style="gap: 10px;">
+            <input type="text" name="q" value="{{ request('q') }}" class="form-control" placeholder="Введите название товара..." style="max-width: 400px;">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i> Найти
+            </button>
+        </form>
+    </a>
+
     <h3>Каталог</h3>
 
-    @foreach($products as $product)
-    <div class="card-deck">
-        <div class="card text-center">
-            <a>
-                <hr>
-                <img class="card-img-top" src="{{ $product->image }}" alt="Card image" width="300"  height="200">
+    @if(isset($products) && count($products))
+        @foreach($products as $product)
+            <div class="card-deck mb-4">
+                <div class="card text-center">
+                    <a>
+                        <hr>
+                        <img class="card-img-top" src="{{ $product['image'] }}" alt="Card image" width="300" height="200">
 
-                <div class="card-body">
-                    <p class="card-footer">{{ $product->name }}</p>
-                    <a><h5 class="card-title">Описание {{ $product->description }}</h5></a>
-                    <div class="card-title">
-                        Цена: {{ $product->price }}
-                    </div>
-                    <br><form action="{{route('productPage', ['id' => $product->id])}}" >
-                        @csrf
-                        <div class="container">
-                            <button type="submit" class="register btn">Открыть</button>
+                        <div class="card-body">
+                            <p class="card-footer">{{ $product['name'] }}</p>
+                            <a><h5 class="card-title">Описание: {{ $product['description'] }}</h5></a>
+                            <div class="card-title">
+                                Цена: {{ $product['price'] }}
+                            </div>
+                            <br>
+                            <form action="{{route('productPage', ['id' => $product['id']])}}">
+                                @csrf
+                                <div class="container">
+                                    <button type="submit" class="register btn">Открыть</button>
+                                </div>
+                            </form>
                         </div>
-                    </form>
+                    </a>
                 </div>
-            </a>
-        </div>
 
-        <div class="card-title" style="display: flex; gap: 10px;">Добавить в корзину
-            <div style="display: flex; gap: 20px;">
+                <div class="card-title" style="display: flex; gap: 10px;">Добавить в корзину
+                    <div style="display: flex; gap: 20px;">
 
-                <form class='increase-button' onsubmit="return false">
-                    @csrf
-                    <div class="container">
-                        <input type="hidden" value="{{ $product->id }}" name="product_id" id="product_id">
-                        <button type="submit" class="register btn"> + </button>
+                        <form class='increase-button' onsubmit="return false">
+                            @csrf
+                            <div class="container">
+                                <input type="hidden" value="{{ $product['id'] }}" name="product_id">
+                                <button type="submit" class="register btn"> + </button>
+                            </div>
+                        </form>
+
+                        <form class='decrease-button' onsubmit="return false">
+                            @csrf
+                            <div class="container">
+                                <input type="hidden" value="{{ $product['id'] }}" name="product_id">
+                                <button type="submit" class="register btn"> - </button>
+                            </div>
+                        </form>
                     </div>
-                </form>
-
-
-                <form class='decrease-button' onsubmit="return false">
-                    @csrf
-                    <div class="container">
-                        <input type="hidden" value="{{ $product->id }}" name="product_id" id="product_id">
-                        <button type="submit" class="register btn"> - </button>
-                    </div>
-                </form>
+                </div>
             </div>
-        </div>
-
-    </div>
-    @endforeach
-
+        @endforeach
+    @else
+        <p class="text-muted mt-4">Ничего не найдено.</p>
+    @endif
 </div>
+
 
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"
