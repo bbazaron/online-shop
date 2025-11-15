@@ -21,6 +21,7 @@ use App\Http\Controllers\TestEmailController;
     Route::get('/email/receive',[TestEmailController::class, 'receive']);
 
     Route::get('/send-test-email', [\App\Http\Controllers\MailTestController::class, 'send']);
+    Route::get('/search',[SearchController::class, 'search'])->name('catalog.search');
 
 Route::middleware('auth')->group(function()
 {
@@ -46,7 +47,6 @@ Route::middleware('auth')->group(function()
 
     Route::get('/deleteTask/{taskId}',[OrderController::class, 'deleteTask'])->name('deleteTask'); // тестовый
 
-    Route::get('/search',[SearchController::class, 'search'])->name('catalog.search');
 
 
 });

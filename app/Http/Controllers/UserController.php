@@ -5,6 +5,9 @@ use App\Http\Requests\EditProfileRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignUpRequest;
 use App\Models\User;
+use App\Services\DTO\EditProfileDTO;
+use App\Services\DTO\LoginDTO;
+use App\Services\DTO\SignUpDTO;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Auth;
 
@@ -49,7 +52,8 @@ class UserController
      */
     public function signUp(SignUpRequest $request)
     {
-        $this->userService->signUp($request);
+        $dto =SignUpDTO::fromRequest($request);
+        $this->userService->signUp($dto);
         return response()->redirectTo('login');
     }
 
@@ -62,7 +66,8 @@ class UserController
      */
     public function login(LoginRequest $request)
     {
-        $this->userService->login($request);
+        $dto = LoginDTO::fromRequest($request);
+        $this->userService->login($dto);
         return response()->redirectTo('catalog');
     }
 
@@ -101,7 +106,8 @@ class UserController
      */
     public function handleEditProfile(EditProfileRequest $request)
     {
-        $this->userService->editProfile($request);
+        $dto = EditProfileDTO::fromRequest($request);
+        $this->userService->editProfile($dto);
         return redirect()->route('profile')->with('success', 'Сохранения изменены!');
     }
 

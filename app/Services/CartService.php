@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\UserProduct;
+use App\Services\DTO\AddProductDTO;
+use App\Services\DTO\DecreaseProductDTO;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -52,14 +54,15 @@ class CartService
     }
 
     /**
-     * @param Request $request
-     * @return void
      * Добавляет в корзину продукт по 1шт
+     *
+     * @param AddProductDTO $dto
+     * @return void
      */
-    public function addProductToCart(Request $request)
+    public function addProductToCart(AddProductDTO $dto)
     {
         $userId=Auth::id();
-        $productId = $request->get('product_id');
+        $productId = $dto->getProductId();
 
         $userProduct = UserProduct::query()->where('user_id',$userId)
             ->where('product_id',$productId)->first();
@@ -76,14 +79,15 @@ class CartService
     }
 
     /**
-     * @param Request $request
-     * @return void
      * Убавляет продукт из корзины по 1шт
+     *
+     * @param DecreaseProductDTO $dto
+     * @return void
      */
-    public function decreaseProductFromCart(Request $request)
+    public function decreaseProductFromCart(DecreaseProductDTO $dto)
     {
         $userId=Auth::id();
-        $productId = $request->get('product_id');
+        $productId = $dto->getProductId();
 
         $userProduct = UserProduct::query()->where('user_id',$userId)->where('product_id',$productId)->first();
         $amount = $userProduct->amount;

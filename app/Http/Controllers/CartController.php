@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Services\CartService;
+use App\Services\DTO\AddProductDTO;
+use App\Services\DTO\DecreaseProductDTO;
 use Illuminate\Http\Request;
 
 /**
@@ -35,7 +37,8 @@ class CartController
      */
     public function addProductToCart(Request $request)
     {
-        $this->cartService->addProductToCart($request);
+        $dto = AddProductDTO::fromRequest($request);
+        $this->cartService->addProductToCart($dto);
     }
 
     /**
@@ -46,6 +49,7 @@ class CartController
      */
     public function decreaseProductFromCart(Request $request)
     {
-        $this->cartService->decreaseProductFromCart($request);
+        $dto = DecreaseProductDTO::fromRequest($request);
+        $this->cartService->decreaseProductFromCart($dto);
     }
 }

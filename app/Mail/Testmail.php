@@ -39,18 +39,6 @@ class Testmail extends Mailable
             ->markdown('emails.test');
     }
 
-//    public function build()
-//    {
-//        return $this->view('emails.test')
-//            ->with([
-//                'username'     => $this->username,
-//                'bodyText' => $this->bodyText,
-//                'ctaUrl'   => $this->ctaUrl,
-//                'fromName' => $this->fromName,
-//            ]);
-//    }
-
-
     /**
      * Get the message envelope.
      */

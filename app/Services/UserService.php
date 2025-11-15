@@ -7,6 +7,9 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignUpRequest;
 use App\Jobs\SendTestEmailJob;
 use App\Models\User;
+use App\Services\DTO\EditProfileDTO;
+use App\Services\DTO\LoginDTO;
+use App\Services\DTO\SignUpDTO;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -15,20 +18,18 @@ class UserService
     /**
      * Создание нового пользователя
      *
-     * @param SignUpRequest $request
+     * @param SignUpDTO $dto
      * @return void
      */
-    public function signUp(SignUpRequest $request)
+    public function signUp(SignUpDTO $dto)
     {
-        $data = $request->validated();
-
         User::query()->create([
-            'username' => $data['username'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'username' => $dto->getName(),
+            'email' => $dto->getEmail(),
+            'password' => Hash::make($dto->getPassword()),
         ]);
 
-        $email = $request->input('email', 'youremail@example.com');
+        $email = $dto->getEmail();
 
         SendTestEmailJob::dispatch($email);
     }
@@ -36,30 +37,30 @@ class UserService
 
     /**
      * Логин
-     * @param LoginRequest $request
+     *
+     * @param LoginDTO $dto
      * @return void
      */
-    public function login(LoginRequest $request)
+    public function login(LoginDTO $dto)
     {
         Auth::attempt([
-            'email' => $request->get('email'),
-            'password' => $request->get('password')
+            'email' => $dto->getEmail(),
+            'password' => $dto->getPassword()
         ]);
     }
 
     /**
      * Редактирование пользователя
      *
-     * @param EditProfileRequest $request
+     * @param EditProfileDTO $dto
      * @return void
      */
-    public function editProfile(EditProfileRequest $request)
+    public function editProfile(EditProfileDTO $dto)
     {
-        $data = $request->validated();
         User::query()->where('id', Auth::id())->update([
-            'username' => $data['username'],
-            'email' => $data['email'],
-            'image' => $data['image'],
+            'username' => $dto->getUsername(),
+            'email' => $dto->getEmail(),
+            'image' => $dto->getImage(),
         ]);
     }
 }

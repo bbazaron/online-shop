@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateOrderRequest;
 use App\Jobs\DeleteYouGileTaskJob;
 use App\Services\CartService;
+use App\Services\DTO\CreateOrderDTO;
 use App\Services\OrderService;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,7 +43,8 @@ class OrderController
      */
     public function createOrder(CreateOrderRequest $request)
     {
-        $paymentUrl = $this->orderService->createOrder($request);
+        $dto = CreateOrderDTO::fromRequest($request);
+        $paymentUrl = $this->orderService->createOrder($dto);
         return redirect($paymentUrl);
     }
 

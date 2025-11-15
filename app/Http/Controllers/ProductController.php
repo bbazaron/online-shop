@@ -7,6 +7,10 @@ use App\Http\Requests\CreateReviewRequest;
 use App\Http\Requests\EditProductRequest;
 use App\Models\Product;
 use App\Models\Review;
+use App\Services\DTO\CreateOrderDTO;
+use App\Services\DTO\CreateProductDTO;
+use App\Services\DTO\CreateReviewDTO;
+use App\Services\DTO\EditProductDTO;
 use App\Services\ProductService;
 
 /**
@@ -59,7 +63,8 @@ class ProductController
      */
     public function createReview(CreateReviewRequest $request)
     {
-        $this->productService->createReview($request);
+        $dto = CreateReviewDTO::fromRequest($request);
+        $this->productService->createReview($dto);
         return redirect()->back()->with('Success', 'Спасибо за отзыв!');
     }
 
@@ -95,7 +100,8 @@ class ProductController
      */
     public function handleEditProductForm(EditProductRequest $request, Product $product)
     {
-        $this->productService->handleEditProductForm($request, $product);
+        $dto = EditProductDTO::fromRequest($request);
+        $this->productService->handleEditProductForm($dto, $product);
         return redirect()->route('editProducts')->with('success', 'Сохранения изменены и кэш сброшен!');
     }
 
@@ -117,7 +123,8 @@ class ProductController
      */
     public function create(CreateProductRequest $request)
     {
-        $this->productService->createProduct($request);
+        $dto = CreateProductDTO::fromRequest($request);
+        $this->productService->createProduct($dto);
         return redirect()->route('editProducts')->with('success', 'Новый продукт успешно создан и кэш сброшен!');
     }
 

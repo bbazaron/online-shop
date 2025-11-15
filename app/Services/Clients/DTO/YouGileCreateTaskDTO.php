@@ -2,7 +2,7 @@
 
 namespace App\Services\Clients\DTO;
 
-class YouGileClientCreateTaskDTO
+class YouGileCreateTaskDTO
 {
     public function __construct(
         private string $description,

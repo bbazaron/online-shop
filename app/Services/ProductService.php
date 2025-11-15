@@ -2,11 +2,13 @@
 
 namespace App\Services;
 
-use App\Http\Requests\CreateProductRequest;
 use App\Http\Requests\CreateReviewRequest;
 use App\Http\Requests\EditProductRequest;
 use App\Models\Product;
 use App\Models\Review;
+use App\Services\DTO\CreateProductDTO;
+use App\Services\DTO\CreateReviewDTO;
+use App\Services\DTO\EditProductDTO;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
@@ -27,50 +29,48 @@ class ProductService
     /**
      * Изменяет данные товара
      *
-     * @param EditProductRequest $request
+     * @param EditProductDTO $dto
      * @param Product $product
      * @return void
      */
-    public function handleEditProductForm(EditProductRequest $request, Product $product)
+    public function handleEditProductForm(EditProductDTO $dto, Product $product)
     {
-        $data = $request->validated();
         $updateData=[];
 
-        if (!empty($data['name'])) {
-            $updateData['name'] = $data['name'];
+        if ($dto->getName() !== null && $dto->getName() !== '') {
+            $updateData['name'] = $dto->getName();
         }
 
-        if (!empty($data['description'])) {
-            $updateData['description'] = $data['description'];
+        if ($dto->getDescription() !== null && $dto->getDescription() !== '') {
+            $updateData['description'] = $dto->getDescription();
         }
 
-        if (!empty($data['price'])) {
-            $updateData['price'] = $data['price'];
+        if ($dto->getPrice() !== null) {
+            $updateData['price'] = $dto->getPrice();
         }
 
-        if (!empty($data['image'])) {
-            $updateData['image'] = $data['image'];
+        if ($dto->getImage() !== null && $dto->getImage() !== '') {
+            $updateData['image'] = $dto->getImage();
         }
 
-        Product::query()->where('id', $product->id)->update($updateData);
-        Cache::forget('products_all');
+        if (!empty($updateData)) {
+            Product::query()->where('id', $product->id)->update($updateData);
+            Cache::forget('products_all');
+        }
     }
 
-
-    /**
-     * Создает новый товар
+    /**Создаёт новый товар
      *
-     * @param CreateProductRequest $request
+     * @param CreateProductDTO $dto
      * @return void
      */
-    public function createProduct(CreateProductRequest $request)
+    public function createProduct(CreateProductDTO $dto)
     {
-        $data = $request->validated();
         Product::query()->create([
-            'name' => $data['name'],
-            'price' => $data['price'],
-            'description' => $data['description'],
-            'image' => $data['image'],
+            'name' => $dto->getName(),
+            'price' => $dto->getPrice(),
+            'description' => $dto->getDescription(),
+            'image' => $dto->getImage(),
         ]);
         Cache::forget('products_all');
     }
@@ -94,14 +94,14 @@ class ProductService
      * @param CreateReviewRequest $request
      * @return void
      */
-    public function createReview(CreateReviewRequest $request)
+    public function createReview(CreateReviewDTO $dto)
     {
         $userId=Auth::id();
         Review::query()->create([
-            'name' => $request->get('name'),
-            'comment' => $request->get('comment'),
-            'rating' => $request->get('rating'),
-            'product_id' => $request->get('product_id'),
+            'name' => $dto->getName(),
+            'comment' => $dto->getComment(),
+            'rating' => $dto->getRating(),
+            'product_id' => $dto->getProductId(),
             'user_id' => $userId
         ]);
     }

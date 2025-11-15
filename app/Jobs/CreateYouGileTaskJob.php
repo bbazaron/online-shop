@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Order;
-use App\Services\Clients\DTO\YouGileClientCreateTaskDTO;
+use App\Services\Clients\DTO\YouGileCreateTaskDTO;
 use App\Services\Clients\YouGileClient;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -37,7 +37,7 @@ class CreateYouGileTaskJob implements ShouldQueue
                             - Адрес: {$this->order->address}<br>
                             - Комментарий: {$this->order->comment}";
 
-        $dto = new YouGileClientCreateTaskDTO($description, $orderId );
+        $dto = new YouGileCreateTaskDTO($description, $orderId );
 
         $taskId = $this->youGileClient->createTask($dto);
 

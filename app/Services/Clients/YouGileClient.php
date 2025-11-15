@@ -2,7 +2,7 @@
 
 namespace App\Services\Clients;
 
-use App\Services\Clients\DTO\YouGileClientCreateTaskDTO;
+use App\Services\Clients\DTO\YouGileCreateTaskDTO;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -26,11 +26,11 @@ class YouGileClient
     /**
      * Создание task на доске
      *
-     * @param YouGileClientCreateTaskDTO $dto
+     * @param YouGileCreateTaskDTO $dto
      * @return string|false
      * @throws \Illuminate\Http\Client\ConnectionException
      */
-    public function createTask(YouGileClientCreateTaskDTO $dto):string|false
+    public function createTask(YouGileCreateTaskDTO $dto):string|false
     {
         $maxAttempts = 3;
         $attempt = 0;

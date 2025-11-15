@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Services\YooKassaService;
 use Illuminate\Http\Request;
 
-//use Illuminate\Support\Facades\Request;
 
 /**
  * Контроллер отвечающий за Юкассу

@@ -7,6 +7,7 @@ use App\Jobs\CreateYouGileTaskJob;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\UserProduct;
+use App\Services\DTO\CreateOrderDTO;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -22,10 +23,10 @@ class OrderService
 
     /**
      * Создает заказ, отправляет в очередь создание task в yougile
-     *  Создает платеж в Юкассе и выдает страницу с оплатой
+     * Создает платеж в Юкассе и выдает страницу с оплатой
      *
-     * @param CreateOrderRequest $request
-     * @return \Illuminate\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|object
+     * @param CreateOrderDTO $dto
+     * @return string
      * @throws \Throwable
      * @throws \YooKassa\Common\Exceptions\ApiConnectionException
      * @throws \YooKassa\Common\Exceptions\ApiException
@@ -39,7 +40,7 @@ class OrderService
      * @throws \YooKassa\Common\Exceptions\TooManyRequestsException
      * @throws \YooKassa\Common\Exceptions\UnauthorizedException
      */
-    public function createOrder(CreateOrderRequest $request):string
+    public function createOrder(CreateOrderDTO $dto):string
     {
         $userProducts = $this->cartService->getUserProductsWithSum();
         $totalSum = $this->cartService->getTotalSum();
@@ -47,10 +48,10 @@ class OrderService
         try {
             $order = Order::query()->create([
                 'user_id' => Auth::id(),
-                'contact_name' => $request->get('contact_name'),
-                'contact_phone' => $request->get('contact_phone'),
-                'address' => $request->get('address'),
-                'comment' => $request->get('comment'),
+                'contact_name' => $dto->getContactName(),
+                'contact_phone' => $dto->getContactPhone(),
+                'address' => $dto->getAddress(),
+                'comment' => $dto->getAddress(),
                 'total_sum' => $totalSum,
             ]);
 
@@ -69,7 +70,6 @@ class OrderService
 
             $paymentUrl = $this->yooKassaService->createPayment($order);
             return $paymentUrl;
-
 
         } catch(\Throwable $exception) {
             DB::rollBack();

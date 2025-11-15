@@ -3,11 +3,18 @@
 namespace App\Console\Commands;
 
 use App\Models\Product;
+use App\Services\IndexService;
 use Elastic\Elasticsearch\ClientBuilder;
 use Illuminate\Console\Command;
 
 class IndexProducts extends Command
 {
+    private IndexService $indexService;
+    public function __construct(IndexService $indexService)
+    {
+        parent::__construct();
+        $this->indexService = $indexService;
+    }
     /**
      * The name and signature of the console command.
      *
@@ -29,26 +36,9 @@ class IndexProducts extends Command
     {
         $this->info('Запуск индексации товаров...');
 
-        $client = ClientBuilder::create()
-            ->setHosts(['elasticsearch:9200'])
-            ->build();
-
-        $products = Product::all();
-
-        foreach ($products as $product) {
-            $client->index([
-                'index' => 'products',
-                'id'    => $product->id,
-                'body'  => [
-                    'id'          => $product->id,
-                    'name'        => $product->name,
-                    'description' => $product->description,
-                    'price'       => $product->price,
-                    'image'    => $product->image
-                ]
-            ]);
-        }
+        $this->indexService->index();
 
         $this->info('Индексация завершена!');
+
     }
 }

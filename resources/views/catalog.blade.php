@@ -16,13 +16,30 @@
     </a>
 
     <a>
-        <form action="{{ route('catalog.search') }}" method="GET" class="d-flex mb-4" style="gap: 10px;">
-            <input type="text" name="q" value="{{ request('q') }}" class="form-control" placeholder="Введите название товара..." style="max-width: 400px;">
+
+        <form id="searchForm"
+              action="{{ route('catalog.search') }}"
+              method="GET"
+              class="d-flex mb-4"
+              style="gap: 10px; position: relative;"
+              data-search-url="{{ route('catalog.search') }}">
+            <input
+                type="text"
+                id="searchInput"
+                name="q"
+                value="{{ request('q') }}"
+                class="form-control"
+                placeholder="Введите название товара..."
+                style="max-width: 400px;"
+                autocomplete="off"
+            >
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-search"></i> Найти
             </button>
+
+            <ul id="suggestions" class="list-group position-absolute w-100"
+                style="top: 100%; z-index: 1000; display: none;"></ul>
         </form>
-    </a>
 
     <h3>Каталог</h3>
 
@@ -84,6 +101,90 @@
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
         crossorigin="anonymous">
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const input = document.getElementById('searchInput');
+        const suggestions = document.getElementById('suggestions');
+        const form = document.getElementById('searchForm');
+        const url = form.dataset.searchUrl;
+
+        function debounce(fn, delay) {
+            let t;
+            return function(...args) {
+                clearTimeout(t);
+                t = setTimeout(() => fn.apply(this, args), delay);
+            };
+        }
+
+        let controller = null;
+
+        async function fetchSuggestions(query) {
+            if (!query.trim()) {
+                suggestions.style.display = 'none';
+                suggestions.innerHTML = '';
+                return;
+            }
+
+            if (controller) controller.abort();
+            controller = new AbortController();
+
+            try {
+                const res = await fetch(`${url}?q=${encodeURIComponent(query)}`, {
+                    headers: {'X-Requested-With': 'XMLHttpRequest'},
+                    signal: controller.signal
+                });
+
+                if (!res.ok) throw new Error('Network response not ok');
+
+                const data = await res.json();
+
+                if (!Array.isArray(data) || !data.length) {
+                    suggestions.style.display = 'none';
+                    suggestions.innerHTML = '';
+                    return;
+                }
+
+                suggestions.innerHTML = '';
+                data.forEach(product => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item list-group-item-action';
+                    li.style.cursor = 'pointer';
+
+                    const regex = new RegExp(`(${query})`, 'i');
+                    li.innerHTML = (product.name || 'Без названия').replace(regex, '<strong>$1</strong>');
+
+                    li.addEventListener('click', function() {
+                        input.value = product.name;
+                        suggestions.innerHTML = '';
+                        suggestions.style.display = 'none';
+                        form.submit();
+                    });
+
+                    suggestions.appendChild(li)
+                });
+                suggestions.style.display = 'block';
+            } catch (err) {
+                if (err.name !== 'AbortError') console.error(err);
+                suggestions.style.display = 'none';
+                suggestions.innerHTML = '';
+            }
+        }
+
+        const debouncedFetch = debounce(e => fetchSuggestions(e.target.value), 200);
+        input.addEventListener('input', debouncedFetch);
+
+        document.addEventListener('click', e => {
+            if (!form.contains(e.target)) {
+                suggestions.style.display = 'none';
+            }
+        });
+    });
+
+
+
+</script>
+
 
 <script>
     $("document").ready(function () {
@@ -263,4 +364,28 @@
         margin-left: 5px;
         font-size: 12px;
         opacity: 0.9;
-    }</style>
+    }
+
+    #suggestions {
+        max-height: 250px;       /* ограничение по высоте */
+        overflow-y: auto;        /* скролл при большом количестве */
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        margin-top: 5px;
+        padding: 0;
+    }
+
+    #suggestions li {
+        padding: 10px 15px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    #suggestions li:hover {
+        background-color: #f0f0f0;
+    }
+
+
+</style>

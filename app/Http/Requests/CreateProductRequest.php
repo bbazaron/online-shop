@@ -24,8 +24,8 @@ class CreateProductRequest extends FormRequest
         return[
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
-            'description' => 'nullable|string',
-            'image' => 'nullable|url|max:255',
+            'description' => 'required|string|max:255',
+            'image' => 'required|url|max:255',
         ];
     }
 }

@@ -5,7 +5,6 @@
         <form method="POST" action="{{ route('post.createProductForm') }}">
             @csrf
 
-            {{-- Название --}}
             <div class="mb-4">
                 <label class="block text-gray-700 font-semibold mb-1">Название</label>
                 <input type="text" name="name" value="{{ old('name') }}"
@@ -15,7 +14,6 @@
                 @enderror
             </div>
 
-            {{-- Цена --}}
             <div class="mb-4">
                 <label class="block text-gray-700 font-semibold mb-1">Цена</label>
                 <input type="number" step="0.01" name="price" value="{{ old('price') }}"
@@ -25,7 +23,6 @@
                 @enderror
             </div>
 
-            {{-- Описание --}}
             <div class="mb-4">
                 <label class="block text-gray-700 font-semibold mb-1">Описание</label>
                 <textarea name="description" rows="4"
@@ -35,7 +32,6 @@
                 @enderror
             </div>
 
-            {{-- Картинка --}}
             <div class="mb-4">
                 <label class="block text-gray-700 font-semibold mb-1">URL изображения</label>
                 <input type="url" name="image" value="{{ old('image') }}"
@@ -46,7 +42,6 @@
                 @enderror
             </div>
 
-            {{-- Кнопки --}}
             <div class="flex justify-between">
                 <button type="submit"
                         class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
